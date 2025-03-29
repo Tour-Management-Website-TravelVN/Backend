@@ -68,6 +68,7 @@ public class UserAccountController {
                 .sameSite("None")  // Chống CSRF (Chỉ gửi request từ cùng domain)
                 .path("/")        // Cookie áp dụng cho toàn bộ trang
                 .maxAge(Duration.ofDays(7))  // Token có hiệu lực trong 7 ngày
+                .domain("")
                 .build();
 
         // Set Cookie vào Response Header
