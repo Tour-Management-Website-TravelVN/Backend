@@ -53,6 +53,10 @@ public class SecurityConfig {
             ));
             config.addAllowedHeader("*");
             config.addAllowedMethod("*");
+
+            //?
+            config.addExposedHeader("Set-Cookie");
+
             config.setAllowCredentials(true); //Bỏ comment nếu cần thiết
             return config;
         }));
