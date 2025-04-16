@@ -28,17 +28,21 @@ public class SecurityConfig {
 
     //Các endpoint được phép gọi khi chưa có token
     private final String[] PUBLIC_ENDPOINTS = {"/login",
-            "/auth/token", "/auth/tokenapp", "/auth/introspect", "/auth/logout", "/auth/refresh", "/register", "/tour/foundtourlist", "/tourunit/foundtourlist", "/registerapp",
+            "/auth/token", "/auth/tokenapp", "/auth/introspect", "/auth/logout", "/auth/refresh", "/register",
+            "/tour/foundtourlist", "/tourunit/foundtourlist", "/registerapp",
             "/payment/**"};
 
     //Các endpoint được phép gọi khi chưa có token với phương thức GET
-    private final String[] PUBLIC_GET_ENDPOINTS = {"/tourunit/foundtourlist"/*, "/order/**"*/};
+    private final String[] PUBLIC_GET_ENDPOINTS = {"/tourunit/foundtourlist", "/tourunit/calendar", "/tour/calendar/*", "/festival/carousel", "/rating/tour-detail/*", "/program/tour-detail/*"/*, "/order/**"*/};
 
     //Các endpoint GET của khách hàng
-    private final String[] CUSTOMER_GET_ENDPOINTS = {"/booking/checkbeforebooking", "/booking/*"};
+    private final String[] CUSTOMER_GET_ENDPOINTS = {"/booking/checkbeforebooking", "/booking/*","/customer/myinfo", /*"/tourunit/mytours",*/ "/booking/mytours", "/rating/rating-tour/check"};
 
     //Các endpoint POST của khách hàng
-    private final String[] CUSTOMER_POST_ENDPOINTS = {/*"booking/booktour"*/"/order/create"};
+    private final String[] CUSTOMER_POST_ENDPOINTS = {/*"booking/booktour"*/"/order/create", "/rating/rating-tour"};
+
+    //Các endpoint PUT của khách hàng
+    private final String[] CUSTOMER_PUT_ENDPOINTS = {"/changePwd", "/customer/myinfo/update","/booking/cancel/*"};
 
     private final CustomJwtDecoder jwtDecoder;
 
@@ -82,12 +86,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, CUSTOMER_GET_ENDPOINTS).hasRole(Role.CUSTOMER.name())
                         .requestMatchers(HttpMethod.POST, CUSTOMER_POST_ENDPOINTS).hasRole(Role.CUSTOMER.name())
+                        .requestMatchers(HttpMethod.PUT, CUSTOMER_PUT_ENDPOINTS).hasRole(Role.CUSTOMER.name())
 //                        .requestMatchers(HttpMethod.POST, "/auth/refresh").hasRole(Role.CUSTOMER.name())
                         .anyRequest().authenticated());
 
         //Authentication Provider
         httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer ->
+                oauth2
+                        .bearerTokenResolver(jwtFilter)
+                        .jwt(jwtConfigurer ->
                                 jwtConfigurer.decoder(jwtDecoder)
                                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JWTAuthenticationEntryPoint())

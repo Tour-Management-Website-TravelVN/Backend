@@ -2,6 +2,7 @@ package com.travelvn.tourbookingsytem.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.travelvn.tourbookingsytem.dto.request.UserAccountRequest;
+import com.travelvn.tourbookingsytem.dto.response.lite.UserAccountResponseLite;
 import com.travelvn.tourbookingsytem.model.Booking;
 import com.travelvn.tourbookingsytem.model.CompanionCustomer;
 import com.travelvn.tourbookingsytem.model.TourRating;
@@ -34,7 +35,7 @@ public class CustomerResponse extends PersonResponse{
 //    String address;
 
     @JsonProperty
-    UserAccountResponse userAccount;
+    UserAccountResponseLite userAccount;
 
 //    Set<Booking> bookingSet = new HashSet<>();
 //

@@ -29,4 +29,10 @@ public class FindTourRequest {
 
     @JsonProperty("page")
     private int page;
+
+    private int type;
+
+    private String category;
+
+    private String festival;
 }

@@ -1,5 +1,6 @@
 package com.travelvn.tourbookingsytem.dto.request;
 
+import com.travelvn.tourbookingsytem.dto.request.lite.CustomerRequestLite;
 import com.travelvn.tourbookingsytem.exception.ErrorCode;
 import com.travelvn.tourbookingsytem.validator.EmailConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ public class UserAccountRequest {
     @NotNull
     private String password;
 
-    private CustomerRequest c;
+    private CustomerRequestLite c;
 
     private AdministratorRequest administrator;
 

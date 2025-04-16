@@ -24,5 +24,6 @@ public class SchedulerTask {
         System.out.println("Thread đang chạy lúc: " + new Date());
         authenticationService.clearInvalidToken();
         bookingService.deleteInvalidBooking();
+//        bookingService.updateBookingStatus();
     }
 }

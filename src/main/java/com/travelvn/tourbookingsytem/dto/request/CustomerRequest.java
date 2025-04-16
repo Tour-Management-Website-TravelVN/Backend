@@ -2,6 +2,7 @@ package com.travelvn.tourbookingsytem.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.travelvn.tourbookingsytem.dto.request.lite.UserAccountRequestLite;
 import com.travelvn.tourbookingsytem.validator.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -56,5 +57,5 @@ public class CustomerRequest {
     @JsonProperty("address")
     private String address;
 
-    private UserAccountRequest userAccount;
+    private UserAccountRequestLite userAccount;
 }
