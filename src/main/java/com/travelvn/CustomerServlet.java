@@ -2,6 +2,9 @@ package com.travelvn;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+
+import com.travelvn.config.JDBCconfig;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -1288,6 +1291,9 @@ public class CustomerServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		Connection c = JDBCconfig.ind
+		
+		
 		doGet(req, resp);
 	}
 	
