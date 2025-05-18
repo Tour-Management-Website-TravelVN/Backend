@@ -34,6 +34,7 @@ public class TourImpl implements Tour{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 
@@ -72,7 +73,15 @@ public class TourImpl implements Tour{
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	    }
+	       
+	    }finally {
+			try {
+				PoolImpl.getInstance().releaseConnection(con, "Tour");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	    return tours;
 	}
@@ -102,6 +111,14 @@ public class TourImpl implements Tour{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			 
+		}finally {
+			try {
+				PoolImpl.getInstance().releaseConnection(con, "Tour");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		return all;
@@ -125,6 +142,15 @@ public class TourImpl implements Tour{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+		}
+		finally {
+			try {
+				PoolImpl.getInstance().releaseConnection(con, "Tour_");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return rs;
 	}
@@ -168,7 +194,14 @@ public class TourImpl implements Tour{
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace();		}
+		finally {
+			try {
+				PoolImpl.getInstance().releaseConnection(con, "Tour");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		

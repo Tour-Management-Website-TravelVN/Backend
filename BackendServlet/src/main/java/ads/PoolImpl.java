@@ -55,7 +55,7 @@ public class PoolImpl implements ConnectionPool {
 			System.out.println(objectName+" da khoi tao 1 ket noi moi");
 			return DriverManager.getConnection(this.url, this.username, this.userpass);
 		} else {
-			System.out.println(objectName+"da lay ra mot ket noi");
+			System.out.println(objectName+" da lay ra mot ket noi");
 			return (Connection) this.pool.pop();
 		}
 	}
@@ -64,7 +64,7 @@ public class PoolImpl implements ConnectionPool {
 	public void releaseConnection(Connection con, String objectName) throws SQLException {
 		// TODO Auto-generated method stub
 		
-		System.out.println(objectName+"da tra ve 1 ket noi");
+		System.out.println(objectName+" da tra ve 1 ket noi");
 		this.pool.push(con);
 	}
 

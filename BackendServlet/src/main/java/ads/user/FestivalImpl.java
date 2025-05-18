@@ -31,6 +31,7 @@ public class FestivalImpl implements Festival {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 	@Override
@@ -54,6 +55,7 @@ public class FestivalImpl implements Festival {
 	            }
 
 	        } catch (SQLException e) {
+	        	
 	            e.printStackTrace(); // hoặc log bằng Logger
 	        }finally {
 		    	try {
@@ -61,6 +63,7 @@ public class FestivalImpl implements Festival {
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					 
 				}
 		    }
 
@@ -98,6 +101,7 @@ public class FestivalImpl implements Festival {
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	       
 	    }finally {
 	    	try {
 				PoolImpl.getInstance().releaseConnection(con, "Festival");
@@ -148,6 +152,7 @@ public class FestivalImpl implements Festival {
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	       
 	    }
 	    finally {
 	    	try {

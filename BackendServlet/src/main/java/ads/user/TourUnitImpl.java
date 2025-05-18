@@ -36,6 +36,7 @@ public class TourUnitImpl implements TourUnit{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 	
@@ -78,6 +79,7 @@ public class TourUnitImpl implements TourUnit{
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	       
 	    }finally {
 	    	try {
 				PoolImpl.getInstance().releaseConnection(con, "Tour_unit");
@@ -156,6 +158,7 @@ public class TourUnitImpl implements TourUnit{
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
 		}
 		return tu;
@@ -171,7 +174,7 @@ public class TourUnitImpl implements TourUnit{
 	                "total_additional_cost = ?, discount_id = ?, festival_id = ?, tour_id = ?, " +
 	                "tour_operator_id = ?, last_updated_operator = ? " +
 	                "WHERE tour_unit_id = ?";
-		 
+		 boolean result = false;
 	        try (
 	        		PreparedStatement stmt = con.prepareStatement(sql)) {
 	        	Short avaiableCapacity = TourUnitImpl.getInstance().getById(tourUnit.getTourUnitId()).getAvailableCapacity();
@@ -221,12 +224,14 @@ public class TourUnitImpl implements TourUnit{
 
 	            stmt.setString(21, tourUnit.getTourUnitId());
 
-	            return stmt.executeUpdate() > 0;
+	            return exe(stmt);
+	            
 
 	        } catch (SQLException e) {
+	        	
 	            e.printStackTrace();
-	            return false;
 	        }finally{
+	        	
 				try {
 					PoolImpl.getInstance().releaseConnection(con, "Tour_unit");
 				} catch (SQLException e) {
@@ -234,6 +239,7 @@ public class TourUnitImpl implements TourUnit{
 					e.printStackTrace();
 				}
 			}
+	        return result;
 	}
 
 	@Override
@@ -297,10 +303,11 @@ public class TourUnitImpl implements TourUnit{
 	            stmt.setString(21, tourUnit.getTourUnitId());
 	            stmt.setTimestamp(22, new Timestamp(tourUnit.getLastUpdatedTime().getTime()));
 
-	            return stmt.executeUpdate() > 0;
+	            return exe(stmt);
 
 	        } catch (SQLException e) {
 	            e.printStackTrace();
+	            
 	            return false;
 	        }finally{
 				try {
@@ -308,6 +315,7 @@ public class TourUnitImpl implements TourUnit{
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					
 				}
 			}
 	}
@@ -315,17 +323,18 @@ public class TourUnitImpl implements TourUnit{
 	@Override
 	public boolean deleteById(String id) {
 		String query = "Delete from tour_unit where tour_unit_id like ?";
-		int rs = 0;
+		boolean rs = false;
 		try(
 		         PreparedStatement p = con.prepareStatement(query)
 				) {
 			
 			p.setString(1, id);
 			
-			rs = p.executeUpdate();
+			rs = exe(p);
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
+			 
 		}
 		finally{
 			try {
@@ -333,12 +342,36 @@ public class TourUnitImpl implements TourUnit{
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
 			}
 		}
-		if(rs  > 0 )
-			return true;
-		else
+		return rs;
+	}
+	private boolean exe(PreparedStatement pre)
+	{
+		if(pre != null)
+		{
+			
+			try {
+			int result = pre.executeUpdate();
+			
+			if(result == 0)
+			{
+
+			this.con.rollback();
 			return false;
+				
+			}
+			this.con.commit();
+			return true;
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return false;
+		
 	}
 
 }

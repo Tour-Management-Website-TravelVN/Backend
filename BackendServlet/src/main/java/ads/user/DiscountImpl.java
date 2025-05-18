@@ -56,6 +56,7 @@ public class DiscountImpl implements Discount{
             }
 
         } catch (SQLException e) {
+        	
             e.printStackTrace(); // hoặc log lỗi
         }finally {
         	try {
@@ -106,6 +107,7 @@ public class DiscountImpl implements Discount{
 	            }
 
 	        } catch (SQLException e) {
+	        	
 	            e.printStackTrace(); // hoặc log lỗi
 	        }finally {
 	        	try {
@@ -156,11 +158,13 @@ public class DiscountImpl implements Discount{
 	            }
 
 	        } catch (SQLException e) {
+	        	
 	            e.printStackTrace(); // hoặc log lỗi
 	        }finally {
 	        	try {
 					PoolImpl.getInstance().releaseConnection(con, "Discount");
 				} catch (SQLException e) {
+					
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
