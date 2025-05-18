@@ -323,14 +323,14 @@ public class TourUnitImpl implements TourUnit{
 	@Override
 	public boolean deleteById(String id) {
 		String query = "Delete from tour_unit where tour_unit_id like ?";
-		boolean rs = false;
+		int rs = 1;
 		try(
 		         PreparedStatement p = con.prepareStatement(query)
 				) {
 			
 			p.setString(1, id);
 			
-			rs = exe(p);
+			rs = p.executeUpdate(query);
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -345,7 +345,7 @@ public class TourUnitImpl implements TourUnit{
 				
 			}
 		}
-		return rs;
+		return rs == 1;
 	}
 	private boolean exe(PreparedStatement pre)
 	{
