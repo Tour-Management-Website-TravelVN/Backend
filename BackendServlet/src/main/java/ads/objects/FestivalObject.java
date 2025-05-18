@@ -2,6 +2,7 @@ package ads.objects;
 
 import lombok.*;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,12 +12,14 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Category {
+public class FestivalObject {
     private Integer id;
 
-    private String categoryName;
+    private String festivalName;
 
     private String description;
 
-    private Set<Tour> tourSet = new HashSet<>();
+    private Boolean displayStatus = false;
+
+    private Set<TourUnitObject> tourUnitSet = new HashSet<>();
 }

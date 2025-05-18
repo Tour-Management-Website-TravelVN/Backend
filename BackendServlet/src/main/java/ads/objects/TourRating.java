@@ -11,7 +11,7 @@ import lombok.*;
 public class TourRating {
     private Integer id;
 
-    private TourUnit tourUnit;
+    private TourUnitObject tourUnit;
 
     private Administrator administrator;
 

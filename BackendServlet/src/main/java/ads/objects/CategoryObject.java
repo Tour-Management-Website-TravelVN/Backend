@@ -11,14 +11,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Festival {
+public class CategoryObject {
     private Integer id;
 
-    private String festivalName;
+    private String categoryName;
 
     private String description;
 
-    private Boolean displayStatus = false;
-
-    private Set<TourUnit> tourUnitSet = new HashSet<>();
+    private Set<TourObject> tourSet = new HashSet<>();
 }

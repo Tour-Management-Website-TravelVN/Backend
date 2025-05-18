@@ -2,6 +2,7 @@ package ads.objects;
 
 import lombok.*;
 
+
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,14 +13,14 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString
-public class Tour {
+public class TourObject {
     private String tourId;
 
-    private Category category;
+    private CategoryObject category;
 
-    private TourOperator tourOperator;
+    private TourOperatorObject tourOperator;
 
-    private TourOperator lastUpdatedOperator;
+    private TourOperatorObject lastUpdatedOperator;
 
     private String tourName;
 
@@ -51,5 +52,5 @@ public class Tour {
 
     private Set<Image> imageSet = new HashSet<>();
 
-    private Set<TourUnit> tourUnitSet = new HashSet<>();
+    private Set<TourUnitObject> tourUnitSet = new HashSet<>();
 }

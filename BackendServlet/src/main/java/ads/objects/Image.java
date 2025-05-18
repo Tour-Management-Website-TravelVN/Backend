@@ -15,6 +15,6 @@ public class Image {
 
     private String url;
 
-    private Tour tour;
+    private TourObject tour;
 
 }

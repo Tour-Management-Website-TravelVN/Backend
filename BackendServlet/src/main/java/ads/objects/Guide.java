@@ -13,11 +13,11 @@ import java.time.Instant;
 public class Guide {
     private GuideId id;
 
-    private TourUnit tourUnit;
+    private TourUnitObject tourUnit;
 
     private TourGuide tourGuide;
 
-    private TourOperator tourOperator;
+    private TourOperatorObject tourOperator;
 
     private Instant updatedAt;
 

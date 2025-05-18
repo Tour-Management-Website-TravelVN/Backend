@@ -11,7 +11,7 @@ import lombok.*;
 public class TourProgram {
     private Integer id;
 
-    private Tour tour;
+    private TourObject tour;
 
     private String locations;
 

@@ -5,7 +5,7 @@ import java.util.Stack;
 //import java.sql.Connection;
 //import java.sql.SQLException;
 
-public class ConnectionPoolImpl implements ConnectionPool {
+public class PoolImpl implements ConnectionPool {
 	
 	//Trinh dieu khien lam viec
 	private String driver;
@@ -22,7 +22,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
 	
 	private static volatile ConnectionPool CP;
 
-	public ConnectionPoolImpl() {
+	public PoolImpl() {
 		// TODO Auto-generated method stub
 		//Xac dinh trinh dieu khien
 		this.driver = "com.mysql.cj.jdbc.Driver";
@@ -36,8 +36,8 @@ public class ConnectionPoolImpl implements ConnectionPool {
 		}
 		
 		//Xac dinh tai khoan
-		this.username = "root";
-		this.userpass = "abc123!";
+		this.username = "Unknown";
+		this.userpass = "Drsunknown";
 		
 		//Xac dinh duong dan thuc thi
 		this.url = "jdbc:mysql://localhost:3306/tour_booking_system?allowMultiQueries=true";
@@ -52,10 +52,10 @@ public class ConnectionPoolImpl implements ConnectionPool {
 		
 		if(this.pool.isEmpty()) {
 			
-//			System.out.println(objectName+" da khoi tao 1 ket noi moi");
+			System.out.println(objectName+" da khoi tao 1 ket noi moi");
 			return DriverManager.getConnection(this.url, this.username, this.userpass);
 		} else {
-//			System.out.println(objectName+"da lay ra mot ket noi");
+			System.out.println(objectName+"da lay ra mot ket noi");
 			return (Connection) this.pool.pop();
 		}
 	}
@@ -64,27 +64,34 @@ public class ConnectionPoolImpl implements ConnectionPool {
 	public void releaseConnection(Connection con, String objectName) throws SQLException {
 		// TODO Auto-generated method stub
 		
-//		System.out.println(objectName+"da tra ve 1 ket noi");
+		System.out.println(objectName+"da tra ve 1 ket noi");
 		this.pool.push(con);
 	}
 
+	@Override
 	protected void finalize() throws Throwable {
-		this.pool.clear();
-		
-		this.pool = null;
-		
-		System.out.println("CPool is Closed");
-	}
+        try {
+            // đóng mọi Connection còn lại
+            pool.forEach(conn -> {
+                try { conn.close(); } catch (SQLException ignore) {}
+            });
+            pool.clear();
+            System.out.println("CPool is closed");
+        } finally {
+            // GỌI super.finalize() để JVM tiếp tục thu hồi
+            super.finalize();
+        }
+    }
 	
 	public static ConnectionPool getInstance() {
 		if(CP == null)
 		{
 			
-			synchronized(ConnectionPoolImpl.class)
+			synchronized(PoolImpl.class)
 			{
 				if(CP == null)
 				{
-					CP = new ConnectionPoolImpl();
+					CP = new PoolImpl();
 				}
 			}
 		}

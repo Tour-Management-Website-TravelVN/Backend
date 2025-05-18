@@ -19,7 +19,7 @@ public class UserAccount {
 
     private TourGuide tourGuide;
 
-    private TourOperator tourOperator;
+    private TourOperatorObject tourOperator;
 
     private String status;
 

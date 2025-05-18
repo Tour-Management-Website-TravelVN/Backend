@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString
-public class TourOperator {
+public class TourOperatorObject {
     private Integer id;
 
     private String firstname;
@@ -38,13 +38,13 @@ public class TourOperator {
 
     private LocalDate endDate;
 
-    private Set<Tour> tourCreatedSet = new HashSet<>();
+    private Set<TourObject> tourCreatedSet = new HashSet<>();
 
-    private Set<Tour> tourUpdatedSet = new HashSet<>();
+    private Set<TourObject> tourUpdatedSet = new HashSet<>();
 
-    private Set<TourUnit> tourUnitCreatedSet = new HashSet<>();
+    private Set<TourUnitObject> tourUnitCreatedSet = new HashSet<>();
 
-    private Set<Tour> tourUnitUpdatedSet = new HashSet<>();
+    private Set<TourObject> tourUnitUpdatedSet = new HashSet<>();
 
     private Set<Guide> guideSet = new HashSet<>();
 

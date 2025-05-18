@@ -18,7 +18,7 @@ public class Booking {
 
     private Customer c;
 
-    private TourUnit tourUnit;
+    private TourUnitObject tourUnit;
 
     private Instant bookingDate;
 
