@@ -12,9 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-//Người điều hành tour mới được phép vào trang của người điều hành tour
-public class TourOperatorFilter implements Filter{
-
+public class AdministratorFilter implements Filter{
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -26,8 +25,8 @@ public class TourOperatorFilter implements Filter{
 		HttpSession session = req.getSession(false);
 		UserAccount login = (UserAccount) session.getAttribute("userLogined");
 		
-		if(login.getTourOperator() == null) {
-			res.sendRedirect("/adv/userview");
+		if(login.getAdministrator() == null) {
+			res.sendRedirect("../to/tour");
 		} else {
 			chain.doFilter(request, response);
 		}
@@ -35,5 +34,5 @@ public class TourOperatorFilter implements Filter{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

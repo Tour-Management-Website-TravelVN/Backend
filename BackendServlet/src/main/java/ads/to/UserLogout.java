@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Servlet implementation class UserLogout
  */
-@WebServlet("/user/logout")
+@WebServlet("/logout")
 public class UserLogout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -35,9 +35,10 @@ public class UserLogout extends HttpServlet {
 		
 		//Loại bỏ thông tin đăng nhập
 		session.removeAttribute("userLogined");
+//		session.invalidate();
 		
 		//Trở về giao diện đăng nhập
-		response.sendRedirect("/travelvn_dashboard_be/Login");
+		response.sendRedirect("/adv/Login");
 	}
 
 	/**

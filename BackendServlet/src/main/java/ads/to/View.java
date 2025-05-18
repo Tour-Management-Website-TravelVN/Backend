@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/userview")
+@WebServlet("/ad/userview")
 public class View extends HttpServlet {
 
 	/**
@@ -25,14 +25,15 @@ public class View extends HttpServlet {
 
 		// Tham chiếu phiên làm việc để tìm thông tin đăng nhập
 //		String login = (String) request.getSession().getAttribute("userLogined");
-		BookingObject login = (BookingObject) request.getSession().getAttribute("userLogined");
-		if (login != null) {
-			// Hiển thị giao diện
-			view(request, response);
-		} else {
-			// Quay trở lại giao diện
-			response.sendRedirect("/adv/Login");
-		}
+//		BookingObject login = (BookingObject) request.getSession().getAttribute("userLogined");
+//		if (login != null) {
+//			// Hiển thị giao diện
+//			view(request, response);
+//		} else {
+//			// Quay trở lại giao diện
+//			response.sendRedirect("/adv/Login");
+//		}
+		view(request, response);
 	}
 
 	protected void view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -55,8 +56,8 @@ public class View extends HttpServlet {
 		out.append("  <meta content=\"\" name=\"keywords\">");
 		out.append("");
 		out.append("  <!-- Favicons -->");
-		out.append("  <link href=\"assets/img/Logo.svg\" rel=\"icon\"> ");
-		out.append("  <link href=\"assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
+		out.append("  <link href=\"../assets/img/Logo.svg\" rel=\"icon\"> ");
+		out.append("  <link href=\"../assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
 		out.append("");
 		out.append("  <!-- Google Fonts -->");
 		out.append("  <link href=\"https://fonts.gstatic.com\" rel=\"preconnect\">");
@@ -65,16 +66,16 @@ public class View extends HttpServlet {
 				"  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i&subset=vietnamese\" rel=\"stylesheet\">");
 		out.append("");
 		out.append("  <!-- Vendor CSS Files -->");
-		out.append("  <link href=\"assets/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/bootstrap-icons/bootstrap-icons.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/boxicons/css/boxicons.min.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/quill/quill.snow.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/quill/quill.bubble.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/remixicon/remixicon.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/simple-datatables/style.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/bootstrap-icons/bootstrap-icons.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/boxicons/css/boxicons.min.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/quill/quill.snow.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/quill/quill.bubble.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/remixicon/remixicon.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../assets/vendor/simple-datatables/style.css\" rel=\"stylesheet\">");
 		out.append("");
 		out.append("  <!-- Template Main CSS File -->");
-		out.append("  <link href=\"css/style.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"../css/style.css\" rel=\"stylesheet\">");
 
 		out.append("</head>");
 		out.append("");
@@ -425,7 +426,7 @@ public class View extends HttpServlet {
 		out.append("                    <tbody>");
 		out.append("                      <tr>");
 		out.append(
-				"                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-1.jpg\" alt=\"\"></a></th>");
+				"                        <th scope=\"row\"><a href=\"#\"><img src=\"../assets/img/product-1.jpg\" alt=\"\"></a></th>");
 		out.append(
 				"                        <td><a href=\"#\" class=\"text-primary fw-bold\">Ut inventore ipsa voluptas nulla</a></td>");
 		out.append("                        <td>$64</td>");
@@ -434,7 +435,7 @@ public class View extends HttpServlet {
 		out.append("                      </tr>");
 		out.append("                      <tr>");
 		out.append(
-				"                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-2.jpg\" alt=\"\"></a></th>");
+				"                        <th scope=\"row\"><a href=\"#\"><img src=\"../assets/img/product-2.jpg\" alt=\"\"></a></th>");
 		out.append(
 				"                        <td><a href=\"#\" class=\"text-primary fw-bold\">Exercitationem similique doloremque</a></td>");
 		out.append("                        <td>$46</td>");
@@ -443,7 +444,7 @@ public class View extends HttpServlet {
 		out.append("                      </tr>");
 		out.append("                      <tr>");
 		out.append(
-				"                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-3.jpg\" alt=\"\"></a></th>");
+				"                        <th scope=\"row\"><a href=\"#\"><img src=\"../assets/img/product-3.jpg\" alt=\"\"></a></th>");
 		out.append(
 				"                        <td><a href=\"#\" class=\"text-primary fw-bold\">Doloribus nisi exercitationem</a></td>");
 		out.append("                        <td>$59</td>");
@@ -452,7 +453,7 @@ public class View extends HttpServlet {
 		out.append("                      </tr>");
 		out.append("                      <tr>");
 		out.append(
-				"                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-4.jpg\" alt=\"\"></a></th>");
+				"                        <th scope=\"row\"><a href=\"#\"><img src=\"../assets/img/product-4.jpg\" alt=\"\"></a></th>");
 		out.append(
 				"                        <td><a href=\"#\" class=\"text-primary fw-bold\">Officiis quaerat sint rerum error</a></td>");
 		out.append("                        <td>$32</td>");
@@ -461,7 +462,7 @@ public class View extends HttpServlet {
 		out.append("                      </tr>");
 		out.append("                      <tr>");
 		out.append(
-				"                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-5.jpg\" alt=\"\"></a></th>");
+				"                        <th scope=\"row\"><a href=\"#\"><img src=\"../assets/img/product-5.jpg\" alt=\"\"></a></th>");
 		out.append(
 				"                        <td><a href=\"#\" class=\"text-primary fw-bold\">Sit unde debitis delectus repellendus</a></td>");
 		out.append("                        <td>$79</td>");
@@ -735,35 +736,35 @@ public class View extends HttpServlet {
 		out.append("");
 		out.append("              <div class=\"news\">");
 		out.append("                <div class=\"post-item clearfix\">");
-		out.append("                  <img src=\"assets/img/news-1.jpg\" alt=\"\">");
+		out.append("                  <img src=\"../assets/img/news-1.jpg\" alt=\"\">");
 		out.append("                  <h4><a href=\"#\">Nihil blanditiis at in nihil autem</a></h4>");
 		out.append(
 				"                  <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>");
 		out.append("                </div>");
 		out.append("");
 		out.append("                <div class=\"post-item clearfix\">");
-		out.append("                  <img src=\"assets/img/news-2.jpg\" alt=\"\">");
+		out.append("                  <img src=\"../assets/img/news-2.jpg\" alt=\"\">");
 		out.append("                  <h4><a href=\"#\">Quidem autem et impedit</a></h4>");
 		out.append(
 				"                  <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>");
 		out.append("                </div>");
 		out.append("");
 		out.append("                <div class=\"post-item clearfix\">");
-		out.append("                  <img src=\"assets/img/news-3.jpg\" alt=\"\">");
+		out.append("                  <img src=\"../assets/img/news-3.jpg\" alt=\"\">");
 		out.append("                  <h4><a href=\"#\">Id quia et et ut maxime similique occaecati ut</a></h4>");
 		out.append(
 				"                  <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>");
 		out.append("                </div>");
 		out.append("");
 		out.append("                <div class=\"post-item clearfix\">");
-		out.append("                  <img src=\"assets/img/news-4.jpg\" alt=\"\">");
+		out.append("                  <img src=\"../assets/img/news-4.jpg\" alt=\"\">");
 		out.append("                  <h4><a href=\"#\">Laborum corporis quo dara net para</a></h4>");
 		out.append(
 				"                  <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>");
 		out.append("                </div>");
 		out.append("");
 		out.append("                <div class=\"post-item clearfix\">");
-		out.append("                  <img src=\"assets/img/news-5.jpg\" alt=\"\">");
+		out.append("                  <img src=\"../assets/img/news-5.jpg\" alt=\"\">");
 		out.append("                  <h4><a href=\"#\">Et dolores corrupti quae illo quod dolor</a></h4>");
 		out.append(
 				"                  <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>");
@@ -781,10 +782,32 @@ public class View extends HttpServlet {
 		out.append("");
 		out.append("  </main><!-- End #main -->");
 
-		RequestDispatcher f = request.getRequestDispatcher("/side");
+		RequestDispatcher f = request.getRequestDispatcher("/fo");
 		if (f != null) {
 			f.include(request, response);
 		}
+
+		out.append(
+				"""
+						<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+						  <!-- Vendor JS Files -->
+						  <script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
+						  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+						  <script src="../assets/vendor/chart.js/chart.umd.js"></script>
+						  <script src="../assets/vendor/echarts/echarts.min.js"></script>
+						  <script src="../assets/vendor/quill/quill.js"></script>
+						  <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
+						  <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
+						  <script src="../assets/vendor/php-email-form/validate.js"></script>
+
+						  <!-- Template Main JS File -->
+						  <script src="../assets/js/main.js"></script>
+
+						</body>
+
+						</html>
+																	""");
 
 		out.close();
 	}

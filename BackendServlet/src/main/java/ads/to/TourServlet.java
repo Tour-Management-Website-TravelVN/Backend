@@ -120,7 +120,7 @@ public class TourServlet extends HttpServlet {
 		out.append("                  <div class=\"col-md-8\">");
 		out.append("                    <div class=\"card-body\">");
 		out.append("                    <div class=\"d-flex row\">");
-		out.append("                      <a href=\"Tour_Detail\" class=\"col-sm-8\">");
+		out.append("                      <a href=\"Tour_Detail\" class=\"col-sm-8\" style=\"transform: scale(1.0);\">");
 		out.append("                      <h5 class=\"card-title\">Đà Lạt 3 Ngày 2 đêm</h5>");
 		out.append("                    </a>");
 		out.append("                    <a href=\"edit-tour.html\" class=\"fw-bold col-sm-2 mt-3 text-end\"> ");
@@ -168,7 +168,7 @@ public class TourServlet extends HttpServlet {
 		out.append("                  ");
 		out.append("                    <div class=\"card-body\">");
 		out.append("                      <div class=\"d-flex row\">");
-		out.append("                      <a href=\"Tour_detail.html\" class=\"col-sm-8\">");
+		out.append("                      <a href=\"Tour_detail.html\" class=\"col-sm-8\" style=\"transform: scale(1.0);\">");
 		out.append("                      <h5 class=\"card-title\">Đà Lạt 3 Ngày 2 đêm</h5>");
 		out.append("                    </a>");
 		out.append(
@@ -201,8 +201,8 @@ public class TourServlet extends HttpServlet {
 		out.append("                  ");
 		out.append("                    <div class=\"card-body\">");
 		out.append("                      <div class=\"d-flex row\">");
-		out.append("                      <a href=\"Tour_detail.html\" class=\"col-sm-8\">");
-		out.append("                      <h5 class=\"card-title\">Đà Lạt 3 Ngày 2 đêm</h5>");
+		out.append("                      <a href=\"Tour_detail.html\" class=\"col-sm-8\" style=\"transform: scale(1.0);\">");
+		out.append("                      <h5 class=\"card-title\" >Đà Lạt 3 Ngày 2 đêm</h5>");
 		out.append("                    </a>");
 		out.append(
 				"                    <a href=\"Tour_unit_management.html\" class=\"fw-bold col-sm-2 mt-3 text-end\"> ");
@@ -234,7 +234,7 @@ public class TourServlet extends HttpServlet {
 		out.append("                  ");
 		out.append("                    <div class=\"card-body\">");
 		out.append("                      <div class=\"d-flex row\">");
-		out.append("                      <a href=\"Tour_detail.html\" class=\"col-sm-8\">");
+		out.append("                      <a href=\"Tour_detail.html\" class=\"col-sm-8\" style=\"transform: scale(1.0);\">");
 		out.append("                      <h5 class=\"card-title\">Đà Lạt 3 Ngày 2 đêm</h5>");
 		out.append("                    </a>");
 		out.append(

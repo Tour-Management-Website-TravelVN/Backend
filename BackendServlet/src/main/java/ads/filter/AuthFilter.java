@@ -22,6 +22,8 @@ public class AuthFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		
+//		System.out.println("This is my AuthFilter");
+		
 		//Kiểm tra session đã đăng nhập chưa.
 		HttpSession session = req.getSession(false); //Không tạo session mới
 		if(session!=null && session.getAttribute("userLogined")!=null) {
@@ -29,10 +31,10 @@ public class AuthFilter implements Filter{
 			chain.doFilter(request, response);
 		} else {
 			// Quay trở lại giao diện
-			res.sendRedirect("adv/Login");
+			res.sendRedirect("../Login");
 		}
 		
-		chain.doFilter(request, response);
+//		chain.doFilter(request, response);
 		// TODO Auto-generated method stub
 	}
 

@@ -24,6 +24,15 @@ public class header extends HttpServlet{
 		 response.setCharacterEncoding("UTF-8");
 		 response.setContentType("text/html; charset=UTF-8");
 		 
+		 String uri = request.getRequestURI();
+		 String path = uri.substring(request.getContextPath().length());
+		 String role = "";
+		 if(path.contains("to")) {
+			 role = "Điều hành tour";
+		 } else {
+			 role = "Quản lý";
+		 }
+		 
 		 PrintWriter out = response.getWriter();
 			out.append("  <!-- ======= Header ======= -->");
 			out.append("  <header id=\"header\" class=\"header fixed-top d-flex align-items-center\">");
@@ -210,7 +219,7 @@ public class header extends HttpServlet{
 			out.append("          <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow profile\">");
 			out.append("            <li class=\"dropdown-header\">");
 			out.append("              <h6>Kiều Đức Thịnh</h6>");
-			out.append("              <span>Business analyst</span>");
+			out.append("              <span>"+role+"</span>");
 			out.append("            </li>");
 			out.append("            <li>");
 			out.append("              <hr class=\"dropdown-divider\">");
@@ -249,7 +258,7 @@ public class header extends HttpServlet{
 			out.append("            </li>");
 			out.append("");
 			out.append("            <li>");
-			out.append("              <a class=\"dropdown-item d-flex align-items-center\" href=\"/travelvn_dashboard_be/user/logout\">");
+			out.append("              <a class=\"dropdown-item d-flex align-items-center\" href=\"/adv/logout\">");
 			out.append("                <i class=\"bi bi-box-arrow-right\"></i>");
 			out.append("                <span>Đăng xuất</span>");
 			out.append("              </a>");
