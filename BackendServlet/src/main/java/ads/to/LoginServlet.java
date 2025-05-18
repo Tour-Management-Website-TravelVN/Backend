@@ -138,7 +138,7 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			out.append(
 					"                        <input type=\"text\" name=\"txtUserName\" class=\"form-control\" id=\"txtUserName\" required>");
-			out.append("                        <div class=\"invalid-feedback\">Không tồn tại tài khoản hoặc mật khẩu sai</div>");
+			out.append("                        <div class=\"invalid-feedback\">Hãy nhập tên tài khoản!</div>");
 		}
 
 //		 out.append("                        <input type=\"text\" name=\"txtUserName\" class=\"form-control\" id=\"txtUserName\" required>");
@@ -150,7 +150,7 @@ public class LoginServlet extends HttpServlet {
 		out.append("                      <label for=\"yourPassword\" class=\"form-label\">Mật khẩu</label>");
 		out.append(
 				"                      <input type=\"password\" name=\"txtPassword\" class=\"form-control\" id=\"txtPassword\" required>");
-		out.append("                      <div class=\"invalid-feedback\">Hãy nhập mật khẩu!</div>");
+		out.append("                      <div class=\"invalid-feedback\">Không tồn tại tài khoản hoặc mật khẩu sai</div>");
 		out.append("                    </div>");
 		out.append("");
 //		 out.append("                    <div class=\"col-12\">");
