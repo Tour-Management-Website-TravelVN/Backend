@@ -27,10 +27,18 @@ public class TourOperatorFilter implements Filter{
 		UserAccount login = (UserAccount) session.getAttribute("userLogined");
 		
 		if(login.getTourOperator() == null) {
-			res.sendRedirect("/adv/userview");
+			if(login.getAdministrator() == null) {
+				res.sendRedirect("../Login?err=unauth");
+			} else {
+				res.sendRedirect("../ad/userview");
+			}
 		} else {
 			chain.doFilter(request, response);
 		}
+//		else {
+////			res.sendRedirect("../to/tour");
+//			chain.doFilter(request, response);
+//		}
 		
 		// TODO Auto-generated method stub
 		

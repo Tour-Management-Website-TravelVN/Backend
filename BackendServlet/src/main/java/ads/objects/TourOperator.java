@@ -49,4 +49,8 @@ public class TourOperator {
     private Set<Guide> guideSet = new HashSet<>();
 
     private UserAccount userAccount;
+    
+    public String getFullName() {
+    	return this.firstname +" " + this.lastname;
+    }
 }

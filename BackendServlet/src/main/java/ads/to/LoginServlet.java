@@ -113,27 +113,36 @@ public class LoginServlet extends HttpServlet {
 			out.append(
 					"                  <form name=\"frmLogin\" class=\"row g-3 needs-validation\" novalidate method=\"post\" action=\"Login\">");
 		} else {
-			if (err.equalsIgnoreCase("notok")) {
-				System.out.println("NOW");
-				out.append(
-						"                  <form name=\"frmLogin\" class=\"row g-3 was-validated\" method=\"post\" action=\"Login\">");
-			} else {
-				out.append(
-						"                  <form name=\"frmLogin\" class=\"row g-3 needs-validation\" novalidate method=\"post\" action=\"Login\">");
-			}
+//			if (err.equalsIgnoreCase("notok")) {
+//				System.out.println("NOW");
+			out.append(
+					"                  <form name=\"frmLogin\" class=\"row g-3 was-validated\" method=\"post\" action=\"Login\">");
+//			} else {
+//				out.append(
+//						"                  <form name=\"frmLogin\" class=\"row g-3 needs-validation\" novalidate method=\"post\" action=\"Login\">");
+//			}
 		}
 		out.append("");
 		out.append("                    <div class=\"col-12\">");
 		out.append("                      <label for=\"yourUsername\" class=\"form-label\">Tên tài khoản</label>");
 		out.append("                      <div class=\"input-group has-validation\">");
-		out.append("                        <span class=\"input-group-text\" id=\"inputGroupPrepend\">@</span>");
-
+//		out.append("                        <span class=\"input-group-text\" id=\"inputGroupPrepend\">@</span>");
+//		out.append(
+//				"                        <input type=\"text\" name=\"txtUserName\" class=\"form-control is-invalid\" id=\"txtUserName\" required>");
 		if (err != null) {
 			if (err.equalsIgnoreCase("notok")) {
 				out.append(
 						"                        <input type=\"text\" name=\"txtUserName\" class=\"form-control is-invalid\" id=\"txtUserName\" required>");
 				out.append(
 						"                        <div class=\"invalid-feedback\">Không tồn tại tài khoản hoặc mật khẩu sai</div>");
+			} else if (err.equalsIgnoreCase("unauth")) {
+				out.append(
+						"                        <input type=\"text\" name=\"txtUserName\" class=\"form-control is-invalid\" id=\"txtUserName\" required>");
+				out.append("                        <div class=\"invalid-feedback\">Không có quyền truy cập</div>");
+			} else {
+				out.append(
+						"                        <input type=\"text\" name=\"txtUserName\" class=\"form-control is-invalid\" id=\"txtUserName\" required>");
+				out.append("                        <div class=\"invalid-feedback\">Có lỗi</div>");
 			}
 		} else {
 			out.append(
@@ -148,9 +157,29 @@ public class LoginServlet extends HttpServlet {
 		out.append("");
 		out.append("                    <div class=\"col-12\">");
 		out.append("                      <label for=\"yourPassword\" class=\"form-label\">Mật khẩu</label>");
-		out.append(
-				"                      <input type=\"password\" name=\"txtPassword\" class=\"form-control\" id=\"txtPassword\" required>");
-		out.append("                      <div class=\"invalid-feedback\">Không tồn tại tài khoản hoặc mật khẩu sai</div>");
+
+		if (err != null) {
+			if (err.equalsIgnoreCase("notok")) {
+				out.append(
+						"                      <input type=\"password\" name=\"txtPassword\" class=\"form-control is-invalid\" id=\"txtPassword\" required>");
+				out.append(
+						"                        <div class=\"invalid-feedback\">Không tồn tại tài khoản hoặc mật khẩu sai</div>");
+			} else if (err.equalsIgnoreCase("unauth")) {
+				out.append(
+						"                      <input type=\"password\" name=\"txtPassword\" class=\"form-control is-invalid\" id=\"txtPassword\" required>");
+				out.append("                        <div class=\"invalid-feedback\">Không có quyền truy cập</div>");
+			} else {
+				out.append(
+						"                      <input type=\"password\" name=\"txtPassword\" class=\"form-control is-invalid\" id=\"txtPassword\" required>");
+				out.append("                      <div class=\"invalid-feedback\">Có lỗi</div>");
+			}
+		} else {
+			out.append(
+					"                      <input type=\"password\" name=\"txtPassword\" class=\"form-control\" id=\"txtPassword\" required>");
+			out.append(
+					"                      <div class=\"invalid-feedback\">Không tồn tại tài khoản hoặc mật khẩu sai</div>");
+		}
+
 		out.append("                    </div>");
 		out.append("");
 //		 out.append("                    <div class=\"col-12\">");

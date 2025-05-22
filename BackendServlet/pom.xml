@@ -55,6 +55,42 @@
 		    <version>1.2</version>
 		</dependency>
 
+		<dependency>
+		    <groupId>com.cloudinary</groupId>
+		    <artifactId>cloudinary-http5</artifactId>
+		    <version>2.0.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.cloudinary</groupId>
+		    <artifactId>cloudinary-taglib</artifactId>
+		    <version>2.0.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.github.cdimascio</groupId>
+		    <artifactId>dotenv-java</artifactId>
+		    <version>2.2.4</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<dependency>
+		    <groupId>org.jsoup</groupId>
+		    <artifactId>jsoup</artifactId>
+		    <version>1.16.1</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>ch.qos.logback</groupId>
+		  <artifactId>logback-classic</artifactId>
+		  <version>1.4.11</version> <!-- hoặc bản mới hơn -->
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.10.1</version>
+		</dependency>
+
     </dependencies>
   
   <build>

@@ -39,7 +39,7 @@ public class header extends HttpServlet{
 			out.append("");
 			out.append("    <div class=\"d-flex align-items-center justify-content-between\">");
 			out.append("      <a href=\"index.html\" class=\"logo d-flex align-items-center\" style=\"height: max-content;\">");
-			out.append("        <img src=\"../resources/Asset 2.svg\" alt=\"\" style=\"height: 100px; width: 40px;\" >");
+			out.append("        <img src=\"/adv/resources/Asset 2.svg\" alt=\"\" style=\"height: 100px; width: 40px;\" >");
 			out.append("        <span class=\"d-none d-lg-block\">TravelVN</span>");
 			out.append("      </a>");
 			out.append("    </div><!-- End Logo -->");

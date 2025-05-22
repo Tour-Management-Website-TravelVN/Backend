@@ -50,10 +50,28 @@ $(function() {
 		return true;
 	};
 	$('form').on('submit', function(event) {
-		if (!this.checkValidity()) {
+		let valid = true;
+
+		const username = $('#txtUserName').val();
+		const password = $('#txtPassword').val();
+
+		if (!validateUsername(username)) {
+			$('#txtUserName').addClass('is-invalid').removeClass('is-valid');
+			$('#txtUserName').next().text('Tên đăng nhập 8 đến 40 ký tự không chứa dấu cách');
+			valid = false;
+		}
+
+		if (!validatePwd(password)) {
+			$('#txtPassword').addClass('is-invalid').removeClass('is-valid');
+			$('#txtPassword').next().text('Mật khẩu nằm trong khoảng 6-20 ký tự');
+			valid = false;
+		}
+
+		if (!this.checkValidity() || !valid) {
 			event.preventDefault();
 			event.stopPropagation();
 		}
+
 		$(this).addClass('was-validated');
 	});
 })
