@@ -81,8 +81,15 @@
 		<dependency>
 		  <groupId>ch.qos.logback</groupId>
 		  <artifactId>logback-classic</artifactId>
-		  <version>1.4.11</version> <!-- hoặc bản mới hơn -->
+		  <version>1.4.11</version>
 		</dependency>
+		
+		<!--<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j2-impl</artifactId>
+		    <version>2.20.0</version>
+		</dependency>-->
+
 		
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
@@ -90,6 +97,7 @@
 		    <artifactId>gson</artifactId>
 		    <version>2.10.1</version>
 		</dependency>
+		
 
     </dependencies>
   

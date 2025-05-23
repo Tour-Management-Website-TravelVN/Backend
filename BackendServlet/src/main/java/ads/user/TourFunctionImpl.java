@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +25,7 @@ import ads.objects.Tour;
 import ads.objects.TourOperator;
 import ads.objects.TourProgram;
 import ads.util.Format;
+import ads.util.Generator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -178,11 +181,13 @@ public class TourFunctionImpl implements TourFunction {
 					"tour.departure_place, tour.places_to_visit, tour.target_audience, tour.ideal_time, tour.created_time, tour.last_updated_time, image.`url` ")
 					.add("FROM tour ").add("JOIN category ON tour.category_id = category.category_id ")
 					.add("JOIN image ON tour.tour_id = image.tour_id ").add("JOIN (")
-					.add("SELECT tour_id, MIN(image_id) AS fii ").add("FROM image ").add("GROUP BY tour_id ")
+					.add("SELECT tour.tour_id, MIN(image_id) AS fii ").add("FROM image ")
+					.add("JOIN tour ON tour.tour_id  = image.tour_id WHERE LOWER(tour.tour_name) LIKE LOWER(?)")
+					.add("GROUP BY tour_id ")
 					.add("LIMIT ").add((page - 1) * MAX_ITEM_OF_PAGE + "").add(",").add(page * MAX_ITEM_OF_PAGE + "")
-					.add(") AS temp ").add("ON image.image_id = temp.fii ").add("WHERE tour.tour_name LIKE ?");
+					.add(") AS temp ").add("ON image.image_id = temp.fii ");
 
-			log.info("SQL ToursList", sql.toString());
+			log.info("SQL ToursList: {}", sql.toString());
 
 			pre = this.con.prepareStatement(sql.toString());
 			pre.setString(1, "%" + keyword + "%");
@@ -280,6 +285,8 @@ public class TourFunctionImpl implements TourFunction {
 		ResultSet rs = null;
 		PreparedStatement pre = null;
 
+		log.info("tourID = {}", tourID);
+		
 		try {
 
 			this.con = getConnection(this.cp);
@@ -288,16 +295,15 @@ public class TourFunctionImpl implements TourFunction {
 			sql.add("SELECT category.category_name, tour.tour_id, tour.tour_name, tour.duration, tour.vehicle, ").add(
 					"tour.departure_place, tour.places_to_visit, tour.target_audience, tour.ideal_time, tour.created_time, tour.last_updated_time, image.`url`, ")
 					.add("toc.firstname, toc.lastname, tou.firstname, tou.lastname, tour.cuisine, tour.`description`, ")
-					.add("tour.inclusions, tour.exclusions ")
-					.add("FROM tour ").add("JOIN category ON tour.category_id = category.category_id ")
+					.add("tour.inclusions, tour.exclusions ").add("FROM tour ")
+					.add("JOIN category ON tour.category_id = category.category_id ")
 					.add("JOIN image ON tour.tour_id = image.tour_id ")
 					.add("JOIN tour_operator AS toc ON toc.tour_operator_id = tour.tour_operator_id ")
-					.add("JOIN tour_operator AS tou ON tou.tour_operator_id = tour.last_updated_operator")
+					.add("LEFT JOIN tour_operator AS tou ON tou.tour_operator_id = tour.last_updated_operator")
 					.add("WHERE tour.tour_id = ?;");
 
 			sql.add("SELECT `day`, locations, meal_description, desciption ").add("FROM tour_program ")
-					.add("WHERE tour_id = ?")
-					.add("ORDER BY `day` asc;");
+					.add("WHERE tour_id = ?").add("ORDER BY `day` asc;");
 
 			sql.add("SELECT COUNT(*) ").add("FROM tour").add("JOIN tour_unit ON tour.tour_id = tour_unit.tour_id ")
 					.add("WHERE tour.tour_id = ?");
@@ -432,28 +438,23 @@ public class TourFunctionImpl implements TourFunction {
 						.tourId(tourId).tourName(tourName).duration(duration).vehicle(vehicle)
 						.departurePlace(departurePlace).placesToVisit(placesToVisit).targetAudience(targetAudience)
 						.idealTime(idealTime).createdTime(createdTime).lastUpdatedTime(lastUpdatedTime).imageSet(imgSet)
-						.cuisine(cuisine)
-						.description(description)
-						.inclusions(inclusions)
-						.exclusions(exclusions)
-						.tourOperator(toc)
-						.lastUpdatedOperator(tou)
-						.build();
-				
-				while(rs.next()) {
-					imgSet.add(new Image().builder()
-							.url(rs.getString(12))
-							.build());
+						.cuisine(cuisine).description(description).inclusions(inclusions).exclusions(exclusions)
+						.tourOperator(toc).lastUpdatedOperator(tou).build();
+
+				while (rs.next()) {
+					imgSet.add(new Image().builder().url(rs.getString(12)).build());
 				}
 				return tour;
-				
+
 			} else {
+				log.info("THIS ME !");
 				return null;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		log.info("THIS ME");
 		return null;
 	}
 
@@ -461,12 +462,9 @@ public class TourFunctionImpl implements TourFunction {
 		try {
 			Set<TourProgram> tourProgramSet = new LinkedHashSet<TourProgram>();
 			while (result.next()) {
-				tourProgramSet.add(new TourProgram().builder()
-						.day((byte)result.getInt(1))
-						.locations(result.getString(2))
-						.mealDescription(result.getString(3))
-						.desciption(result.getString(4))
-						.build());
+				tourProgramSet
+						.add(new TourProgram().builder().day((byte) result.getInt(1)).locations(result.getString(2))
+								.mealDescription(result.getString(3)).desciption(result.getString(4)).build());
 			}
 			return tourProgramSet;
 		} catch (SQLException e) {
@@ -510,8 +508,6 @@ public class TourFunctionImpl implements TourFunction {
 		return 0;
 	}
 
-	
-	
 	@Override
 	public boolean deleteTourByTourId(String tourId) {
 		// TODO Auto-generated method stub
@@ -521,18 +517,19 @@ public class TourFunctionImpl implements TourFunction {
 
 		try {
 			this.con = getConnection(this.cp);
-			
+
 			preCheckTour = this.con.prepareStatement("SELECT tour_id FROM tour WHERE tour_id = ?");
 			preCheckTour.setString(1, tourId);
-			if(preCheckTour.executeQuery().next()) return false;
-			
+			if (preCheckTour.executeQuery().next())
+				return false;
+
 			String sql = "DELETE FROM tour WHERE tour.tour_id = ?";
 			pre = this.con.prepareStatement(sql);
 			pre.setString(1, tourId);
-			
+
 			int del = pre.executeUpdate();
 
-			return del>0;
+			return del > 0;
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -550,5 +547,128 @@ public class TourFunctionImpl implements TourFunction {
 		}
 
 		return false;
+	}
+
+	@Override
+	public String addTour(Tour tour, List<String> imgUrls, List<TourProgram> programs, int categoryId, int tocId) {
+		// TODO Auto-generated method stub
+		String tourId = Generator.geneareTourId(tour);
+		int count = 0;
+		
+		if (tourId.equalsIgnoreCase(""))
+			return "";
+
+		System.out.println("COUNT: "+count++);
+		
+		tour.setTourId(tourId);
+
+		PreparedStatement preCheckCate = null;
+		PreparedStatement pre = null;
+		PreparedStatement pre2 = null;
+		PreparedStatement pre3 = null;
+
+		try {
+			this.con = getConnection(this.cp);
+
+			preCheckCate = this.con.prepareStatement("SELECT category_id FROM tour WHERE category_id = ?");
+			preCheckCate.setInt(1, categoryId);
+			
+			System.out.println("COUNT: "+count++);
+			if (!preCheckCate.executeQuery().next())
+				return "";
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("INSERT INTO tour (tour_id, category_id, tour_operator_id, tour_name, duration, ");
+			sql.append("vehicle, target_audience, departure_place, places_to_visit, cuisine, ");
+			sql.append("ideal_time, description, created_time, inclusions, exclusions) ");
+			sql.append("VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			pre = this.con.prepareStatement(sql.toString());
+			pre.setString(1, tourId);
+			pre.setInt(2, categoryId);
+			pre.setInt(3, tocId);
+			pre.setString(4, tour.getTourName());
+			pre.setString(5, tour.getDuration());
+			pre.setString(6, tour.getVehicle());
+			pre.setString(7, tour.getTargetAudience());
+			pre.setString(8, tour.getDeparturePlace());
+			pre.setString(9, tour.getPlacesToVisit());
+			pre.setString(10, tour.getCuisine());
+			pre.setString(11, tour.getIdealTime());
+			pre.setString(12, tour.getDescription());
+			pre.setTimestamp(13, Timestamp.from(Instant.now())); // created_time hiện tại
+			pre.setString(14, tour.getInclusions());
+			pre.setString(15, tour.getExclusions());
+
+			int insert = pre.executeUpdate();
+			
+			if(insert == 0) {
+				System.out.println("COUNT: "+count++);
+				this.con.rollback();
+				return "";
+			}
+			
+			String sql2 = "INSERT INTO image (image_name, url, tour_id) VALUES(?,?,?)";
+			pre2 = this.con.prepareStatement(sql2);
+			
+			for(String url : imgUrls) {
+				pre2.setString(1, Generator.generateImgName(tour));
+				pre2.setString(2, url);
+				pre2.setString(3, tourId);
+				pre2.addBatch();
+			}
+			
+			int[] inserts = pre2.executeBatch();
+			if( inserts.length != imgUrls.size()) {
+				System.out.println("COUNT: "+count++);
+				this.con.rollback();
+				return "";
+			}
+			
+			String sql3 = "INSERT INTO tour_program (tour_id, locations, day, meal_description, desciption) VALUES(?,?,?,?,?)";
+			pre3 = this.con.prepareStatement(sql3);
+			
+			for(TourProgram tp : programs) {
+				pre3.setString(1, tourId);
+				pre3.setString(2, tp.getLocations());
+				pre3.setByte(3, tp.getDay());
+				pre3.setString(4, tp.getMealDescription());
+				pre3.setString(5, tp.getDesciption());
+				pre3.addBatch();
+			}
+			
+			inserts = pre3.executeBatch();
+			
+			if( inserts.length != programs.size()) {
+				System.out.println("COUNT: "+count++);
+				this.con.rollback();
+				return "";
+			} else {
+				this.con.commit();
+				return tourId;
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			try {
+				this.con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			try {
+				this.cp.releaseConnection(this.con, "Tour");
+				preCheckCate.close();
+				pre.close();
+				pre2.close();
+				pre3.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return "";
 	}
 }

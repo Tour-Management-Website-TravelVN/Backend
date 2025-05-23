@@ -89,6 +89,40 @@ public class CloudinaryService {
 	 * @param request
 	 * @return Danh sách đường dẫn
 	 */
+	public List<String> getImgUrlsFromCloud(HttpServletRequest request) {
+		List<String> urls = new ArrayList<String>();
+		try {
+			Collection<Part> parts = request.getParts();
+
+			parts.forEach(part -> {
+				// Chỉ xử lý những part là file, tên form phải là "files"
+				if (part.getName().equals("newImages") && part.getSize() > 0) {
+					// Upload các file và nhận lại url
+					try (InputStream is = part.getInputStream()) {
+						Map uploadResult = CLOUDINARY.uploader().upload(is.readAllBytes(), ObjectUtils.asMap("folder", "Image"));
+						urls.add((String) uploadResult.get("url"));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+
+			return urls;
+
+		} catch (IOException | ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Lấy các đường dẫn sau khi up cloudinary
+	 * 
+	 * @param request
+	 * @return Danh sách đường dẫn
+	 */
 	public String getImgUrlsAfterUpload(byte[] imgBytes) {
 		try {
 			Map uploadResult = CLOUDINARY.uploader().upload(imgBytes, ObjectUtils.asMap("folder", "Image"));
