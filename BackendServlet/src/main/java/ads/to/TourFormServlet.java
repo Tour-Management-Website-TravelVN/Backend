@@ -19,6 +19,7 @@ import ads.library.TourLibrary;
 import ads.objects.Tour;
 import ads.objects.TourProgram;
 import ads.objects.UserAccount;
+import ads.user.ImageFunctionImpl;
 import ads.user.TourFunctionImpl;
 import ads.util.CloudinaryService;
 import ads.util.GsonProvider;
@@ -49,6 +50,7 @@ public class TourFormServlet extends HttpServlet {
 
 		String action = request.getParameter("action");
 		if (action == null) {
+			log.info("VAO DAY");
 			response.sendRedirect("/adv/to/tour");
 			return;
 		}
@@ -64,10 +66,12 @@ public class TourFormServlet extends HttpServlet {
 		out.append("");
 		if (action.equalsIgnoreCase("add")) {
 			out.append("  <title>Thêm tour</title>");
-		} else if (action.equalsIgnoreCase("update")) {
+		} else if (action.equalsIgnoreCase("updateImgs")) {
+			out.append("  <title>Cập nhật ảnh tour</title>");
+		} else if(action.equalsIgnoreCase("update")){
 			out.append("  <title>Cập nhật thông tin tour</title>");
 		} else {
-			response.sendRedirect("/adv/to/tour");
+			
 		}
 
 		out.append("  <meta content=\"\" name=\"description\">");
@@ -94,7 +98,6 @@ public class TourFormServlet extends HttpServlet {
 		out.append("  <!-- Template Main CSS File -->");
 		out.append("<script src=\"/adv/assets/vendor/jquery/jquery-3.7.1.min.js\"></script>);");
 		out.append("  <link href=\"/adv/assets/css/style.css\" rel=\"stylesheet\">");
-		out.append("<script type=\"module\" src=\"/adv/assets/js/tour/form-tour.js\"></script>");
 		out.append("</head>");
 		out.append("");
 		out.append("<body>");
@@ -111,6 +114,8 @@ public class TourFormServlet extends HttpServlet {
 
 		if (action.equalsIgnoreCase("add")) {
 			out.append(TourLibrary.formAddTour());
+		} else if(action.equalsIgnoreCase("updateImgs")) {
+			out.append(TourLibrary.formUpdateImgsTour(request));
 		}
 		/*
 		 * out.append( """ <main id="main" class="main">
@@ -363,6 +368,12 @@ public class TourFormServlet extends HttpServlet {
 		 */
 		out.append("  <!-- Template Main JS File -->");
 		out.append("  <script src=\"/adv/assets/js/main.js\"></script>");
+		if (action.equalsIgnoreCase("add"))
+			out.append("<script type=\"module\" src=\"/adv/assets/js/tour/form-tour.js\"></script>");
+		else if(action.equalsIgnoreCase("updateImgs"))
+			out.append("<script src=\"/adv/assets/js/tour/form-tour-update-img.js\"></script>");
+		else if(action.equalsIgnoreCase("update"))
+			out.append("<script src=\"/adv/assets/js/tour/form-update-tour.js\"></script>");
 		out.append("");
 		out.append("</body>");
 		out.append("");
@@ -427,9 +438,119 @@ public class TourFormServlet extends HttpServlet {
 					return;
 				}
 
+//				String tourId = "T996-31564-2N1Đ";
+				String urlDirect = "/adv/to/tour/tour_detail?tourid=" + URLEncoder.encode(tourId, "UTF-8");
+				log.info("url {}", urlDirect);
 				// Phản hồi
+				resp.setContentType("application/json");
 				req.getSession().setAttribute("actionTour", "Thêm tour thành công");
-				resp.sendRedirect("/adv/to/tour/tour_detail?tourid=" + URLEncoder.encode(tourId, "UTF-8"));
+				// Servlet
+				resp.getWriter().write("{\"redirect\":\""+urlDirect+"\"}");
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		} else if (action.equalsIgnoreCase("updateImgs")) {
+			try {
+				String tourId = req.getParameter("tourid");
+				String delImages = req.getParameter("delImages");
+				
+				if (tourId == "") {
+					resp.setContentType("application/json");
+					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lưu!\"}");
+					return;
+				}
+				
+				// Xử lý file upload
+				List<String> urls = CloudinaryService.getInstance().getImgUrlsFromCloud(req);
+
+//				if (urls.size() == 0) {
+//					resp.setContentType("application/json");
+//					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra với ảnh!\"}");
+//					return;
+//				}
+
+				UserAccount userAccount = (UserAccount) req.getSession().getAttribute("userLogined");
+				int touId = userAccount.getTourOperator().getId();
+	
+//				String tourId = TourFunctionImpl.getInstance().addTour(tour, urls, programs, categoryId, tocId);
+
+				if(ImageFunctionImpl.getInstance().updateImgsByTourId(tourId, delImages, urls, touId)) {
+					resp.setContentType("application/json");
+					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lưu ảnh!\"}");
+				}
+				
+
+				String urlDirect = "/adv/to/tour/tour_detail?tourid=" + URLEncoder.encode(tourId, "UTF-8");
+				log.info("url {}", urlDirect);
+				// Phản hồi
+				resp.setContentType("application/json");
+				req.getSession().setAttribute("actionTour", "Đã cập nhật ảnh tour");
+				// Servlet
+				resp.getWriter().write("{\"redirect\":\""+urlDirect+"\"}");
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		} else if(action.equals("update")) {
+			try {
+				//Các thông tin nhận gồm tour, category, programs, delImg, newImg
+				String tourJson = req.getParameter("tour");
+				String tourProgramsJson = req.getParameter("tourPrograms");
+				int categoryId = Integer.parseInt(req.getParameter("categoryId"));
+				
+				String tourId = req.getParameter("tourid");
+				String delImages = req.getParameter("delImages");
+				
+				UserAccount userAccount = (UserAccount) req.getSession().getAttribute("userLogined");
+				
+				if (tourId == "") {
+					resp.setContentType("application/json");
+					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lưu!\"}");
+					return;
+				}
+				
+				//tour, programs
+				Tour tour = GsonProvider.getGson().fromJson(tourJson, Tour.class);
+				List<TourProgram> programs = GsonProvider.getGson().fromJson(tourProgramsJson, new TypeToken<List<TourProgram>>() {
+				}.getType());
+
+				if (!Validate.validateTour(tour) || !Validate.validateTourProgramList(programs)) {
+					resp.setContentType("application/json");
+					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra!\"}");
+					return;
+				}
+
+				// Xử lý file upload
+				List<String> urls = CloudinaryService.getInstance().getImgUrlsFromCloud(req);
+
+
+				// Xử lý richtext
+				programs.forEach(program -> {
+					program.setDesciption(processRichText(program.getDesciption()));
+				});
+				
+				UserAccount userAccount2 = (UserAccount) req.getSession().getAttribute("userLogined");
+				int touId = userAccount2.getTourOperator().getId();
+	
+//				String tourId = TourFunctionImpl.getInstance().addTour(tour, urls, programs, categoryId, tocId);
+
+				/** Cho chạy chung transaction của tour để còn roll back
+				 *	Cập nhật thông tin tour (+cate, +tou), cập nhật chương trình, cập nhật ảnh như dưới
+				if(ImageFunctionImpl.getInstance().updateImgsByTourId(tourId, delImages, urls, touId)) {
+					resp.setContentType("application/json");
+					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lwu ảnh!\"}");
+				}
+				*/
+				
+
+				String urlDirect = "/adv/to/tour/tour_detail?tourid=" + URLEncoder.encode(tourId, "UTF-8");
+				log.info("url {}", urlDirect);
+				// Phản hồi
+				resp.setContentType("application/json");
+				req.getSession().setAttribute("actionTour", "Sửa tour thành công");
+				// Servlet
+				resp.getWriter().write("{\"redirect\":\""+urlDirect+"\"}");
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

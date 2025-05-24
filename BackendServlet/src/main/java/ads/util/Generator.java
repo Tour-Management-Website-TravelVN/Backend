@@ -125,4 +125,10 @@ public class Generator {
 		String formatted = String.format("%05d", num);
 		return tour.getTourName().substring(0, 50)+ formatted;
 	}
+	
+	public static String generateImgName(String tourName) {
+		int num = ThreadLocalRandom.current().nextInt(0, 100000);
+		String formatted = String.format("%05d", num);
+		return tourName.substring(0, 50)+ formatted;
+	}
 }

@@ -1,16 +1,25 @@
 package ads.library;
 
+import java.beans.Encoder;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.net.http.HttpRequest;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.oracle.wls.shaded.org.apache.regexp.recompile;
 
 import ads.objects.Image;
 import ads.objects.Tour;
+import ads.user.ImageFunctionImpl;
 import ads.user.TourFunctionImpl;
 import ads.util.Format;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,7 +39,12 @@ public class TourLibrary {
 			Iterator<Image> iterator = tour.getImageSet().iterator();
 
 			sBuilder.append("<div class=\"card mb-3\">");
-			sBuilder.append("<a href=\"/adv/to/tour/tour_detail?tourid=").append(tour.getTourId()).append("\">");
+			try {
+				sBuilder.append("<a href=\"/adv/to/tour/tour_detail?tourid=").append(URLEncoder.encode(tour.getTourId(), "UTF-8")).append("\">");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			sBuilder.append("<div class=\"row g-0\">");
 			sBuilder.append("<div class=\"col-md-4\">");
 			sBuilder.append("<img src=\"").append(iterator.next().getUrl()).append("\"");
@@ -257,8 +271,23 @@ public class TourLibrary {
 		sBuilder.append("<h5 class=\"card-title d-inline-block ms-0 pb-0\">").append(tour.getTourName())
 				.append("</h5>");
 
-		sBuilder.append("<a href=\"[form-tour.html]\" class=\"fw-bold col-md-1 mt-3 ms-auto text-end fs-3 ")
-				.append(tourUnitsQuant == 0 ? "me-5" : "me-0").append(" pe-1\">");
+		if(tourUnitsQuant==0) {
+			try {
+				sBuilder.append("<a href=\"/adv/to/tour/tour_form?action=update&tourid=").append(URLEncoder.encode(tourId,"UTF-8")).append("\" class=\"fw-bold col-md-1 mt-3 ms-auto text-end fs-3 ");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				sBuilder.append("<a href=\"/adv/to/tour/tour_form?action=updateImgs&tourid=").append(URLEncoder.encode(tourId,"UTF-8")).append("\" class=\"fw-bold col-md-1 mt-3 ms-auto text-end fs-3 ");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		sBuilder.append(tourUnitsQuant == 0 ? "me-5" : "me-0").append(" pe-1\">");
 		sBuilder.append("<i class=\"bi bi-gear-fill text-warning\"></i>");
 		sBuilder.append("</a>");
 
@@ -282,8 +311,13 @@ public class TourLibrary {
 		sBuilder.append("<div class=\"modal-body\">Bạn có muốn xóa tour này không?</div>");
 		sBuilder.append("<div class=\"modal-footer\">");
 		sBuilder.append("<button type=\"button\" class=\"btn btn-danger\" data-bs-dismiss=\"modal\">Hủy</button>");
-		sBuilder.append("<form action=\"/adv/to/tour/tour_detail?action=del&tourid=").append(tourId)
-				.append("\" method=\"post\">");
+		try {
+			sBuilder.append("<form action=\"/adv/to/tour/tour_detail?action=del&tourid=").append(URLEncoder.encode(tourId, "UTF-8"))
+					.append("\" method=\"post\">");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		sBuilder.append("<button type=\"submit\" class=\"btn btn-primary\">Xác nhận</button>");
 		sBuilder.append("</form>");
 		sBuilder.append("</div>");
@@ -638,6 +672,11 @@ public class TourLibrary {
 		sBuilder.append("<div class=\"row mb-3 d-flex justify-content-center justify-content-md-end\">");
 		sBuilder.append("<div class=\"col-auto\">");
 		sBuilder.append(
+				"<button type=\"button\" class=\"btn btn-warning text-white\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\" id=\"btnClear\" ");
+		sBuilder.append("style=\"width: 150px;\">Bỏ khôi phục</button>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"col-auto\">");
+		sBuilder.append(
 				"<button type=\"button\" class=\"btn btn-danger\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\"");
 		sBuilder.append("style=\"width: 150px;\">Hủy bỏ</button>");
 		sBuilder.append("</div>");
@@ -651,9 +690,9 @@ public class TourLibrary {
 		sBuilder.append("aria-labelledby=\"staticBackdropLabel\" aria-hidden=\"true\">");
 		sBuilder.append("<div class=\"modal-dialog modal-dialog-centered\">");
 		sBuilder.append("<div class=\"modal-content\">");
-		sBuilder.append("<div class=\"modal-header\">");
+		sBuilder.append("<div class=\"modal-header bg-danger\">");
 		sBuilder.append(
-				"<h5 class=\"modal-title text-danger fw-bold fs-4\" id=\"staticBackdropLabel\">Xác nhận thoát</h5>");
+				"<h5 class=\"modal-title text-white fw-bold fs-4\" id=\"staticBackdropLabel\">Xác nhận thoát</h5>");
 		sBuilder.append("<button type=\"button\" class=\"btn-close fs-3\" data-bs-dismiss=\"modal\"");
 		sBuilder.append("aria-label=\"Close\"></button>");
 		sBuilder.append("</div>");
@@ -661,8 +700,8 @@ public class TourLibrary {
 		sBuilder.append("Thông tin tour sẽ không được lưu?");
 		sBuilder.append("</div>");
 		sBuilder.append("<div class=\"modal-footer\">");
-		sBuilder.append("<button type=\"button\" class=\"btn btn-danger\" data-bs-dismiss=\"modal\">Hủy</button>");
-		sBuilder.append("<button type=\"button\" class=\"btn btn-primary\">Xác nhận</button>");
+		sBuilder.append("<button type=\"button\" class=\"btn btn-primary\" data-bs-dismiss=\"modal\">Hủy</button>");
+		sBuilder.append("<button type=\"button\" class=\"btn btn-danger\" id=\"btnExit\">Xác nhận</button>");
 		sBuilder.append("</div>");
 		sBuilder.append("</div>");
 		sBuilder.append("</div>");
@@ -717,6 +756,154 @@ public class TourLibrary {
 		sBuilder.append("</div>");
 		sBuilder.append("</section>");
 		sBuilder.append("</main><!-- End #main -->");
+		return sBuilder.toString();
+	}
+
+	public static String formUpdateImgsTour(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		StringBuilder sBuilder = new StringBuilder();
+		
+		String tourId  = request.getParameter("tourid");
+		if(StringUtils.isBlank(tourId)) return "<h5 class=\"text-center my-3 fw-bold\">Không có kết quả phù hợp</h5>";
+		
+		String tourName = TourFunctionImpl.getInstance().getTourNameByTourId(tourId);
+		if(StringUtils.isBlank(tourName)) return "<h5 class=\"text-center my-3 fw-bold\">Không có kết quả phù hợp</h5>";
+		
+		sBuilder.append("<main id=\"main\" class=\"main\">");
+		sBuilder.append("<div class=\"pagetitle d-flex\">");
+		sBuilder.append("<h1>Cập nhật ảnh tour</h1>");
+		sBuilder.append("<nav class=\"ms-auto\">");
+		sBuilder.append("<ol class=\"breadcrumb\">");
+		sBuilder.append("<li class=\"breadcrumb-item\"><a href=\"[index.html]\"><i class=\"bi bi-house-door\"></i></a></li>");
+		sBuilder.append("<li class=\"breadcrumb-item\">Quản lý tour</li>");
+		sBuilder.append("<li class=\"breadcrumb-item active\">Cập nhật ảnh tour</li>");
+		sBuilder.append("</ol>");
+		sBuilder.append("</nav>");
+		sBuilder.append("</div><!-- End Page Title -->");
+		sBuilder.append("<section class=\"section\">");
+		sBuilder.append("<div class=\"row\">");
+		sBuilder.append("<div class=\"col\">");
+		sBuilder.append("<form class=\"needs-validation\" id=\"tourForm\" novalidate action=\"\">");
+		sBuilder.append("<div class=\"card\">");
+		sBuilder.append("<div class=\"card-body\">");
+		
+		sBuilder.append("<h5 class=\"card-title\">Cập nhật ảnh cho tour: ").append(tourName).append("</h5>");
+		sBuilder.append("<!-- General Form Elements -->");
+		sBuilder.append("<div class=\"row mb-3\" id=\"tourInfo\">");
+		sBuilder.append("<div class=\"col-md-6\">");
+		sBuilder.append("<div class=\"form-floating\">");
+		sBuilder.append("<input type=\"text\" class=\"form-control bg-light\" id=\"tourId\" value=\"T996-31564-2N1Đ\" placeholder=\"Mã tour\" readonly>");
+		sBuilder.append("<label for=\"tourId\">Mã tour</label>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"col-md-6 mt-3 mt-md-0\">");
+		sBuilder.append("<div class=\"form-floating d-flex align-items-center h-100 justify-content-center\">");
+		sBuilder.append("<p class=\"mb-0 fst-italic\">Lưu ý: Tour phải có ít nhất 1 ảnh</p>");
+		sBuilder.append("<!--tourImage-->");
+		sBuilder.append("<input class=\"form-control d-none\" type=\"file\" id=\"image-input\" placeholder=\"Ảnh\" multiple accept=\"/image/*\" required>");
+		sBuilder.append("<label for=\"image-input\" class=\"d-none\">Ảnh</label>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"d-flex overflow-auto gap-3 p-2 border col-12 mb-3\" style=\"height: 250px; width: auto;\">");
+		sBuilder.append("<div id=\"image-list\" class=\"d-flex overflow-auto gap-3 p-2 border col-12 mb-0 border-0\" style=\"height: 250px; width: auto;\">");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"w-100 h100 d-flex align-items-center me-3\">");
+		sBuilder.append("<button type=\"button\" class=\"bg-white border-0\" id=\"add-image-btn\">");
+		sBuilder.append("<i class=\"bi bi-plus-circle text-primary h1\"></i>");
+		sBuilder.append("</button>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"row mb-3 d-flex justify-content-center justify-content-md-end\">");
+		sBuilder.append("<div class=\"col-auto\">");
+		sBuilder.append("<button type=\"button\" class=\"btn btn-danger\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\" style=\"width: 150px;\">Hủy bỏ</button>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"col-auto\">");
+		sBuilder.append("<button type=\"button\" class=\"btn btn-primary\" id=\"addTour\" style=\"width: 150px;\">Lưu</button>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("<!-- Modal -->");
+		sBuilder.append("<div class=\"modal\" id=\"staticBackdrop\" data-bs-keyboard=\"false\" tabindex=\"-1\" aria-labelledby=\"staticBackdropLabel\" aria-hidden=\"true\">");
+		sBuilder.append("<div class=\"modal-dialog modal-dialog-centered\">");
+		sBuilder.append("<div class=\"modal-content\">");
+		sBuilder.append("<div class=\"modal-header\">");
+		sBuilder.append("<h5 class=\"modal-title text-danger fw-bold fs-4\" id=\"staticBackdropLabel\">Xác nhận thoát</h5>");
+		sBuilder.append("<button type=\"button\" class=\"btn-close fs-3\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"modal-body\"> Thông tin tour sẽ không được lưu? </div>");
+		sBuilder.append("<div class=\"modal-footer\">");
+		sBuilder.append("<button type=\"button\" class=\"btn btn-danger\" data-bs-dismiss=\"modal\">Hủy</button>");
+		try {
+			sBuilder.append("<a href=\"/adv/to/tour/tour_detail?tourid=").append(URLEncoder.encode(tourId, "UTF-8")).append("\" class=\"btn btn-primary\">Xác nhận</a>");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("<!-- Modal -->");
+		sBuilder.append("<div class=\"modal\" id=\"finalModal\" data-bs-backdrop=\"static\" data-bs-keyboard=\"false\" tabindex=\"-1\" aria-labelledby=\"finalModel\" aria-hidden=\"true\">");
+		sBuilder.append("<div class=\"modal-dialog modal-dialog-centered\">");
+		sBuilder.append("<div class=\"modal-content\">");
+		sBuilder.append("<div class=\"modal-header\">");
+		sBuilder.append("<h5 class=\"modal-title text-danger fw-bold fs-4\">Kiểm tra lại thông tin</h5>");
+		sBuilder.append("<button type=\"button\" class=\"btn-close fs-3\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>");
+		sBuilder.append("</div>");
+		sBuilder.append("<div class=\"modal-body\"> Tour phải có ít nhất 1 ảnh </div>");
+		sBuilder.append("<div class=\"modal-footer\">");
+		sBuilder.append("<button type=\"button\" class=\"btn btn-primary\" data-bs-dismiss=\"modal\">Xác nhận</button>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</form><!-- End General Form Elements -->");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</div>");
+		sBuilder.append("</section>");
+		sBuilder.append("</main><!-- End #main -->");
+		sBuilder.append("<script>");
+		
+		List<Image> list = ImageFunctionImpl.getInstance().getImgsByTourId(tourId);
+		
+		sBuilder.append("let existingImages2 = [");
+		
+		StringBuilder sBuilder2 = new StringBuilder();
+		
+		list.forEach(img -> {
+			sBuilder2.append(String.format("{ id: '%d', url: '%s', deleted: false },", img.getId(), img.getUrl()));
+		});
+		
+		String exString = sBuilder2.toString();
+		sBuilder.append(exString.substring(0, exString.length()-1));
+		
+		log.info("EXS: {}", exString);
+		
+		sBuilder.append("];");
+		sBuilder.append("localStorage.setItem('updateImgsTour', JSON.stringify(existingImages2));");
+		
+		/*
+		sBuilder.append("""
+				let existingImages2 = [
+            { id: 'abc123.jpg', url: 'https://baodongnai.com.vn/file/e7837c02876411cd0187645a2551379f/dataimages/201706/original/images1920558_4053279_16.jpg', deleted: false },
+            { id: 'xyz456.jpg', url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdvHiMePqz1GKwY38h5_Nfx0ga731PEC0l7A&s', deleted: false },
+            { id: '1', url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdvHiMePqz1GKwY38h5_Nfx0ga731PEC0l7A&s', deleted: false },
+            { id: '2', url: 'https://cdn-media.sforum.vn/storage/app/media/anh-dep-83.jpg', deleted: false }
+        ];
+        // Lưu dữ liệu (cần stringify)
+        localStorage.setItem('updateImgsTour', JSON.stringify(existingImages2));
+				""");
+				*/
+		
+		sBuilder.append("</script>");
+		
 		return sBuilder.toString();
 	}
 }

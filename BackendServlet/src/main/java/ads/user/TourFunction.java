@@ -12,4 +12,7 @@ public interface TourFunction {
 	int countTourUnit(String tourId);
 	boolean deleteTourByTourId(String tourId);
 	String addTour(Tour tour, List<String> imgUrls, List<TourProgram> programs, int categoryId, int tocId);
+	String getTourNameByTourId(String tourId);
+	
+	boolean updateTour(Tour tour, String delImages, List<String> imgUrls, List<TourProgram> programs, int categoryId, int touId);
 }

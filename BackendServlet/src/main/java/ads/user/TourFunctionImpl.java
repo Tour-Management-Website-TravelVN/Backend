@@ -7,13 +7,16 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -537,7 +540,7 @@ public class TourFunctionImpl implements TourFunction {
 		} finally {
 			try {
 				this.cp.releaseConnection(this.con, "Tour");
-				rs.close();
+				if(rs!=null) rs.close();
 				preCheckTour.close();
 				pre.close();
 			} catch (SQLException e) {
@@ -670,5 +673,175 @@ public class TourFunctionImpl implements TourFunction {
 		}
 
 		return "";
+	}
+
+	@Override
+	public String getTourNameByTourId(String tourId) {
+		// TODO Auto-generated method stub
+		ResultSet rs = null;
+		PreparedStatement pre = null;
+
+		try {
+			this.con = getConnection(this.cp);
+
+			pre= this.con.prepareStatement("SELECT tour_name FROM tour WHERE tour_id = ?");
+			pre.setString(1, tourId);
+			
+			rs = pre.executeQuery();
+			if(rs.next()) return rs.getString(1);
+			else return "";
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			try {
+				this.cp.releaseConnection(this.con, "Tour");
+				rs.close();
+				pre.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return "";
+	}
+
+	// [ERROR]
+	@Override
+	public boolean updateTour(Tour tour, String delImages, List<String> imgUrls, List<TourProgram> programs, int categoryId, int touId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	//Hàm cập nhật ảnh, hãy truyền connection vào trong để lấy connection đó xử lý không tạo thêm con tránh rollback fail
+	//Cần nhấc hàm update tour ra khỏi đây pre4 => out
+	public boolean updateImgsByTourId(Connection con, String tourId, String delImages, List<String> imgUrls, int touId) {
+		// TODO Auto-generated method stub
+		ResultSet rs = null;
+		PreparedStatement pre = null;
+		PreparedStatement pre2 = null;
+		PreparedStatement pre3 = null;
+		PreparedStatement pre4 = null;
+		PreparedStatement pre5 = null;
+		try {
+			this.con = con;
+
+			String tourName = "";
+			if (!StringUtils.isBlank(delImages) || imgUrls.size() != 0) {
+				pre3 = this.con.prepareStatement("SELECT tour_name FROM tour WHERE tour_id = ?");
+				pre3.setString(1, tourId);
+
+				rs = pre3.executeQuery();
+				if (rs.next()) tourName = rs.getString(1);
+				else {
+					con.rollback();
+					return false;
+				}
+			} else {
+				return true;
+			}
+
+			pre4 = con.prepareStatement("UPDATE tour SET last_updated_operator = ?, last_updated_time = ? WHERE tour_id = ?");
+			pre4.setInt(1, touId);
+			pre4.setTimestamp(2, Timestamp.from(Instant.now()));
+			pre4.setString(3, tourId);
+			
+			if(pre4.executeUpdate()==0) {
+				con.rollback();
+				return false;
+			}
+			
+			if (!StringUtils.isBlank(delImages)) {
+				String[] delImgs = delImages.split(",");
+				List<Integer> idImgList = Arrays.stream(delImgs).map(Integer::parseInt).collect(Collectors.toList());
+
+				pre5 = con.prepareStatement("SELECT COUNT(*) FROM image WHERE tour_id = ?");
+				pre5.setString(1, tourId);
+				rs = pre5.executeQuery();
+				
+				int count = 0;
+				if(rs.next()) count = rs.getInt(1);
+				else {
+					con.rollback();
+					return false;
+				}
+				
+				//Tour có ít nhất 1 ảnh
+				if(count == idImgList.size() && imgUrls.size() == 0) {
+					con.rollback();
+					return false;
+				}
+				
+				StringBuilder sql = new StringBuilder();
+				sql.append("DELETE FROM image WHERE tour_id = ? AND image_id = ? ");
+
+				pre = con.prepareStatement(sql.toString());
+
+				for (Integer idImg : idImgList) {
+					pre.setString(1, tourId);
+					pre.setInt(2, idImg);
+					pre.addBatch();
+				}
+
+				int[] dels = pre.executeBatch();
+
+				if (dels.length == 0) {
+					con.rollback();
+					return false;
+				}
+			}
+
+			if (imgUrls.size() != 0) {
+				String sql2 = "INSERT INTO image (image_name, url, tour_id) VALUES(?,?,?)";
+				pre2 = con.prepareStatement(sql2);
+
+				for (String url : imgUrls) {
+					pre2.setString(1, Generator.generateImgName(tourName));
+					pre2.setString(2, url);
+					pre2.setString(3, tourId);
+					pre2.addBatch();
+				}
+
+				int[] inserts = pre2.executeBatch();
+				if (inserts.length != imgUrls.size()) {
+					System.out.println("ERROR IMGUPDATE");
+					con.rollback();
+					return false;
+				}
+			}
+
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pre != null)
+					pre.close();
+				if (pre2 != null)
+					pre2.close();
+				if (pre3 != null)
+					pre3.close();
+				if (pre4 != null)
+					pre4.close();
+				if (pre5 != null)
+					pre5.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 }

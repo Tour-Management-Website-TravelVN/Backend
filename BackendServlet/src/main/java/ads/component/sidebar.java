@@ -55,7 +55,7 @@ public class sidebar extends HttpServlet{
 //			out.append("      </li><!-- End Dashboard Nav -->");
 //			out.append("");
 			out.append("      <li class=\"nav-item\">");
-			out.append("        <a class=\"nav-link "+collapsed.getOrDefault("tour", "collapsed")+"\"  href=\"tour\">");
+			out.append("        <a class=\"nav-link "+collapsed.getOrDefault("tour", "collapsed")+"\"  href=\"/adv/to/tour\">");
 			out.append("          <i class=\"bi bi-layout-text-window-reverse\"></i><span>Quản lý tour</span>");
 			out.append("        </a>");
 //			out.append(
@@ -75,7 +75,7 @@ public class sidebar extends HttpServlet{
 			out.append("");
 			out.append("      <li class=\"nav-item\">");
 			out.append(
-					"        <a class=\"nav-link "+collapsed.getOrDefault("festival", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"festival\">");
+					"        <a class=\"nav-link "+collapsed.getOrDefault("festival", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"/adv/to/festival\">");
 			out.append("          <i class=\"bi bi-flower1\"></i>");
 			out.append("");
 			out.append("    <span>Quản lý lễ hội</span>");
@@ -83,7 +83,7 @@ public class sidebar extends HttpServlet{
 			out.append("      </li><!-- End Charts Nav -->");
 			out.append("      <li class=\"nav-item\">");
 			out.append(
-					"        <a class=\"nav-link "+collapsed.getOrDefault("discount", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"discount\">");
+					"        <a class=\"nav-link "+collapsed.getOrDefault("discount", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"/adv/to/discount\">");
 			out.append("          <i class=\"bi bi-coin\"></i>");
 			out.append("");
 			out.append("    <span>Chương trình giảm giá</span>");
