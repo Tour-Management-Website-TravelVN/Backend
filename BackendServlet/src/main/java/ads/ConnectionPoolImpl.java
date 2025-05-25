@@ -82,7 +82,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
 			return DriverManager.getConnection(this.url, this.username, this.userpass);
 		} else {
 //			System.out.println("STACK SIZE: "+pool.size());
-			System.out.println(objectName+"da lay ra mot ket noi");
+			System.out.println(objectName+" da lay ra mot ket noi");
 			return this.pool.pop();
 		}
 	}
@@ -91,7 +91,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
 	public void releaseConnection(Connection con, String objectName) throws SQLException {
 		// TODO Auto-generated method stub
 		
-		System.out.println(objectName+"da tra ve 1 ket noi");
+		System.out.println(objectName+" da tra ve 1 ket noi");
 		this.pool.push(con);
 //		System.out.println("STACK SIZE: "+pool.size());
 	}

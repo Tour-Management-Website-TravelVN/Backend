@@ -26,7 +26,7 @@ import ads.util.Generator;
 
 public class ImageFunctionImpl implements ImageFunction {
 
-	private static ConnectionPool cp = ConnectionPoolImpl.getInstance();
+	static ConnectionPool cp = ConnectionPoolImpl.getInstance();
 
 	// Đối tượng kết nối
 	private Connection con;
@@ -166,7 +166,7 @@ public class ImageFunctionImpl implements ImageFunction {
 			this.con = getConnection(this.cp);
 
 			String tourName = "";
-			if (!StringUtils.isBlank(delImages) || imgUrls.size() != 0) {
+			if (!StringUtils.isBlank(delImages) && imgUrls.size() != 0) {
 				pre3 = this.con.prepareStatement("SELECT tour_name FROM tour WHERE tour_id = ?");
 				pre3.setString(1, tourId);
 
@@ -249,6 +249,7 @@ public class ImageFunctionImpl implements ImageFunction {
 				}
 			}
 
+			this.con.commit();
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception

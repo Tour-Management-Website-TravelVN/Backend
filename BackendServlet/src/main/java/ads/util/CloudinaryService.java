@@ -19,7 +19,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
 		maxFileSize = 1024 * 1024 * 5, // 5MB
 		maxRequestSize = 1024 * 1024 * 10 // 10MB
@@ -126,6 +128,7 @@ public class CloudinaryService {
 	public String getImgUrlsAfterUpload(byte[] imgBytes) {
 		try {
 			Map uploadResult = CLOUDINARY.uploader().upload(imgBytes, ObjectUtils.asMap("folder", "Image"));
+			log.info("Chuyển anh trong rich text");
 			return (String) uploadResult.get("url");
 			
 		} catch (Exception e) {
@@ -144,7 +147,8 @@ public class CloudinaryService {
 
 			parts.forEach(part -> {
 				// Chỉ xử lý những part là file, tên form phải là "files"
-				if (part.getName().equals("files") && part.getSize() > 0) {
+				//if (part.getName().equals("files") && part.getSize() > 0) {
+				if (/*part.getName().equals("files") &&*/ part.getSize() > 0) {
 					// Upload các file và nhận lại url
 					try (InputStream is = part.getInputStream()) {
 						Map uploadResult = CLOUDINARY.uploader().upload(is,

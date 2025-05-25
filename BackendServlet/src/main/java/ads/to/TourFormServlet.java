@@ -116,6 +116,8 @@ public class TourFormServlet extends HttpServlet {
 			out.append(TourLibrary.formAddTour());
 		} else if(action.equalsIgnoreCase("updateImgs")) {
 			out.append(TourLibrary.formUpdateImgsTour(request));
+		} else if(action.equalsIgnoreCase("update")) {
+			out.append(TourLibrary.formUpdateTour(request));
 		}
 		/*
 		 * out.append( """ <main id="main" class="main">
@@ -368,12 +370,14 @@ public class TourFormServlet extends HttpServlet {
 		 */
 		out.append("  <!-- Template Main JS File -->");
 		out.append("  <script src=\"/adv/assets/js/main.js\"></script>");
+		
 		if (action.equalsIgnoreCase("add"))
 			out.append("<script type=\"module\" src=\"/adv/assets/js/tour/form-tour.js\"></script>");
 		else if(action.equalsIgnoreCase("updateImgs"))
 			out.append("<script src=\"/adv/assets/js/tour/form-tour-update-img.js\"></script>");
 		else if(action.equalsIgnoreCase("update"))
-			out.append("<script src=\"/adv/assets/js/tour/form-update-tour.js\"></script>");
+			out.append("<script type=\"module\" src=\"/adv/assets/js/tour/form-update-tour.js\"></script>");
+		
 		out.append("");
 		out.append("</body>");
 		out.append("");
@@ -475,9 +479,10 @@ public class TourFormServlet extends HttpServlet {
 	
 //				String tourId = TourFunctionImpl.getInstance().addTour(tour, urls, programs, categoryId, tocId);
 
-				if(ImageFunctionImpl.getInstance().updateImgsByTourId(tourId, delImages, urls, touId)) {
+				if(!ImageFunctionImpl.getInstance().updateImgsByTourId(tourId, delImages, urls, touId)) {
 					resp.setContentType("application/json");
 					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lưu ảnh!\"}");
+					return;
 				}
 				
 
@@ -503,6 +508,7 @@ public class TourFormServlet extends HttpServlet {
 				String delImages = req.getParameter("delImages");
 				
 				UserAccount userAccount = (UserAccount) req.getSession().getAttribute("userLogined");
+				int touId = userAccount.getTourOperator().getId();
 				
 				if (tourId == "") {
 					resp.setContentType("application/json");
@@ -512,6 +518,8 @@ public class TourFormServlet extends HttpServlet {
 				
 				//tour, programs
 				Tour tour = GsonProvider.getGson().fromJson(tourJson, Tour.class);
+				tour.setTourId(tourId);
+				
 				List<TourProgram> programs = GsonProvider.getGson().fromJson(tourProgramsJson, new TypeToken<List<TourProgram>>() {
 				}.getType());
 
@@ -528,22 +536,22 @@ public class TourFormServlet extends HttpServlet {
 				// Xử lý richtext
 				programs.forEach(program -> {
 					program.setDesciption(processRichText(program.getDesciption()));
+					log.info("FINAL HTML for program {}: {}", program.getId(), program.getDesciption()); // log rõ từng program
 				});
 				
-				UserAccount userAccount2 = (UserAccount) req.getSession().getAttribute("userLogined");
-				int touId = userAccount2.getTourOperator().getId();
-	
 //				String tourId = TourFunctionImpl.getInstance().addTour(tour, urls, programs, categoryId, tocId);
-
+				
+				log.info("URL SIZE {}", urls.size());
+				
 				/** Cho chạy chung transaction của tour để còn roll back
 				 *	Cập nhật thông tin tour (+cate, +tou), cập nhật chương trình, cập nhật ảnh như dưới
-				if(ImageFunctionImpl.getInstance().updateImgsByTourId(tourId, delImages, urls, touId)) {
+				 **/
+				if(!TourFunctionImpl.getInstance().updateTour(tour, delImages, urls, programs, categoryId, touId)) {
 					resp.setContentType("application/json");
-					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lwu ảnh!\"}");
+					resp.getWriter().write("{\"text\":\"Có lỗi xảy ra khi lưu ảnh!\"}");
+					return;
 				}
-				*/
 				
-
 				String urlDirect = "/adv/to/tour/tour_detail?tourid=" + URLEncoder.encode(tourId, "UTF-8");
 				log.info("url {}", urlDirect);
 				// Phản hồi
@@ -579,22 +587,80 @@ public class TourFormServlet extends HttpServlet {
 //		resp.getWriter().write(processedHtml);
 	}
 
+//	private String processRichText(String htmlString) {
+//		// Cho phép các tag HTML cơ bản, như <b>, <i>, <p>, <ul>, <li>, <a>, ...
+//		Document doc = Jsoup.parse(htmlString);
+//		Elements imgs = doc.select("img[src^=data:image/]");
+//
+//		imgs.forEach(img -> {
+//			try {
+//				String base64Data = img.attr("src").split(",")[1];// lấy phần base64 sau dấu ","
+//				byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+//
+//				// Thay thế src base64 bằng URL Cloudinary
+//				// Upload
+//		        String uploadedUrl = CloudinaryService.getInstance().getImgUrlsAfterUpload(imageBytes);
+//		        if (uploadedUrl != null) {
+//		            img.attr("src", uploadedUrl);
+//		        } else {
+//		            System.out.println("Upload ảnh thất bại (null URL)");
+//		        }
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//				e.printStackTrace();
+//			}
+//			
+//		});
+//
+//		log.info("BEFORE: {}", htmlString);
+//		htmlString = Jsoup.clean(htmlString, Safelist.relaxed());
+//		
+//		log.info("AFTER: {}", htmlString);
+//		
+//		String processedHtml = doc.body().html();
+//
+//		return processedHtml;
+//	}
+	
 	private String processRichText(String htmlString) {
-		// Cho phép các tag HTML cơ bản, như <b>, <i>, <p>, <ul>, <li>, <a>, ...
-		htmlString = Jsoup.clean(htmlString, Safelist.relaxed());
-		Document doc = Jsoup.parse(htmlString);
-		Elements imgs = doc.select("img[src^=data:image/]");
+	    // Parse HTML gốc
+		log.info("HTML INIT {}", htmlString);
+		
+	    Document doc = Jsoup.parse(htmlString);
+	    Elements imgs = doc.select("img[src^=data:image/]");
 
-		imgs.forEach(img -> {
-			String base64Data = img.attr("src").split(",")[1];// lấy phần base64 sau dấu ","
-			byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+	    imgs.forEach(img -> {
+	        try {
+	            String base64Data = img.attr("src").split(",")[1]; // lấy phần base64 sau dấu ","
+	            byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
-			// Thay thế src base64 bằng URL Cloudinary
-			img.attr("src", CloudinaryService.getInstance().getImgUrlsAfterUpload(imageBytes));
-		});
+	            // Upload ảnh và thay thế
+	            String uploadedUrl = CloudinaryService.getInstance().getImgUrlsAfterUpload(imageBytes);
+	            if (uploadedUrl != null) {
+	                img.attr("src", uploadedUrl);
+	            } else {
+	                System.out.println("Upload ảnh thất bại (null URL)");
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 
-		String processedHtml = doc.body().html();
+	    // Lấy lại nội dung HTML sau khi xử lý ảnh
+	    String updatedHtml = doc.body().html();
 
-		return processedHtml;
+	    log.info("HTML UPDATE {}",updatedHtml);
+	    
+	    // Cho phép base64 hoặc url (http/https) tồn tại trong <img src="">
+	    Safelist safelist = Safelist.relaxed();
+	    safelist.addProtocols("img", "src", "http", "https", "data");
+
+	    // Clean nội dung đã xử lý
+	    String cleanedHtml = Jsoup.clean(updatedHtml, safelist);
+
+	    log.info("HTML CLEAN {}", cleanedHtml);
+	    
+	    return cleanedHtml;
 	}
+
 }
