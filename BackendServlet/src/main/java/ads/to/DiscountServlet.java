@@ -9,6 +9,7 @@ import ads.library.DiscountLibrary;
 import ads.objects.Discount;
 import ads.user.DiscountFunctionImpl;
 import ads.util.GsonProvider;
+import ads.util.Validate;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -373,6 +374,11 @@ public class DiscountServlet extends HttpServlet {
 				
 				Discount discount = GsonProvider.getGson().fromJson(discountJson, Discount.class);
 				
+				if(Validate.validateDiscount(discount)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
 				Discount addedDiscount = DiscountFunctionImpl.getInstance().addDiscount(discount);
 				
 				if(addedDiscount==null) {
@@ -386,6 +392,11 @@ public class DiscountServlet extends HttpServlet {
 			} else if(action.equalsIgnoreCase("update")) {
 				String discountJson = req.getParameter("discount");
 				Discount discount = GsonProvider.getGson().fromJson(discountJson, Discount.class);
+				
+				if(Validate.validateDiscount(discount)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
 				
 				if(!DiscountFunctionImpl.getInstance().updateDiscount(discount)) {
 					resp.getWriter().write("{\"rs\":false}");

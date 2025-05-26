@@ -3,18 +3,29 @@ package ads.to;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ads.user.BookingImpl;
 import ads.user.DiscountFunctionImpl;
 import ads.user.FestivalFunctionImpl;
+import ads.util.GsonProvider;
+import ads.util.Validate;
+import ads.library.FestivalLibrary;
 import ads.library.UserLibrary;
+import ads.objects.Discount;
+import ads.objects.Festival;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @WebServlet("/to/festival")
+@MultipartConfig
 public class FestivalServlet extends HttpServlet {
 
 	/**
@@ -68,6 +79,10 @@ public class FestivalServlet extends HttpServlet {
 		out.append("  <link href=\"../assets/vendor/simple-datatables/style.css\" rel=\"stylesheet\">");
 		out.append("");
 		out.append("  <!-- Template Main CSS File -->");
+		
+		out.append("  <script src=\"/adv/assets/vendor/jquery/jquery-3.7.1.min.js\"></script>");
+		out.append("  <script type=\"module\" src=\"/adv/assets/js/festival/festival.js\"></script>");
+		
 		out.append("  <link href=\"../assets/css/style.css\" rel=\"stylesheet\">");
 		out.append("</head>");
 		out.append("");
@@ -83,6 +98,7 @@ public class FestivalServlet extends HttpServlet {
 			s.include(request, response);
 		}
 
+		/*
 		out.append(
 				"""
 								<main id="main" class="main">
@@ -333,7 +349,9 @@ public class FestivalServlet extends HttpServlet {
 						  </section>
 
 						</main><!-- End #main -->
-								""");
+								""");*/
+		
+		out.append(FestivalLibrary.viewFestival(request));
 
 		RequestDispatcher fo = request.getRequestDispatcher("/fo");
 		if (fo != null) {
@@ -364,7 +382,80 @@ public class FestivalServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(req, resp);
+		req.setCharacterEncoding("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
+		
+		resp.setContentType("application/json");
+		
+		String action = req.getParameter("action");
+		if(StringUtils.isBlank(action)) return;
+		
+		try {
+			if(action.equalsIgnoreCase("add")) {
+				String festivalJson = req.getParameter("festival");
+				
+				log.info("festivalJson: {}", festivalJson);
+				
+				if(StringUtils.isBlank(festivalJson)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
+				Festival festival = GsonProvider.getGson().fromJson(festivalJson, Festival.class);
+				
+				if(!Validate.validateFestivalName(festival.getFestivalName())) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
+				if(!FestivalFunctionImpl.getInstance().addFestival(festival)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
+				resp.getWriter().write("{\"rs\":true}");
+				
+			} else if(action.equalsIgnoreCase("update")) {
+				String festivalJson = req.getParameter("festival");
+				Festival festival = GsonProvider.getGson().fromJson(festivalJson, Festival.class);
+				
+				if(!Validate.validateFestivalName(festival.getFestivalName())) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
+				if(!FestivalFunctionImpl.getInstance().updateFestival(festival)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				} else {
+					resp.getWriter().write("{\"rs\":true}");
+				}
+
+			} else if(action.equalsIgnoreCase("del")) {
+				int festivalId = Integer.parseInt(req.getParameter("festivalid"));
+				if(!FestivalFunctionImpl.getInstance().deleteFestival(festivalId)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				} else {
+					resp.getWriter().write("{\"rs\":true}");
+				}
+			} else if(action.equalsIgnoreCase("visible")) {
+				int festivalId = Integer.parseInt(req.getParameter("festivalid"));
+				boolean visible = Boolean.parseBoolean(req.getParameter("visible"));
+				
+				if(!FestivalFunctionImpl.getInstance().updateVisible(festivalId, visible)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				} else {
+					resp.getWriter().write("{\"rs\":true}");
+				}
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			resp.getWriter().write("{\"text\":\"Có lỗi xảy ra!\"}");
+		}
 	}
 
 }

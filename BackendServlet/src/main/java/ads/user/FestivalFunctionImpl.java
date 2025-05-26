@@ -11,7 +11,9 @@ import ads.ConnectionPool;
 import ads.ConnectionPoolImpl;
 import ads.objects.Discount;
 import ads.objects.Festival;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class FestivalFunctionImpl implements FestivalFunction {
 	private static ConnectionPool cp = ConnectionPoolImpl.getInstance();
 
@@ -130,7 +132,7 @@ public class FestivalFunctionImpl implements FestivalFunction {
 			pre.setString(2, festival.getDescription());
 			pre.setBoolean(3, festival.getDisplayStatus());
 			pre.executeUpdate();
-			
+
 			con.commit();
 			return true;
 		} catch (Exception e) {
@@ -286,10 +288,10 @@ public class FestivalFunctionImpl implements FestivalFunction {
 		Connection con = null;
 		try {
 			con = getConnection(cp);
-			pre = con.prepareStatement("SELECT tour_unit_id FROM tour_unit WHERE discount_id = ? LIMIT 1");
+			pre = con.prepareStatement("SELECT tour_unit_id FROM tour_unit WHERE festival_id = ? LIMIT 1");
 			pre.setInt(1, festivalId);
 			rs = pre.executeQuery();
-			if(!rs.next()) return false;
+			if(rs.next()) return false;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
