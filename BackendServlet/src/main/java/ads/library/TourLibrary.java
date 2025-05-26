@@ -404,7 +404,7 @@ public class TourLibrary {
 		sBuilder.append("<div class=\"row mt-1\">");
 		sBuilder.append("<div class=\"col-12\">");
 		sBuilder.append("<h5 class=\"text-primary fw-bold mt-2\">Mô tả</h5>");
-		if (tour.getDescription().contains("\n")) {
+		if (tour.getExclusions().contains("\n")) {
 			sBuilder.append("<div class=\"border-0 w-100\">").append(Format.replaceEnter(tour.getDescription()))
 					.append("</div>");
 			sBuilder.append("</div>");

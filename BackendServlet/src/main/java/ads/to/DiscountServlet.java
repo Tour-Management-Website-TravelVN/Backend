@@ -3,14 +3,24 @@ package ads.to;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang3.StringUtils;
+
+import ads.library.DiscountLibrary;
+import ads.objects.Discount;
+import ads.user.DiscountFunctionImpl;
+import ads.util.GsonProvider;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @WebServlet("/to/discount")
+@MultipartConfig
 public class DiscountServlet extends HttpServlet {
 
 	/**
@@ -25,6 +35,17 @@ public class DiscountServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
+		
+		if(request.getParameter("check")!=null) {
+			int discountId = Integer.parseInt(request.getParameter("discountid"));
+			boolean rs = DiscountFunctionImpl.getInstance().canUpOrDel(discountId);
+			response.setContentType("application/json");
+			out.append("{\"check\":").append(String.valueOf(rs)).append("}");
+			log.info("CHECK {}", rs);
+			return;
+		}
+		
+		log.info("GO!");
 
 		out.append("<!DOCTYPE html>");
 		out.append("<html lang=\"en\">");
@@ -57,6 +78,10 @@ public class DiscountServlet extends HttpServlet {
 		out.append("");
 		out.append("  <!-- Template Main CSS File -->");
 		out.append("  <link href=\"../assets/css/style.css\" rel=\"stylesheet\">");
+		
+		out.append("<script src=\"/adv/assets/vendor/jquery/jquery-3.7.1.min.js\"></script>");
+		out.append("<script type=\"module\" src=\"/adv/assets/js/discount/discount.js\"></script>");
+		
 		out.append("</head>");
 		out.append("");
 		out.append("<body>");
@@ -71,7 +96,7 @@ public class DiscountServlet extends HttpServlet {
 			si.include(request, response);
 		}
 
-		out.append(
+		/*out.append(
 				"""
 						 		<main id="main" class="main">
 
@@ -293,8 +318,10 @@ public class DiscountServlet extends HttpServlet {
 
 						</main><!-- End #main -->
 						 		""");
-		out.append("  </main><!-- End #main -->");
+		out.append("  </main><!-- End #main -->");*/
 
+		out.append(DiscountLibrary.viewDiscount(request));
+		
 		RequestDispatcher fo = request.getRequestDispatcher("/fo");
 		if (fo != null) {
 			fo.include(request, response);
@@ -325,8 +352,63 @@ public class DiscountServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		req.setCharacterEncoding("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
+		
+		resp.setContentType("application/json");
+		
+		String action = req.getParameter("action");
+		if(StringUtils.isBlank(action)) return;
+		
+		try {
+			if(action.equalsIgnoreCase("add")) {
+				String discountJson = req.getParameter("discount");
+				
+				log.info("DiscountJson: {}", discountJson);
+				
+				if(StringUtils.isBlank(discountJson)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
+				Discount discount = GsonProvider.getGson().fromJson(discountJson, Discount.class);
+				
+				Discount addedDiscount = DiscountFunctionImpl.getInstance().addDiscount(discount);
+				
+				if(addedDiscount==null) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				}
+				
+				String discountRes = GsonProvider.getGson().toJson(addedDiscount, Discount.class);
+				resp.getWriter().write("{\"rs\":true, \"discount\": "+discountRes+" }");
+				
+			} else if(action.equalsIgnoreCase("update")) {
+				String discountJson = req.getParameter("discount");
+				Discount discount = GsonProvider.getGson().fromJson(discountJson, Discount.class);
+				
+				if(!DiscountFunctionImpl.getInstance().updateDiscount(discount)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				} else {
+					resp.getWriter().write("{\"rs\":true}");
+				}
 
-		doGet(req, resp);
+			} else if(action.equalsIgnoreCase("del")) {
+				int discountId = Integer.parseInt(req.getParameter("discountid"));
+				if(!DiscountFunctionImpl.getInstance().deleteDiscount(discountId)) {
+					resp.getWriter().write("{\"rs\":false}");
+					return;
+				} else {
+					resp.getWriter().write("{\"rs\":true}");
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			resp.getWriter().write("{\"text\":\"Có lỗi xảy ra!\"}");
+		}
+		
 	}
 
 }

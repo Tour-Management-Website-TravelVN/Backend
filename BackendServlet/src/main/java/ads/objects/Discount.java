@@ -3,6 +3,7 @@ package ads.objects;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,4 +23,13 @@ public class Discount {
     private String discountUnit;
 
     private Set<TourUnit> tourUnitSet = new HashSet<>();
+    
+    public String getValue() {
+    	discountValue = discountValue.setScale(2, RoundingMode.HALF_UP);
+    	return switch (discountUnit){
+    	case "%" -> discountValue+discountUnit;
+    	case "VND" -> discountValue+" "+discountUnit;
+    	default -> "";
+    	};
+    }
 }

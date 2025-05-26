@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import ads.user.BookingImpl;
+import ads.user.DiscountFunctionImpl;
+import ads.user.FestivalFunctionImpl;
 import ads.library.UserLibrary;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -27,6 +29,14 @@ public class FestivalServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
+		
+		if(request.getParameter("check")!=null) {
+			int festivalId = Integer.parseInt(request.getParameter("festivalid"));
+			boolean rs = FestivalFunctionImpl.getInstance().canDel(festivalId);
+			response.setContentType("application/json");
+			out.append("{\"check\":").append(String.valueOf(rs)).append("}");
+			return;
+		}
 		
 		out.append("<!DOCTYPE html>");
 		out.append("<html lang=\"en\">");

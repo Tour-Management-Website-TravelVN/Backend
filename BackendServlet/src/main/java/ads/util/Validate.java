@@ -1,7 +1,9 @@
 package ads.util;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import ads.objects.Discount;
 import ads.objects.Tour;
 import ads.objects.TourProgram;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +67,7 @@ public class Validate {
 		int count = 0;
 		if(!validateLength(tour.getTourName(), 15, 255)) return false;
 		
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		
 		try {
 			int duration = Integer.parseInt(tour.getDuration().split("N")[0]);
@@ -76,25 +78,25 @@ public class Validate {
 			return false;
 		}
 		
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		
 		if(!validateLength(tour.getTargetAudience(), 6, 255)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		if(!validateLength(tour.getDeparturePlace(), 6, 255)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		if(!validateLength(tour.getPlacesToVisit(), 6, 255)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		if(!validateLength(tour.getCuisine(), 6, 255)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		if(!validateLength(tour.getIdealTime(), 6, 255)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		
 		if(!validateLength(tour.getDescription(), 20)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		if(!validateLength(tour.getInclusions(), 20)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		if(!validateLength(tour.getExclusions(), 20)) return false;
-		log.info("FLAG {}", count++);
+		//log.info("FLAG {}", count++);
 		
 		return true;
 	}
@@ -110,5 +112,21 @@ public class Validate {
 			if(!validateLength(tourProgram.getDesciption(), 20)) return false;
 		}
 		return true;
+	}
+	
+	public static boolean validateDiscount(Discount discount) {
+		if(!validateLength(discount.getDiscountName(), 10, 255)) return false;
+		BigDecimal discountValue = discount.getDiscountValue();
+		if(discount.getDiscountUnit().equalsIgnoreCase("%")) {
+			return discountValue.compareTo(BigDecimal.ONE)>=0 && discountValue.compareTo(BigDecimal.valueOf(30))<=0;
+		} else if(discount.getDiscountUnit().equalsIgnoreCase("VND")) {
+			return discountValue.compareTo(BigDecimal.valueOf(1000))>=0;
+		}
+		
+		return false;
+	}
+	
+	public static boolean validateFestivalName(String festivalName) {
+		return validateLength(festivalName, 10, 255);
 	}
 }
