@@ -213,12 +213,12 @@ public class FestivalFunctionImpl implements FestivalFunction {
 		Connection con = null;
 		try {
 			con = getConnection(cp);
-			pre = con.prepareStatement("SELECT tour_unit_id FROM tour_unit WHERE discount_id = ? LIMIT 1");
+			pre = con.prepareStatement("SELECT tour_unit_id FROM tour_unit WHERE festival_id = ? LIMIT 1");
 			pre.setInt(1, festivalId);
 			rs = pre.executeQuery();
-			if(!rs.next()) return false;
+			if(rs.next()) return false;
 			
-			pre2 = con.prepareStatement("DELETE FROM discount WHERE discount_id = ?");
+			pre2 = con.prepareStatement("DELETE FROM festival WHERE festival_id = ?");
 			pre2.setInt(1, festivalId);
 			pre2.executeUpdate();
 			

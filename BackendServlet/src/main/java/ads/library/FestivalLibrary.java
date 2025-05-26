@@ -67,7 +67,7 @@ public class FestivalLibrary {
 		festivals.forEach(festival -> {
 			sBuilder.append("<tr>");
 			sBuilder.append(
-					"<td data-bs-toggle=\"modal\" data-bs-target=\"#viewFes\" style=\"cursor: pointer;\" class=\"fesId\">").append(festival.getId()).append("</td>");
+					"<td data-bs-toggle=\"modal\" data-bs-target=\"#viewFes\" style=\"cursor: pointer;\" class=\"fesId\" data-id=\"").append(festival.getId()).append("\">").append(festival.getId()).append("</td>");
 			sBuilder.append(
 					"<td data-bs-toggle=\"modal\" data-bs-target=\"#viewFes\" style=\"cursor: pointer;\" class=\"fesName\">").append(festival.getFestivalName()).append("</td>");
 			sBuilder.append(

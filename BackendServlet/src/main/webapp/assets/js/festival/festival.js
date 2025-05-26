@@ -154,8 +154,8 @@ $(function () {
 
         $('#staticBackdrop .modal-body').text("Bạn có muốn xóa " + fesName);
 
-        $('#btnDelete').off('click').on('click', function () {
-            console.log('Click btnDelete with disId:', disId);
+        $('.btnDelete').off('click').on('click', function () {
+            console.log('Click btnDelete with disId:', fesId);
             // Thêm đoạn code xóa hoặc xử lý ở đây
             $.ajax({
                 url: '/adv/to/festival',
@@ -200,6 +200,7 @@ $(function () {
                     delFes.hide();
                     displayAlert('Không thể xóa');
                 } else {
+                    viewFes.hide();
                     delFes.show();
                 }
             },
@@ -210,8 +211,8 @@ $(function () {
 
         $('#staticBackdrop .modal-body').text("Bạn có muốn xóa " + fesName);
 
-        $('#btnDelete').off('click').on('click', function () {
-            console.log('Click btnDelete with disId:', disId);
+        $('.btnDelete').off('click').on('click', function () {
+            console.log('Click btnDelete with fesId:', fesId);
             // Thêm đoạn code xóa hoặc xử lý ở đây
             $.ajax({
                 url: '/adv/to/festival',

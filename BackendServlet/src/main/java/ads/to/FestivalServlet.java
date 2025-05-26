@@ -433,10 +433,15 @@ public class FestivalServlet extends HttpServlet {
 
 			} else if(action.equalsIgnoreCase("del")) {
 				int festivalId = Integer.parseInt(req.getParameter("festivalid"));
+				
+				log.info("FLAG 1");
+				
 				if(!FestivalFunctionImpl.getInstance().deleteFestival(festivalId)) {
 					resp.getWriter().write("{\"rs\":false}");
+					log.info("FLAG 2");
 					return;
 				} else {
+					log.info("FLAG 3");
 					resp.getWriter().write("{\"rs\":true}");
 				}
 			} else if(action.equalsIgnoreCase("visible")) {
