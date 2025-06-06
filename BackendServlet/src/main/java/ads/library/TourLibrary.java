@@ -261,7 +261,7 @@ public class TourLibrary {
 		sBuilder.append("<div class=\"col\">");
 		sBuilder.append("<p class=\"ps-1 pb-1 text-center text-md-start\">");
 		sBuilder.append(
-				"<a href=\"[DONVITOUR]\" class=\"fw-bold text-end col\"> Quản lý các đơn vị tour <i class=\"bi-arrow-right\"></i></a>");
+				"<a href=\"../tour/Tour-Unit?tour_id="+tour.getTourId()+"&recordArea=1\" class=\"fw-bold text-end col\"> Quản lý các đơn vị tour <i class=\"bi-arrow-right\"></i></a>");
 		sBuilder.append("</p>");
 		sBuilder.append("</div>");
 		sBuilder.append("</div>");

@@ -13,6 +13,6 @@ public interface TourFunction {
 	boolean deleteTourByTourId(String tourId);
 	String addTour(Tour tour, List<String> imgUrls, List<TourProgram> programs, int categoryId, int tocId);
 	String getTourNameByTourId(String tourId);
-	
+	List<Tour> getAllTourNameAndId();
 	boolean updateTour(Tour tour, String delImages, List<String> imgUrls, List<TourProgram> programs, int categoryId, int touId);
 }

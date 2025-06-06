@@ -1,12 +1,15 @@
 package ads.user;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mysql.cj.xdevapi.PreparableStatement;
 
 import ads.ConnectionPool;
 import ads.ConnectionPoolImpl;
@@ -312,6 +315,45 @@ public class DiscountFunctionImpl implements DiscountFunction {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public Discount getById(int id) {
+		PreparedStatement pre = null;		
+		ResultSet rs = null;	
+		Connection con = null;
+		Discount discount = null;
+		try {
+			con = getConnection(cp);
+			pre = con.prepareStatement("Select * from Discount WHERE discount_id = ?");
+			pre.setInt(1,id);
+			rs = pre.executeQuery();
+			if(rs.next())
+			{
+				  discount = new Discount();
+                  discount.setId(rs.getInt("discount_id"));
+                  discount.setDiscountName(rs.getString("discount_name"));
+                  discount.setDiscountValue(rs.getBigDecimal("discount_value"));
+                  discount.setDiscountUnit(rs.getString("discount_unit"));
+			}
+			
+			
+		}catch(Exception e )
+		{
+			e.printStackTrace();
+		}finally {
+			try {
+				if(con!=null)this.cp.releaseConnection(con, "Dicount");
+				if(pre!=null) pre.close();
+				if(rs!=null) rs.close();
+			} catch (SQLException e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+			
+		}
+
+		return discount;
 	}
 
 }

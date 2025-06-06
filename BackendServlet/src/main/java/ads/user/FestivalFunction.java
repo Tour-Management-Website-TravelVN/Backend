@@ -13,6 +13,6 @@ public interface FestivalFunction {
 	
 	boolean canDel(int festivalId);
 	boolean updateVisible(int festivalId, boolean isShow);
-	
+	Festival getById(int id);
 	int getMaxPage();
 }

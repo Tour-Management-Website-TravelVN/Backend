@@ -796,6 +796,8 @@ public class TourFunctionImpl implements TourFunction {
 
 		return false;
 	}
+	
+	
 
 	// Hàm cập nhật ảnh, hãy truyền connection vào trong để lấy connection đó xử lý
 	// không tạo thêm con tránh rollback fail
@@ -902,4 +904,41 @@ public class TourFunctionImpl implements TourFunction {
 
 		return false;
 	}
+
+	@Override
+	public List<Tour> getAllTourNameAndId() {
+		// TODO Auto-generated method stub
+		String sql = "Select tour_name, tour_id from tour";
+		ArrayList<Tour> allTour = new ArrayList<Tour>();
+		ResultSet rs = null;
+		PreparedStatement pre = null;
+		
+		try {
+			this.con = getConnection(this.cp);
+			pre = con.prepareStatement(sql);
+			rs  = pre.executeQuery();
+			while(rs.next())
+			{
+				
+				allTour.add(new Tour().builder().tourId(rs.getString(2)).tourName(rs.getString(1)).build());
+				
+			}
+		}catch(Exception e ){
+			e.printStackTrace();
+		}finally {
+			try {
+				this.cp.releaseConnection(this.con, "Tour");
+				if (rs != null)
+					rs.close();
+				if (pre != null)
+					pre.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return allTour;
+	}
+	
 }

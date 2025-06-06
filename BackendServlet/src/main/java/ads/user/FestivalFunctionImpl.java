@@ -1,6 +1,7 @@
 package ads.user;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -341,4 +342,45 @@ public class FestivalFunctionImpl implements FestivalFunction {
 		}
 		return true;
 	}
+
+	@Override
+	public Festival getById(int id) {
+		PreparedStatement pre = null;		
+		ResultSet rs = null;	
+		Connection con = null;
+		Festival festival = null;
+		try {
+			con = getConnection(cp);
+			pre = con.prepareStatement("Select * from festival WHERE festival_id = ?");
+			pre.setInt(1,id);
+			rs = pre.executeQuery();
+			if(rs.next())
+			{
+				festival = new Festival();
+	            festival.setId(rs.getInt("festival_id"));
+	            festival.setFestivalName(rs.getString("festival_name"));
+	            festival.setDescription(rs.getString("description"));
+	            festival.setDisplayStatus(rs.getBoolean("display_status"));
+
+			}
+			
+			
+		}catch(Exception e )
+		{
+			e.printStackTrace();
+		}finally {
+			try {
+				if(con!=null)this.cp.releaseConnection(con, "Dicount");
+				if(pre!=null) pre.close();
+				if(rs!=null) rs.close();
+			} catch (SQLException e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+			
+		}
+
+		return festival;
+	}
+
 }
