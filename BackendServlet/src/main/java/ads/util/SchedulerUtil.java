@@ -99,9 +99,12 @@ public class SchedulerUtil implements Runnable, ServletContextListener {
 		SchedulerUtil.stackedBarChartDataFile = stackedBarChartDataRealPath;
 		//task.setStackedBarChartDataFile(stackedBarChartDataRealPath);
 		
+		//Cần chạy nagy tại đây không chạy trong run vì chạy luồng riêng làm NotFound khi deploy
+		saveStackedBarChartData();
+		
 		// Chạy lần đầu ngay lập tức, sau đó mỗi 10 phút
 		scheduler.scheduleAtFixedRate(new SchedulerUtil(), // task cần chạy
-				0, // delay ban đầu (0 giây = chạy ngay)
+				10, // delay ban đầu (0 giây = chạy ngay)
 				10, // lặp lại sau mỗi 10 phút
 				TimeUnit.MINUTES);
 
