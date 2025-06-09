@@ -101,14 +101,14 @@ public class sidebar extends HttpServlet{
 			out.append("      ");
 			out.append("      <li class=\"nav-item\">");
 			out.append(
-					"        <a class=\"nav-link "+collapsed.getOrDefault("canceltour", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"approve_request_cancel_booking.html\">");
+					"        <a class=\"nav-link "+collapsed.getOrDefault("canceltour", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"/adv/to/Cancel-Request\">");
 			out.append("          <i class=\"bi bi-card-checklist\"></i>");
 			out.append("          <span>Yêu cầu huỷ tour</span>");
 			out.append("        </a>");
 			out.append("      </li>");
 			out.append("      <li class=\"nav-item\">");
 			out.append(
-					"        <a class=\"nav-link "+collapsed.getOrDefault("customer", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"Customer_info_management.html\">");
+					"        <a class=\"nav-link "+collapsed.getOrDefault("customer", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"/adv/to/Customer\">");
 			out.append("          <i class=\"bi bi-people-fill\"></i>");
 			out.append("          <span>Khách hàng</span>");
 			out.append("        </a>");

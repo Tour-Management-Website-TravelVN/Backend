@@ -159,7 +159,7 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 		TourUnit tu  = new TourUnit();
 		String query = "Select * from tour_unit where tour_unit_id like ?";
 		try {
-			con = getConnection(this.cp);
+			this.con = getConnection(this.cp);
 	         PreparedStatement p = con.prepareStatement(query);
 			
 			p.setString(1, id);
@@ -219,12 +219,14 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 	                "total_additional_cost = ?, discount_id = ?, festival_id = ?, tour_id = ?, " +
 	                "tour_operator_id = ?, last_updated_operator = ? " +
 	                "WHERE tour_unit_id = ?";
+		 StringBuilder sql_2 = new StringBuilder();
 		 boolean result = false;
+		 int rowUpdated = 0;
 	        try  {
-	        	con  = getConnection(this.cp);
+	        	this.con  = getConnection(this.cp);
 	        	PreparedStatement stmt = con.prepareStatement(sql);
 	        	
-	        	Short avaiableCapacity = TourUnitFunctionImpl.getInstance().getById(tourUnit.getTourUnitId()).getAvailableCapacity();
+	        	Short avaiableCapacity = tourUnit.getAvailableCapacity();
 	            stmt.setBigDecimal(1, tourUnit.getAdultTourCost());
 	            stmt.setBigDecimal(2, tourUnit.getAdultTourPrice());
 	            stmt.setShort(3, avaiableCapacity);
@@ -271,13 +273,29 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 
 	            stmt.setString(21, tourUnit.getTourUnitId());
 
+	            rowUpdated  = stmt.executeUpdate();
+	            System.out.println(rowUpdated);
+	            System.out.println("Running : "+stmt);
 	            
-	            return exe(stmt);
+	            if(rowUpdated != 0)
+	            {
+	            	this.con.commit();
+	            	result = true;
+	            }
+	            else {
+	            	this.con.rollback();
+	            	result = false;
+	            }
+	            
 	        } catch (SQLException e) {
-	        	
+	        	try {
+					this.con.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	            e.printStackTrace();
 	        }finally{
-	        	
 				try {
 					ConnectionPoolImpl.getInstance().releaseConnection(con, "Tour_Unit");
 				} catch (SQLException e) {
@@ -302,10 +320,9 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 	        try {
 	        	this.con = getConnection(this.cp);
 	        	PreparedStatement stmt = con.prepareStatement(sql);
-	        	Short avaiableCapacity = 0;
 	            stmt.setBigDecimal(1, tourUnit.getAdultTourCost());
-	            stmt.setBigDecimal(2, tourUnit.getAdultTourPrice());
-	            stmt.setShort(3, avaiableCapacity);
+	            stmt.setBigDecimal(2, tourUnit.getAdultTourPrice());	
+	            stmt.setShort(3, tourUnit.getMaximumCapacity());
 	            stmt.setBigDecimal(4, tourUnit.getBabyTourCost());
 	            stmt.setBigDecimal(5, tourUnit.getBabyTourPrice());
 	            stmt.setBigDecimal(6, tourUnit.getChildTourCost());
@@ -369,10 +386,20 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 
 	@Override
 	public boolean deleteById(String id) {
+		
+		String checkDel = "Select * from booking where tour_unit_id like ? ";
 		String query = "Delete from tour_unit where tour_unit_id like ?";
 		boolean rs = false;
 		try{
 			this.con = getConnection(this.cp);
+			PreparedStatement r = con.prepareStatement(checkDel);
+			r.setString(1, id);
+			ResultSet isAvaiable = r.executeQuery();
+			if(isAvaiable.next())
+			{
+				return false;
+			}
+
 			PreparedStatement p = con.prepareStatement(query);
 			p.setString(1, id);
 			

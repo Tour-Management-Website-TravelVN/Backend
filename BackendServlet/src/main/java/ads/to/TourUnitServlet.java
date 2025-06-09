@@ -8,6 +8,7 @@ import java.util.List;
 
 import ads.objects.TourUnit;
 import ads.user.TourUnitFunctionImpl;
+import ads.util.AmountOfCustomerPredictor;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -169,6 +170,7 @@ public class TourUnitServlet extends HttpServlet {
 		out.append("<th>Người điều hành</th>");
 		out.append("<th data-type=\"date\" data-format=\"YYYY/DD/MM\">Ngày khởi hành</th>");
 		out.append("<th data-type=\"date\" data-format=\"YYYY/DD/MM\">Ngày trở về</th>");
+		out.append("<th class=\"text-warning\">Số lượng (dự kiến)</th>");
 		out.append("<th>Tuỳ chọn</th>");
 		out.append("</tr>");
 		out.append("</thead>");
@@ -185,8 +187,38 @@ public class TourUnitServlet extends HttpServlet {
 					+ to.getTourOperator().getLastname() + "</td>");
 			out.append("<td id=\"departureDate\">" + to.getDepartureDate() + "</td>");
 			out.append("<td id=\"returnDate\">" + to.getReturnDate() + "</td>");
+			int p = 0;
+			try {
+				AmountOfCustomerPredictor.trainModel();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				if(to.getDiscount() != null)
+				{
+					p = (int) AmountOfCustomerPredictor.predict(to.getAdultTourPrice().doubleValue(), 5, to.getDiscount().getDiscountValue().doubleValue(), to.getPrivateRoomPrice().doubleValue(), to.getChildTourPrice().doubleValue(), to.getMaximumCapacity().shortValue()) ;
+					if( p > 0 )
+					out.append("<td id=\"predictACustomer\" class=\"bg-warning\">" +p + "</td>");
+					else
+						out.append("<td id=\"predictACustomer\" class=\"bg-warning\">0</td>");
+
+				}
+				else
+				{
+					p = (int) AmountOfCustomerPredictor.predict(to.getAdultTourPrice().doubleValue(), 5, 0, to.getPrivateRoomPrice().doubleValue(), to.getChildTourPrice().doubleValue(), to.getMaximumCapacity().shortValue());
+					if(p > 0) {out.append("<td id=\"predictACustomer\" class=\"bg-warning\">" +p  + "</td>"); }else { out.append("<td id=\"predictACustomer\" class=\"bg-warning\">0</td>");}
+					
+
+				}
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			out.append("<td >");
-			out.append("<a  href=\"Tour-Unit-Edit?tourUnitId=" + to.getTourUnitId()
+			out.append("<a  href=\"Customer-Edit?tourUnitId=" + to.getTourUnitId()
 					+ "\" class=\"btn btn-sm btn-primary me-1\"><i class=\"bi bi-pencil-fill\"></i>");
 			out.append("</a>");
 			out.append("<a href=\"#\" class=\"btn btn-sm btn-danger me-1\" data-bs-toggle=\"modal\" ");
@@ -267,82 +299,63 @@ public class TourUnitServlet extends HttpServlet {
 	}
 
 	
-	
-	private static StringBuilder getDetailModal(TourUnit to )
-	{
-		StringBuilder out  = new StringBuilder("");
-		out.append("<!-- Modal Xem Chi Tiết -->");
-		out.append("<div class=\"modal fade\" id=\"tourUnitDetailModal_" + to.getTourUnitId()
-				+ "\" tabindex=\"-1\" aria-labelledby=\"tourUnitDetailModalLabel_" + to.getTourUnitId()
-				+ "\" aria-hidden=\"true\">");
-		out.append("  <div class=\"modal-dialog modal-lg\">");
-		out.append("    <div class=\"modal-content\">");
-		out.append("<div class=\"modal-header\">");
-		out.append("<h5 class=\"modal-title\" id=\"tourUnitDetailModalLabel_" + to.getTourUnitId()
-				+ "\">Chi tiết đơn vị tour</h5>");
-		out.append(
-				"<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>");
-		out.append("</div>");
-		out.append("<div class=\"modal-body\">");
-		out.append("<div class=\"row\">");
-		out.append("<div class=\"col-md-6\">");
-		out.append("<p><strong>ID đơn vị tour:</strong> <span id=\"tourUnitId\">" + to.getTourUnitId()
-				+ "</span></p>");
-		out.append("<p><strong>Trực thuộc tour:</strong> <span id=\"tourUnitId\">" + to.getTour().getTourName()
-				+ "</span></p>");
-		out.append("<p><strong>Giá người lớn:</strong> <span id=\"adultPrice\">" + to.getAdultTourPrice()
-				+ "</span></p>");
-		out.append("<p><strong>Giá trẻ em:</strong> <span id=\"childPrice\">" + to.getChildTourPrice()
-				+ "</span></p>");
-		out.append("<p><strong>Giá trẻ em 6-10 tuổi:</strong> <span id=\"status\">" + to.getToddlerTourPrice()
-				+ "</span></p>");
-		out.append("<p><strong>Giá trẻ sơ sinh:</strong> <span id=\"status\">" + to.getBabyTourPrice()
-				+ "</span></p>");
-		out.append("<p><strong>Giá phòng đơn:</strong> <span id=\"status\">" + to.getPrivateRoomPrice()
-				+ "</span></p>");
-		out.append("<p><strong>Tổng giá dịch vụ:</strong> <span id=\"status\">" + to.getTotalAdditionalCost()
-				+ "</span></p>");
-		if(to.getFestival()!= null)
-		out.append("<p><strong>Lễ hội:</strong> <span id=\"status\">" + to.getFestival().getFestivalName()
-				+ "</span></p>");
-		if (to.getDiscount() != null)
-			out.append("<p><strong>Giảm giá:</strong> <span id=\"status\">" + to.getDiscount().getDiscountName()
-					+ "</span></p>");
+	private static StringBuilder getDetailModal(TourUnit to) {
+	    StringBuilder out = new StringBuilder("");
+	    out.append("<!-- Modal Xem Chi Tiết -->");
+	    out.append("<div class=\"modal fade\" id=\"tourUnitDetailModal_" + to.getTourUnitId()
+	            + "\" tabindex=\"-1\" aria-labelledby=\"tourUnitDetailModalLabel_" + to.getTourUnitId()
+	            + "\" aria-hidden=\"true\">");
+	    out.append("  <div class=\"modal-dialog modal-lg\">");
+	    out.append("    <div class=\"modal-content\">");
+	    out.append("<div class=\"modal-header\">");
+	    out.append("<h5 class=\"modal-title\" id=\"tourUnitDetailModalLabel_" + to.getTourUnitId()
+	            + "\">Chi tiết đơn vị tour</h5>");
+	    out.append("<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>");
+	    out.append("</div>");
+	    out.append("<div class=\"modal-body\">");
+	    out.append("<div class=\"row\">");
 
-		out.append("</div>");
-		out.append("<div class=\"col-md-6\">");
-		out.append("<p><strong>Ngày khởi hành:</strong> <span id=\"departureDate\">" + to.getDepartureDate()
-				+ "</span></p>");
-		out.append(
-				"<p><strong>Ngày trở về:</strong> <span id=\"returnDate\">" + to.getReturnDate() + "</span></p>");
-		out.append("<p><strong>Chi phí người lớn:</strong> <span id=\"status\">" + to.getAdultTourCost()
-				+ "</span></p>");
-		out.append(
-				"<p><strong>Chi phí trẻ em:</strong> <span id=\"status\">" + to.getChildTourCost() + "</span></p>");
-		out.append("<p><strong>Chi phí trẻ 6-10 tuổi:</strong> <span id=\"status\">" + to.getToddlerTourCost()
-				+ "</span></p>");
-		out.append("<p><strong>Chi phí trẻ sơ sinh:</strong> <span id=\"status\">" + to.getBabyTourCost()
-				+ "</span></p>");
-		out.append("<p><strong>Số người tham gia tối đa:</strong> <span id=\"status\">" + to.getMaximumCapacity()
-				+ "</span></p>");
-		out.append("<p><strong>Còn lại (chỗ):</strong> <span id=\"status\">" + to.getAvailableCapacity()
-				+ "</span></p>");
-		out.append("<p><strong>Người điều hành:</strong> <span id=\"manager\">"
-				+ to.getTourOperator().getFirstname() + " " + to.getTourOperator().getLastname() + "</span></p>");
-		out.append("</div>");
-		out.append("</div>");
-		out.append("</div>");
-		out.append("<div class=\"modal-footer\">");
-		out.append("<button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Đóng</button>");
-		out.append("</div>");
-		out.append("</div>");
-		out.append("  </div>");
-		out.append("</div>");
-		
-		
-		
-		return out;
+	    // Cột trái
+	    out.append("<div class=\"col-md-6\">");
+	    out.append("<p><strong><i class='bi bi-hash'></i> ID đơn vị tour:</strong> <span>" + to.getTourUnitId() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-geo-alt'></i> Trực thuộc tour:</strong> <span>" + to.getTour().getTourName() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-person'></i> Giá người lớn:</strong> <span>" + to.getAdultTourPrice() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-emoji-smile'></i> Giá trẻ em:</strong> <span>" + to.getChildTourPrice() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-person-badge'></i> Giá trẻ em 6-10 tuổi:</strong> <span>" + to.getToddlerTourPrice() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-baby'></i> Giá trẻ sơ sinh:</strong> <span>" + to.getBabyTourPrice() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-house'></i> Giá phòng đơn:</strong> <span>" + to.getPrivateRoomPrice() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-cash-coin'></i> Tổng giá dịch vụ:</strong> <span>" + to.getTotalAdditionalCost() + "</span></p>");
+	    if(to.getFestival()!= null)
+	        out.append("<p><strong><i class='bi bi-calendar-event'></i> Lễ hội:</strong> <span>" + to.getFestival().getFestivalName() + "</span></p>");
+	    if (to.getDiscount() != null)
+	        out.append("<p><strong><i class='bi bi-tag'></i> Giảm giá:</strong> <span>" + to.getDiscount().getDiscountName() + "</span></p>");
+	    out.append("</div>");
+
+	    // Cột phải
+	    out.append("<div class=\"col-md-6\">");
+	    out.append("<p><strong><i class='bi bi-box-arrow-right'></i> Ngày khởi hành:</strong> <span>" + to.getDepartureDate() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-box-arrow-left'></i> Ngày trở về:</strong> <span>" + to.getReturnDate() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-currency-dollar'></i> Chi phí người lớn:</strong> <span>" + to.getAdultTourCost() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-currency-dollar'></i> Chi phí trẻ em:</strong> <span>" + to.getChildTourCost() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-currency-dollar'></i> Chi phí trẻ 6-10 tuổi:</strong> <span>" + to.getToddlerTourCost() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-currency-dollar'></i> Chi phí trẻ sơ sinh:</strong> <span>" + to.getBabyTourCost() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-people'></i> Số người tham gia tối đa:</strong> <span>" + to.getMaximumCapacity() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-check-circle'></i> Còn lại (chỗ):</strong> <span>" + to.getAvailableCapacity() + "</span></p>");
+	    out.append("<p><strong><i class='bi bi-person-gear'></i> Người điều hành:</strong> <span>" + to.getTourOperator().getFirstname() + " " + to.getTourOperator().getLastname() + "</span></p>");
+	    out.append("</div>");
+
+	    out.append("</div>"); // end row
+	    out.append("</div>"); // end modal-body
+	    out.append("<div class=\"modal-footer\">");
+	    out.append("<button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Đóng</button>");
+	    out.append("</div>");
+	    out.append("</div>");
+	    out.append("  </div>");
+	    out.append("</div>");
+
+	    return out;
 	}
+
 	private static StringBuilder getDelModal(TourUnit to)
 	{
 		StringBuilder out = new StringBuilder("");

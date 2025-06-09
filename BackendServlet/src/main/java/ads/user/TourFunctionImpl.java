@@ -8,10 +8,12 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -939,6 +941,76 @@ public class TourFunctionImpl implements TourFunction {
 		}
 		
 		return allTour;
+	}
+
+	@Override
+	public List<Map<String, Object>> getStatsForEchart(String filter) {
+		List<Map<String, Object>> stats = new ArrayList<>();
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+        con = getConnection(cp);
+
+	    try {
+
+	        String condition = "";
+	        switch (filter) {
+	            case "day":
+	                condition = "DATE(b.booking_date) = CURDATE()";
+	                break;
+	            case "month":
+	                condition = "DATE_FORMAT(b.booking_date, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')";
+	                break;
+	            case "year":
+	            default:
+	                condition = "YEAR(b.booking_date) = YEAR(NOW())";
+	                break;
+	        }
+
+	        String sql = "SELECT c.category_name AS category, COUNT(*) AS total " +
+	                     "FROM booking b " +
+	                     "JOIN tour_unit tu ON b.tour_unit_id = tu.tour_unit_id " +
+	                     "JOIN tour t ON tu.tour_id = t.tour_id " +
+	                     "JOIN category c ON t.category_id = c.category_id " +
+	                     "WHERE " + condition + " " +
+	                     "GROUP BY c.category_name";
+
+	        stmt = con.prepareStatement(sql);
+	        rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	            Map<String, Object> row = new HashMap<>();
+	            row.put("category", rs.getString("category"));
+	            row.put("total", rs.getInt("total"));
+	            stats.add(row);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        if(stmt != null )
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        if(rs != null )
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    }
+
+	    return stats;
+
 	}
 	
 }

@@ -172,7 +172,7 @@ public class TourUnitAddServlet extends HttpServlet{
 
 		 out.append("      </div>");
 		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"childprice\" name=\"childprice\" placeholder=\"Giá trẻ em\" readonly \" >");
+		 out.append("        <input type=\"text\" class=\"form-control\" id=\"childprice\" name=\"childprice\" placeholder=\"Giá trẻ em\" readonly \" required>");
 		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Giá trẻ em</label>");
 		 out.append("      </div>");
 		 out.append("      <div class=\"form-floating mb-3 col\">");
@@ -207,13 +207,13 @@ public class TourUnitAddServlet extends HttpServlet{
 		 out.append("    </div>");
 		 out.append("    <div class=\"row\">");
 		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"privateRoom\"  name=\"privateRoom\" placeholder=\"Giá phòng riêng\" \">");
+		 out.append("        <input type=\"text\" class=\"form-control\" id=\"privateRoom\"  name=\"privateRoom\" placeholder=\"Giá phòng riêng\" \" required>");
 		 out.append("        <label for=\"privateRoom\" class=\"ms-2\">Giá phòng riêng</label>");
 	     out.append(" <div class=\"invalid-feedback\" id=\"privateroom-feedback\"></div>");
 
 		 out.append("      </div>");
 		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"additionalCost\" name=\"additionalCost\" placeholder=\"Chi phí phát sinh\" \">");
+		 out.append("        <input type=\"text\" class=\"form-control\" id=\"additionalCost\" name=\"additionalCost\" placeholder=\"Chi phí phát sinh\" \" required>");
 		 out.append("        <label for=\"additionalCost\" class=\"ms-2\">Chi phí phát sinh</label>");
 	     out.append(" <div class=\"invalid-feedback\" id=\"totaladditional-feedback\"></div>");
 
@@ -288,7 +288,7 @@ public class TourUnitAddServlet extends HttpServlet{
 		  out.append("const totaladditionalFB = document.getElementById('totaladditional-feedback');");
 		  out.append("privateroom.addEventListener('change', function () {");
 		  out.append("  const room = this.value;");
-		  out.append("  if(room < 0)");
+		  out.append("  if(room < 0 || isNaN(room))");
 		  out.append("  {");
 		  out.append("    this.classList.add('is-invalid');");
 		  out.append("    this.value = '';");
@@ -503,7 +503,10 @@ public class TourUnitAddServlet extends HttpServlet{
 		tu.setTour(TourFunctionImpl.getInstance().getTourByTourId(req.getParameter("tourId")));
 		tu.setTourUnitId(req.getParameter("tourUnitId"));
 		tu.setFestival(FestivalFunctionImpl.getInstance().getById(Integer.parseInt(req.getParameter("festival")))); 
+		if(!req.getParameter("discount").equalsIgnoreCase("null"))
 		tu.setDiscount(DiscountFunctionImpl.getInstance().getById(Integer.parseInt(req.getParameter("discount")))); 
+		else
+		tu.setDiscount(null); 
 		tu.setMaximumCapacity(Short.parseShort(req.getParameter("availableCapacity")));
 		tu.setAvailableCapacity(Short.parseShort(req.getParameter("availableCapacity")));
 		tu.setTourUnitId(req.getParameter("tourUnitId"));

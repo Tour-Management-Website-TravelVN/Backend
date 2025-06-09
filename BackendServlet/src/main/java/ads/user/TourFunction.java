@@ -1,6 +1,7 @@
 package ads.user;
 
 import java.util.List;
+import java.util.Map;
 
 import ads.objects.Tour;
 import ads.objects.TourProgram;
@@ -15,4 +16,7 @@ public interface TourFunction {
 	String getTourNameByTourId(String tourId);
 	List<Tour> getAllTourNameAndId();
 	boolean updateTour(Tour tour, String delImages, List<String> imgUrls, List<TourProgram> programs, int categoryId, int touId);
+	List<Map<String, Object>> getStatsForEchart(String filter);
+	
+	
 }
