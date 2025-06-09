@@ -35,18 +35,18 @@ public class SchedulerUtil implements Runnable, ServletContextListener {
 	
 	private static String stackedBarChartDataFile /* = "data/StackedBarChartData.dat" */;
 
-//	private static volatile SchedulerUtil instance;
-//	
-//	public static SchedulerUtil getInstance() {
-//		if(instance == null) {
-//			synchronized (SchedulerUtil.class) {
-//				if(instance==null) {
-//					instance = new SchedulerUtil();
-//				}
-//			}
-//		}
-//		return instance;
-//	}
+	private static volatile SchedulerUtil instance;
+	
+	public static SchedulerUtil getInstance() {
+		if(instance == null) {
+			synchronized (SchedulerUtil.class) {
+				if(instance==null) {
+					instance = new SchedulerUtil();
+				}
+			}
+		}
+		return instance;
+	}
 
 	private void saveStackedBarChartData() {
 		List<BookingAggregate> data = StatisticFunctionImpl.getInstance().getStackedBarChartData();
@@ -103,7 +103,7 @@ public class SchedulerUtil implements Runnable, ServletContextListener {
 		saveStackedBarChartData();
 		
 		// Chạy lần đầu ngay lập tức, sau đó mỗi 10 phút
-		scheduler.scheduleAtFixedRate(new SchedulerUtil(), // task cần chạy
+		scheduler.scheduleAtFixedRate(/*new SchedulerUtil()*/ SchedulerUtil.getInstance(), // task cần chạy
 				10, // delay ban đầu (0 giây = chạy ngay)
 				10, // lặp lại sau mỗi 10 phút
 				TimeUnit.MINUTES);

@@ -45,8 +45,8 @@ public class StatisticFunctionImpl implements StatisticFunction {
 	 */
 	public Connection getConnection(ConnectionPool cp) {
 		// TODO Auto-generated constructor stub
-		try {
-			Connection con = null;
+		Connection con = null;
+		try {	
 			// Xin ket noi de lam viec
 			con = StatisticFunctionImpl.cp.getConnection("Statistic");
 
@@ -61,6 +61,14 @@ public class StatisticFunctionImpl implements StatisticFunction {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			if(con!=null)
+				try {
+					this.cp.releaseConnection(con, "Statistic");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 		return null;
@@ -99,7 +107,7 @@ public class StatisticFunctionImpl implements StatisticFunction {
 			try {
 				if (pre != null)
 					pre.close();
-				if(con!=null) con.close();
+				if(con!=null) this.cp.releaseConnection(con, "Statistic");
 				if(rs!=null) rs.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
