@@ -120,7 +120,7 @@ public class TourOperatorFunctionImpl implements TourOperatorFunction {
 				result.close();
 				if(p != null)
 				p.close();
-				
+			this.cp.releaseConnection(con, "Tour_Operator");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

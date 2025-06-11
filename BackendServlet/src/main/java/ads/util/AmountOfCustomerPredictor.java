@@ -4,6 +4,9 @@ import weka.core.Instances;
 import weka.experiment.InstanceQuery;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import ads.objects.Discount;
@@ -16,6 +19,7 @@ import lombok.Setter;
 import lombok.ToString;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instance;
+import weka.core.Attribute;
 import weka.core.DenseInstance;
 
 @Getter
@@ -40,8 +44,50 @@ public class AmountOfCustomerPredictor {
 
 
 	        model.buildClassifier(dataset);
-	        System.out.println(dataset);
+	        
 	    }
+	    public static LinearRegression trainModel(Instances trainingData) throws Exception {
+	        trainingData.setClassIndex(trainingData.numAttributes() - 1); // total_bookings
+	        LinearRegression model = new LinearRegression();
+	        model.buildClassifier(trainingData);
+	        return model;
+	    }
+	    
+	    public static ArrayList<Map<String, Double>> predictNextYearBookings(LinearRegression model, Instances inputData) throws Exception {
+	        ArrayList<Map<String, Double>> results = new ArrayList<>();
+
+	        // Tạo cấu trúc giống dữ liệu huấn luyện (không có tên category)
+	        ArrayList<Attribute> attributes = new ArrayList<>();
+	        attributes.add(new Attribute("adult_price"));
+	        attributes.add(new Attribute("discount_value"));
+	        attributes.add(new Attribute("max_capacity"));
+	        attributes.add(new Attribute("rating_value"));
+	        attributes.add(new Attribute("total_bookings")); // class attribute
+
+	        Instances predictionStructure = new Instances("prediction", attributes, 0);
+	        predictionStructure.setClassIndex(predictionStructure.numAttributes() - 1);
+
+	        for (int i = 0; i < inputData.numInstances(); i++) {
+	            Instance row = inputData.instance(i);
+	            String category = row.stringValue(0); // category_name
+
+	            Instance inst = new DenseInstance(predictionStructure.numAttributes());
+	            inst.setDataset(predictionStructure);
+
+	            // Gán các giá trị từ input
+	            for (int j = 1; j < row.numAttributes(); j++) {
+	                inst.setValue(j - 1, row.value(j));
+	            }
+
+	            double predictedBookings = model.classifyInstance(inst);
+	            Map<String, Double> result = new HashMap<>();
+	            result.put(category, predictedBookings);
+	            results.add(result);
+	        }
+
+	        return results;
+	    }
+
 
 	    public static double predict(
 	    	    double adultPrice,

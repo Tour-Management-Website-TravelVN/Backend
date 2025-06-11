@@ -2,19 +2,26 @@ package ads.to;
 
 import java.io.IOException;
 
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import ads.objects.TourUnit;
 import ads.user.TourUnitFunctionImpl;
 import ads.util.AmountOfCustomerPredictor;
+import ads.util.LoadData;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import weka.core.Instances;
+import weka.*;
+import weka.classifiers.functions.LinearRegression;
 
 @WebServlet("/to/tour/Tour-Unit")
 public class TourUnitServlet extends HttpServlet {
@@ -68,6 +75,8 @@ public class TourUnitServlet extends HttpServlet {
 		out.append("  <!-- Template Main CSS File -->");
 		out.append("  <link href=\"../../css/style.css\" rel=\"stylesheet\">");
 
+		
+		   
 		RequestDispatcher h = request.getRequestDispatcher("/he");
 		String message = request.getParameter("message");
 		String error = request.getParameter("error");
@@ -140,103 +149,96 @@ public class TourUnitServlet extends HttpServlet {
 		out.append("");
 		out.append("<div class=\"card\">");
 		out.append("<div class=\"card-body\">");
-		out.append("<!-- Table with stripped rows -->");
-		out.append("<table class=\"table datatable table-striped\" style=\"font-size: small;\">");
-		out.append("<thead >");
-		out.append("<tr class=\"d-flex\">");
-		
-		out.append("<div class=\"row\">");
+		// Java code để tạo HTML responsive
+		out.append("<!-- Container cho nút hành động và bảng -->");
+		out.append("<div class='container-fluid'>");
 
-		out.append("<a href=\"Tour-Unit-Add?tourId="+tour_id+"\" class=\"btn-primary col\">");
-		out.append(
-				"<div class=\"d-flex mt-3\"><div class=\"btn btn-success fw-bold me-3 ms-auto\"> <i class=\"bi bi-plus-circle-fill\"></i>");
-		out.append("Thêm đơn vị tour mới </div>");
-		out.append("</a>");
-		out.append("<a href=\"?tour_id="+tour_id+"&recordArea=1\" id=\"load\" class=\"btn-primary col\">");
-		out.append(
-				"<div class=\"d-flex\"><div class=\"fw-bold me-3 ms-auto fw-bold fs-3\"> <i class=\"bi bi-arrow-repeat\"></i>");
+		// Nút hành động (Thêm đơn vị tour, Tải lại) được tách ra khỏi bảng
+		out.append("<div class='d-flex justify-content-end mb-3'>");
+		out.append("<a href='Tour-Unit-Add?tourId=" + tour_id + "' class='btn btn-success fw-bold me-2'>");
+		out.append("<i class='bi bi-plus-circle-fill'></i> Thêm đơn vị tour mới</a>");
+		out.append("<a href='?tour_id=" + tour_id + "&recordArea=1' id='load' class='btn btn-primary fw-bold'>");
+		out.append("<i class='bi bi-arrow-repeat'></i> Tải lại</a>");
 		out.append("</div>");
-		
-		out.append("</a>");
-		out.append("</div>");
-		
-		out.append("</tr>");
+
+		// Bảng responsive
+		out.append("<div class='table-responsive'>"); // Thêm wrapper để hỗ trợ cuộn ngang
+		out.append("<table class='table datatable table-striped' style='font-size: small;'>");
+		out.append("<thead>");
 		out.append("<tr>");
-		out.append("<th>");
-		out.append("<b>ID đơn vị tour</b>");
-		out.append("</th>");
+		out.append("<th>ID đơn vị tour</th>");
 		out.append("<th>Giá người lớn</th>");
 		out.append("<th>Tối đa (người)</th>");
-		out.append("<th>Người điều hành</th>");
-		out.append("<th data-type=\"date\" data-format=\"YYYY/DD/MM\">Ngày khởi hành</th>");
-		out.append("<th data-type=\"date\" data-format=\"YYYY/DD/MM\">Ngày trở về</th>");
-		out.append("<th class=\"text-warning\">Số lượng (dự kiến)</th>");
-		out.append("<th>Tuỳ chọn</th>");
+		out.append("<th class='d-none d-lg-table-cell'>Người điều hành</th>"); // Ẩn trên mobile
+		out.append("<th data-type='date' data-format='YYYY/DD/MM'>Ngày khởi hành</th>");
+		out.append("<th data-type='date' data-format='YYYY/DD/MM'>Ngày trở về</th>");
+		out.append("<th class='text-warning'>Số lượng (dự kiến)</th>");
+		out.append("<th class='d-none d-md-table-cell'>Tùy chọn</th>"); // Ẩn trên mobile nhỏ
 		out.append("</tr>");
 		out.append("</thead>");
 		out.append("<tbody>");
+
 		TourUnitFunctionImpl dao = TourUnitFunctionImpl.getInstance();
-		int maxPage = TourUnitFunctionImpl.getInstance().getMaxPage();
-		ArrayList<TourUnit> tmp = dao.getAllTourUnit(tour_id,Integer.parseInt(request.getParameter("recordArea")));
-		tmp.forEach(to -> {		
-			out.append("<tr>");
-			out.append("<td id=\"tourUnitId\">" + to.getTourUnitId() + "</td>");
-			out.append("<td id=\"adultPrice\">" + to.getAdultTourPrice() + "</td>");
-			out.append("<td id=\"maximumCapacity\">" + to.getMaximumCapacity() + "</td>");
-			out.append("<td id=\"tourOperator\">" + to.getTourOperator().getFirstname() + " "
-					+ to.getTourOperator().getLastname() + "</td>");
-			out.append("<td id=\"departureDate\">" + to.getDepartureDate() + "</td>");
-			out.append("<td id=\"returnDate\">" + to.getReturnDate() + "</td>");
-			int p = 0;
-			try {
-				AmountOfCustomerPredictor.trainModel();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				if(to.getDiscount() != null)
-				{
-					p = (int) AmountOfCustomerPredictor.predict(to.getAdultTourPrice().doubleValue(), 5, to.getDiscount().getDiscountValue().doubleValue(), to.getPrivateRoomPrice().doubleValue(), to.getChildTourPrice().doubleValue(), to.getMaximumCapacity().shortValue()) ;
-					if( p > 0 )
-					out.append("<td id=\"predictACustomer\" class=\"bg-warning\">" +p + "</td>");
-					else
-						out.append("<td id=\"predictACustomer\" class=\"bg-warning\">0</td>");
+		ArrayList<TourUnit> tmp = dao.getAllTourUnit(tour_id, Integer.parseInt(request.getParameter("recordArea")));
+		tmp.forEach(to -> {
+		    out.append("<tr>");
+		    out.append("<td id='tourUnitId'>" + to.getTourUnitId() + "</td>");
+		    out.append("<td id='adultPrice'>" + to.getAdultTourPrice() + "</td>");
+		    out.append("<td id='maximumCapacity'>" + to.getMaximumCapacity() + "</td>");
+		    out.append("<td id='tourOperator' class='d-none d-lg-table-cell'>" + 
+		               to.getTourOperator().getFirstname() + " " + to.getTourOperator().getLastname() + "</td>");
+		    out.append("<td id='departureDate'>" + to.getDepartureDate() + "</td>");
+		    out.append("<td id='returnDate'>" + to.getReturnDate() + "</td>");
 
-				}
-				else
-				{
-					p = (int) AmountOfCustomerPredictor.predict(to.getAdultTourPrice().doubleValue(), 5, 0, to.getPrivateRoomPrice().doubleValue(), to.getChildTourPrice().doubleValue(), to.getMaximumCapacity().shortValue());
-					if(p > 0) {out.append("<td id=\"predictACustomer\" class=\"bg-warning\">" +p  + "</td>"); }else { out.append("<td id=\"predictACustomer\" class=\"bg-warning\">0</td>");}
-					
+		    // Xử lý dự đoán số lượng khách (Weka)
+		    int p = 0;
+		    try {
+		        AmountOfCustomerPredictor.trainModel();
+		        if (to.getDiscount() != null) {
+		            p = (int) AmountOfCustomerPredictor.predict(
+		                to.getAdultTourPrice().doubleValue(), 5, 
+		                to.getDiscount().getDiscountValue().doubleValue(), 
+		                to.getPrivateRoomPrice().doubleValue(), 
+		                to.getChildTourPrice().doubleValue(), 
+		                to.getMaximumCapacity().shortValue()
+		            );
+		        } else {
+		            p = (int) AmountOfCustomerPredictor.predict(
+		                to.getAdultTourPrice().doubleValue(), 5, 0, 
+		                to.getPrivateRoomPrice().doubleValue(), 
+		                to.getChildTourPrice().doubleValue(), 
+		                to.getMaximumCapacity().shortValue()
+		            );
+		        }
+		        out.append("<td id='predictACustomer' class='bg-warning'>" + (p > 0 ? p : 0) + "</td>");
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        out.append("<td id='predictACustomer' class='bg-warning'>0</td>");
+		    }
 
-				}
+		    // Cột tùy chọn (Sửa, Xóa, Chi tiết)
+		    out.append("<td class='d-none d-md-table-cell'>");
+		    out.append("<a href='Tour-Unit-Edit?tourUnitId=" + to.getTourUnitId() + 
+		               "' class='btn btn-sm btn-primary me-1' data-bs-toggle='tooltip' title='Sửa'>");
+		    out.append("<i class='bi bi-pencil-fill'></i></a>");
+		    out.append("<a href='#' class='btn btn-sm btn-danger me-1' data-bs-toggle='modal' " +
+		               "data-bs-target='#staticBackdrop_" + to.getTourUnitId() + "' data-bs-toggle='tooltip' title='Xóa'>");
+		    out.append("<i class='bi bi-trash3-fill'></i></a>");
+		    out.append("<a href='#' class='btn btn-sm btn-secondary' data-bs-toggle='modal' " +
+		               "data-bs-target='#tourUnitDetailModal_" + to.getTourUnitId() + "' data-bs-toggle='tooltip' title='Chi tiết'>");
+		    out.append("<i class='bi bi-info-circle'></i></a>");
+		    out.append("</td>");
+		    out.append("</tr>");
 
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			out.append("<td >");
-			out.append("<a  href=\"Customer-Edit?tourUnitId=" + to.getTourUnitId()
-					+ "\" class=\"btn btn-sm btn-primary me-1\"><i class=\"bi bi-pencil-fill\"></i>");
-			out.append("</a>");
-			out.append("<a href=\"#\" class=\"btn btn-sm btn-danger me-1\" data-bs-toggle=\"modal\" ");
-			out.append("data-bs-target=\"#staticBackdrop_" + to.getTourUnitId() + "\">");
-			out.append("<i class=\"bi bi-trash3-fill\"></i></a>");
-			out.append("<a href=\"#\" class=\"btn btn-sm btn-secondary\" data-bs-toggle=\"modal\" ");
-			out.append("data-bs-target=\"#tourUnitDetailModal_" + to.getTourUnitId() + "\">");
-			out.append("<i class=\"bi bi-info-circle\"></i></a>");
-			out.append("</td>");
-			out.append("</tr>");
-			out.append("<!-- Modal Xem Chi Tiết -->");
-			out.append(TourUnitServlet.getDetailModal(to));
-			out.append("<!-- Modal Xoá -->");
-			out.append(TourUnitServlet.getDelModal(to));
+		    // Modal chi tiết và xóa
+		    out.append(TourUnitServlet.getDetailModal(to));
+		    out.append(TourUnitServlet.getDelModal(to));
 		});
 
 		out.append("</tbody>");
 		out.append("</table>");
+		out.append("</div>"); // Đóng table-responsive
+		out.append("</div>"); // Đóng container-fluid
 		out.append("<!-- End Table with stripped rows -->");
 		out.append("");
 		out.append("</div>");

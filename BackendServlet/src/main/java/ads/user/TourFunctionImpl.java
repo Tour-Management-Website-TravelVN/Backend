@@ -399,7 +399,9 @@ public class TourFunctionImpl implements TourFunction {
 		} finally {
 			try {
 				this.cp.releaseConnection(this.con, "Tour");
+				if(rs !=null)
 				rs.close();
+				if(pre != null)
 				pre.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

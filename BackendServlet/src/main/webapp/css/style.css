@@ -1267,6 +1267,36 @@ a{
   transform: rotate(45deg);
   display: inline-block;
 }
+/* Đảm bảo bảng cuộn ngang trên mobile */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Cuộn mượt trên iOS */
+}
+
+/* Tùy chỉnh kích thước cột */
+.table th, .table td {
+    white-space: nowrap; /* Ngăn văn bản xuống dòng */
+    padding: 8px; /* Giảm padding để tiết kiệm không gian */
+}
+
+/* Ẩn cột trên màn hình nhỏ */
+@media (max-width: 767px) {
+    .table th, .table td {
+        font-size: 12px; /* Giảm cỡ chữ trên mobile */
+    }
+}
+
+/* Tăng kích thước nút trên mobile */
+@media (max-width: 576px) {
+    .btn-sm {
+        padding: 6px 10px; /* Tăng kích thước nút */
+    }
+}
+
+/* Tooltip cho nút hành động */
+[data-bs-toggle="tooltip"] {
+    position: relative;
+}
 /* .img-mi::after:hover{
   
 } */

@@ -15,6 +15,10 @@ import java.util.ArrayList;
 
 import ads.ConnectionPool;
 import ads.ConnectionPoolImpl;
+import ads.objects.Discount;
+import ads.objects.Festival;
+import ads.objects.Tour;
+import ads.objects.TourOperator;
 import ads.objects.TourUnit;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,9 +84,20 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 		this.con = getConnection(this.cp);
 		ArrayList<TourUnit> list = new ArrayList<>();
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT * FROM tour_unit where tour_id = ? LIMIT ")
-		.append((page-1)*MAX_ITEM_OF_PAGE).append(",").append(page*MAX_ITEM_OF_PAGE);
-		
+		sql.append("SELECT tu.*, ");
+		sql.append("t.tour_name, ");
+		sql.append("f.festival_name, ");
+		sql.append("d.discount_name, d.discount_value, d.discount_unit, ");
+		sql.append("op.lastname AS lastname, ");
+		sql.append("op.firstname AS firstname ");
+		sql.append("FROM tour_unit tu ");
+		sql.append("JOIN tour t ON tu.tour_id = t.tour_id ");
+		sql.append("LEFT JOIN festival f ON tu.festival_id = f.festival_id ");
+		sql.append("LEFT JOIN discount d ON tu.discount_id = d.discount_id ");
+		sql.append("LEFT JOIN tour_operator op ON tu.tour_operator_id = op.tour_operator_id ");
+		sql.append("WHERE tu.tour_id = ? ");
+		sql.append("LIMIT ").append((page - 1) * MAX_ITEM_OF_PAGE).append(", ").append(MAX_ITEM_OF_PAGE);
+
 	    PreparedStatement pre = null;
         ResultSet rs = null;
 	    try  {
@@ -111,12 +126,23 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 	            tu.setToddlerTourCost(rs.getBigDecimal("toddler_tour_cost"));
 	            tu.setToddlerTourPrice(rs.getBigDecimal("toddler_tour_price"));
 	            tu.setTotalAdditionalCost(rs.getBigDecimal("total_additional_cost"));
-	            tu.setDiscount(DiscountFunctionImpl.getInstance().getById(rs.getInt("discount_id")));
+	            tu.setDiscount(Discount.builder()
+	            		.discountName(rs.getString("discount_name"))
+	            		.discountValue(rs.getBigDecimal("discount_value"))
+	            		.id(rs.getInt("discount_id")).build());
 	            // Nếu cần load thêm các entity liên quan
 	           //  tu.setDiscount(discountDAO.getById(rs.getInt("discount_id")));
-	             tu.setFestival(FestivalFunctionImpl.getInstance().getById(rs.getInt("festival_id")));
-	             tu.setTour(TourFunctionImpl.getInstance().getTourByTourId(rs.getString("tour_id")));
-	             tu.setTourOperator(TourOperatorFunctionImpl.getInstance().getById(""+rs.getInt("tour_operator_id")));
+	             tu.setFestival(Festival.builder()
+	            		 .festivalName(rs.getString("festival_name"))
+	            		 .build() );
+	             tu.setTour(Tour.builder()
+	            		 .tourId(rs.getString("tour_id"))
+	            		 .tourName(rs.getString("tour_name"))
+	            		 .build()  );
+	             tu.setTourOperator(TourOperator.builder()
+	            		 .firstname(rs.getString("firstname"))
+	            		 .lastname(rs.getString("lastname"))
+	            		 .build());
 	             tu.setLastUpdatedOperator(TourOperatorFunctionImpl.getInstance().getById(""+rs.getInt("last_updated_operator")));
 	            list.add(tu);
 	        }

@@ -21,7 +21,7 @@ public class CustomerFunctionImpl implements CustomerFunction{
 	// Đối tượng kết nối
 	private Connection con;
 
-	private final int MAX_ITEM_OF_PAGE = 500;
+	private final int MAX_ITEM_OF_PAGE = 300;
 
 	private static volatile CustomerFunctionImpl instance;
 

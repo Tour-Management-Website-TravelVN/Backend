@@ -5,17 +5,22 @@ import java.awt.List;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 import ads.user.TourFunctionImpl;
+import ads.util.AmountOfCustomerPredictor;
+import ads.util.LoadData;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import weka.classifiers.functions.LinearRegression;
+import weka.core.Instances;
 
 @WebServlet("/to/tour/ad-dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -28,20 +33,51 @@ public class DashboardServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		 resp.setCharacterEncoding("UTF-8");
+		 Instances trainingData;
+			try {
+				trainingData = LoadData.getCategoryYearlyBookingData();
+			 Instances inputData = LoadData.getInputDataForCurrentYear();
 
+			 LinearRegression model = AmountOfCustomerPredictor.trainModel(trainingData);
+
+			  
+			
 		    String username = "kdt";
 
 		    String filter = req.getParameter("filter");
 
+		    resp.setContentType("application/json");
+		    PrintWriter out = resp.getWriter();
+		    Gson gson = new Gson();
+
 		    if ("year".equals(filter) || "month".equals(filter) || "day".equals(filter)) {
-		        resp.setContentType("application/json");
 		        ArrayList<Map<String, Object>> stats = (ArrayList<Map<String, Object>>) TourFunctionImpl.getInstance().getStatsForEchart(filter);
-		        Gson gson = new Gson();
-		        PrintWriter out = resp.getWriter(); // ✅ Mở writer sau khi đã biết là trả JSON
 		        out.print(gson.toJson(stats));
-		        out.flush(); // Không bắt buộc, nhưng nên có
+		        out.flush();
 		        return;
 		    }
+
+		    if ("nextyear".equals(filter)) {
+		         ArrayList<Map<String, Double>> prediction =  AmountOfCustomerPredictor.predictNextYearBookings(model, inputData);
+		         ArrayList<Map<String, Object>> finalResult = new ArrayList<>();
+
+		         for (Map<String, Double> entry : prediction) {
+		             for (Map.Entry<String, Double> e : entry.entrySet()) {
+		                 Map<String, Object> map = new HashMap<>();
+		                 map.put("category", e.getKey()); // String
+		                 map.put("total", e.getValue().intValue()); // Chuyển từ Double → Integer
+		                 finalResult.add(map);
+		             }
+		         }
+		        out.print(gson.toJson(finalResult));
+		        out.flush();
+		        return;
+		    }
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		    // ✅ Trả HTML
 		    resp.setContentType("text/html; charset=UTF-8");
@@ -270,12 +306,12 @@ public class DashboardServlet extends HttpServlet {
 				"                    <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
 		out.append(
 				"                        <img src=\"assets/img/profile-img.jpg\" alt=\"Profile\" class=\"rounded-circle\">");
-		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\">" + username + "</span>");
+		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\"> kdt</span>");
 		out.append("                    </a><!-- End Profile Iamge Icon -->");
 		out.append("");
 		out.append("                    <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow profile\">");
 		out.append("                        <li class=\"dropdown-header\">");
-		out.append("                            <h6>" + username + "</h6>");
+		out.append("                            <h6>kdt</h6>");
 		out.append("                            <span>Người quản lý</span>");
 		out.append("                        </li>");
 		out.append("                        <li>");
@@ -684,6 +720,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                                    <h6>Lọc</h6>");
 		out.append("                                </li>");
 		out.append("");
+		out.append("<li><button class=\"dropdown-item bg-warning\" onclick=\"loadChart('nextyear')\">Năm sau (Dự đoán)</button></li>");
 		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('year')\">Năm</button></li>");
 		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('month')\">Tháng</button></li>");
 		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('day')\">Ngày</button></li>");
@@ -712,7 +749,7 @@ public class DashboardServlet extends HttpServlet {
         out.append("      name: item.category");
         out.append("    }));");
         out.append("document.getElementById('fil').innerHTML = 'Xu hướng Tour <span>| ' + ");
-        out.append("(filter === 'year' ? 'Năm' : (filter === 'month' ? 'Tháng' : 'Ngày')) + '</span>'; ");
+        out.append("(filter === 'year' ? 'Năm' : (filter === 'month' ? 'Tháng' :(filter === 'day' ? 'Ngày':'Năm sau'))) + '</span>'; ");
 
         
         out.append("    var chartDom = document.querySelector('#trafficChart');");
