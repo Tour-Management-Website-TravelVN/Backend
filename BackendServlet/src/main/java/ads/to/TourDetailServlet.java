@@ -28,14 +28,14 @@ public class TourDetailServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		
-		String tourId = request.getParameter("tourid");
-		if(tourId == null) {
-			response.sendRedirect("/adv/to/tour");
-			return;
-		};
+//		String tourId = request.getParameter("tourid");
+//		if(tourId == null) {
+//			response.sendRedirect("/adv/to/tour");
+//			return;
+//		};
 		
 		HttpSession session = request.getSession();
-		String actionTour = (String) session.getAttribute("actionTour");
+		String actionTour = (String) session.getAttribute("actxionTour");
 		if(actionTour!=null) session.removeAttribute("actionTour");
 		
 		PrintWriter out = response.getWriter();
