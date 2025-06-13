@@ -14,9 +14,13 @@ public class JDBCconfig {
         String dbDriver = "com.mysql.jdbc.Driver";
         String dbURL = "jdbc:mysql:// localhost:3306/";
         // Database name to access
-        String dbName = "tour_booking_system";
-        String dbUsername = "Unknown";
-        String dbPassword = "Drsunknoen";
+//        String dbName = "tour_booking_system";
+//        String dbUsername = "Unknown";
+//        String dbPassword = "Drsunknoen";
+        
+        String dbName = "tour_booking_system_long";
+        String dbUsername = "root";
+        String dbPassword = "";
   
         Class.forName(dbDriver);
         Connection con = DriverManager.getConnection(dbURL + dbName,

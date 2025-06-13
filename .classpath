@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="ads/to/" kind="src" path="BackendServlet/src/main/java"/>
+	<classpathentry kind="src" path="BackendServlet/src/main/java/ads/to"/>
+	<classpathentry kind="src" path="BackendServlet/src/test/java"/>
+	<classpathentry excluding="com/travelvn/tourbookingsytem/config/" kind="src" path="BackendSpringBoot/src/main/java"/>
+	<classpathentry kind="src" path="BackendSpringBoot/src/main/java/com/travelvn/tourbookingsytem/config"/>
+	<classpathentry kind="src" path="BackendSpringBoot/src/test/java"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

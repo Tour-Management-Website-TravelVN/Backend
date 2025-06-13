@@ -2,6 +2,7 @@ package ads.user;
 
 import java.util.ArrayList;
 
+
 import ads.objects.Customer;
 import ads.objects.TourUnit;
 
@@ -15,4 +16,6 @@ public interface CustomerFunction {
 	public boolean addTourUnit(TourUnit t);
 	public boolean deleteById(String id);
 	public int getMaxPage();
+	public ArrayList<Customer> getFirst100Customers();
+
 }

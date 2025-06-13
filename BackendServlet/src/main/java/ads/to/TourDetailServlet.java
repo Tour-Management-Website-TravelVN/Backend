@@ -35,7 +35,7 @@ public class TourDetailServlet extends HttpServlet {
 		};
 		
 		HttpSession session = request.getSession();
-		String actionTour = (String) session.getAttribute("actionTour");
+		String actionTour = (String) session.getAttribute("actxionTour");
 		if(actionTour!=null) session.removeAttribute("actionTour");
 		
 		PrintWriter out = response.getWriter();

@@ -2,16 +2,26 @@ package ads.ad;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 import ads.library.StatisticLibrary;
+import ads.objects.Booking;
+import ads.user.ReportFunction;
+import ads.user.ReportFunctionImpl;
 import ads.user.TourFunctionImpl;
 import ads.util.AmountOfCustomerPredictor;
 import ads.util.LoadData;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,11 +29,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instances;
 
 @WebServlet("/ad/ad-dashboard")
 public class DashboardServlet extends HttpServlet {
+
+	private ReportFunction reportFunction = new ReportFunctionImpl();
 
 	/**
 	 * 
@@ -74,7 +87,6 @@ public class DashboardServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		resp.setContentType("text/html; charset=UTF-8");
 
 //		HttpSession session = req.getSession(false);
 //		if (session == null || session.getAttribute("username") == null) {
@@ -83,6 +95,41 @@ public class DashboardServlet extends HttpServlet {
 //		}
 //
 //		String username = (String) session.getAttribute("username");
+		resp.setContentType("text/html; charset=UTF-8");
+
+		HttpSession session = req.getSession(false);
+		if (session == null || session.getAttribute("username") == null) {
+			resp.sendRedirect(req.getContextPath() + "/ad-login");
+			return;
+		}
+
+		String username = (String) session.getAttribute("username");
+		
+		// Định dạng tiền
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+		symbols.setGroupingSeparator('.');
+		DecimalFormat moneyFormatter = new DecimalFormat("#,##0 đ", symbols);
+		
+		// Thông tin cho biểu đồ tổng quan (3 đường) theo tháng trong năm
+		ArrayList<Object> overViewReportOfYear = reportFunction.getOverViewReportOfYear();
+		ArrayList<String> timeMonth = (ArrayList<String>) overViewReportOfYear.get(0);
+		ArrayList<BigDecimal> revenueMonth = (ArrayList<BigDecimal>) overViewReportOfYear.get(1);
+		ArrayList<BigDecimal> costMonth = (ArrayList<BigDecimal>) overViewReportOfYear.get(2);
+		ArrayList<BigDecimal> profitMonth = (ArrayList<BigDecimal>) overViewReportOfYear.get(3);
+		
+		// Thông tin cho biểu đồ tổng quan (3 đường) theo ngày trong tháng
+		ArrayList<Object> overViewReportOfMonth = reportFunction.getOverViewReportOfMonth();
+		ArrayList<String> timeDay = (ArrayList<String>) overViewReportOfMonth.get(0);
+		ArrayList<BigDecimal> revenueDay = (ArrayList<BigDecimal>) overViewReportOfMonth.get(1);
+		ArrayList<BigDecimal> costDay = (ArrayList<BigDecimal>) overViewReportOfMonth.get(2);
+		ArrayList<BigDecimal> profitDay = (ArrayList<BigDecimal>) overViewReportOfMonth.get(3);
+		
+		// Thông tin 50 Tour được đặt gần nhất
+		// TourUnitId, tourName, customerName, bookingDate, status
+		ArrayList<Booking> recentBookings = reportFunction.get50RecentBooking();
+		
+		// Thông tin 50 Tour được đặt nhiều nhất
+		ArrayList<Object> topBookingTours = reportFunction.get50TopBookingTour();
 
 		PrintWriter out = resp.getWriter();
 
@@ -100,6 +147,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("    <!-- Favicons -->");
 		out.append("  <link href=\"/adv/resources/Logo.svg\" rel=\"icon\">");
 		out.append("    <link href=\"/adv/assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
+
 		out.append("");
 		out.append("    <!-- Google Fonts -->");
 		out.append("    <link href=\"https://fonts.gstatic.com\" rel=\"preconnect\">");
@@ -119,6 +167,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("    <!-- Template Main CSS File -->");
 		out.append("    <link href=\"/adv/assets/css/style.css\" rel=\"stylesheet\">");
+
 		out.append("</head>");
 		out.append("");
 		out.append("<body>");
@@ -348,6 +397,7 @@ public class DashboardServlet extends HttpServlet {
 //		out.append("        </nav><!-- End Icons Navigation -->");
 //		out.append("");
 //		out.append("    </header><!-- End Header -->");
+
 		out.append("");
 		out.append("    <!-- ======= Sidebar ======= -->");
 		out.append("    <aside id=\"sidebar\" class=\"sidebar\">");
@@ -356,16 +406,18 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Dashboard Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link\" href=\"/Backend/ad-dashboard\">");
+
+		out.append("                <a class=\"nav-link\" href=\"" + req.getContextPath() + "/ad-dashboard\">");
 		out.append("                    <i class=\"bx bx-category\"></i>");
-		out.append("                    <span>Bảng điều khiển</span>");
+		out.append("                    <span>Tổng quan</span>");
 		out.append("                </a>");
 		out.append("            </li>");
 		out.append("            <!-- End Dashboard Nav -->");
 		out.append("");
 		out.append("            <!-- Account Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"/Backend/ad-account-management\">");
+
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-account-management\">");
 		out.append("                    <i class=\"bx bx-user-circle\"></i>");
 		out.append("                    <span>Quản lý tài khoản</span>");
 		out.append("                </a>");
@@ -374,21 +426,19 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Staff Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append(
-				"                <a class=\"nav-link collapsed\" data-bs-target=\"#staff-management-nav\" data-bs-toggle=\"collapse\" href=\"#\">");
-		out.append(
-				"                    <i class=\"bx bx-user\"></i><span>Quản lý nhân viên</span><i class=\"bi bi-chevron-down ms-auto\"></i>");
+
+		out.append("                <a class=\"nav-link collapsed\" data-bs-target=\"#staff-management-nav\" data-bs-toggle=\"collapse\" href=\"#\">");
+		out.append("                    <i class=\"bx bx-user\"></i><span>Quản lý nhân viên</span><i class=\"bi bi-chevron-down ms-auto\"></i>");
 		out.append("                </a>");
-		out.append(
-				"                <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
+		out.append("                <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
 		out.append("                    <li>");
-		out.append("                        <a href=\"staff-management-tour-operator.html\">");
-		out.append("                            <i class=\"bi bi-circle\"></i><span>Người điều hành Tour</span>");
+		out.append("                        <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
+		out.append("                            <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                    <li>");
-		out.append("                        <a href=\"staff-management-tour-guide.html\">");
-		out.append("                            <i class=\"bi bi-circle\"></i><span>Hướng dẫn viên du lịch</span>");
+		out.append("                        <a href=\"" + req.getContextPath() + "/ad-tourguide-management\">");
+		out.append("                            <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                </ul>");
@@ -397,7 +447,8 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Customer Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"customer-management.html\">");
+
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-customer-management\">");
 		out.append("                    <i class=\"bx bx-group\"></i>");
 		out.append("                    <span>Quản lý khách hàng</span>");
 		out.append("                </a>");
@@ -406,25 +457,18 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Tour Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"tour-management.html\">");
+
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tour-management\">");
 		out.append("                    <i class=\"bx bx-food-menu\"></i>");
 		out.append("                    <span>Quản lý Tour</span>");
 		out.append("                </a>");
 		out.append("            </li>");
 		out.append("            <!-- End Tour Management Nav -->");
 		out.append("");
-		out.append("            <!-- Report Nav -->");
-		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"report.html\">");
-		out.append("                    <i class=\"bx bx-bar-chart-alt-2\"></i>");
-		out.append("                    <span>Báo cáo thống kê</span>");
-		out.append("                </a>");
-		out.append("            </li>");
-		out.append("            <!-- End Report Nav -->");
-		out.append("");
+
 		out.append("            <!-- Review Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"review-management.html\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tourrating-management\">");
 		out.append("                    <i class=\"bx bx-message-square-detail\"></i>");
 		out.append("                    <span>Duyệt đánh giá</span>");
 		out.append("                </a>");
@@ -437,11 +481,11 @@ public class DashboardServlet extends HttpServlet {
 		out.append("    <main id=\"main\" class=\"main\">");
 		out.append("");
 		out.append("        <div class=\"pagetitle d-flex\">");
-		out.append("            <h1>Bảng điều khiển</h1>");
+
+		out.append("            <h1>Tổng quan</h1>");
 		out.append("            <nav class=\"ms-auto\">");
 		out.append("                <ol class=\"breadcrumb\">");
-		out.append("                    <li class=\"breadcrumb-item\"><a href=\"index.html\">Trang chủ</li></a></li>");
-		out.append("                    <li class=\"breadcrumb-item active\">Bảng điều khiển</li>");
+		out.append("                    <li class=\"breadcrumb-item active\">Tổng quan</li>");
 		out.append("                </ol>");
 		out.append("            </nav>");
 		out.append("        </div><!-- End Page Title -->");
@@ -449,119 +493,151 @@ public class DashboardServlet extends HttpServlet {
 		out.append("        <section class=\"section dashboard\">");
 		out.append("            <!-- 3 Card -->");
 		out.append("            <div class=\"row\">");
+
+		
+		// 3 Card
+		String bookingFilter = req.getParameter("bookingFilter");
+		if (bookingFilter == null) bookingFilter = "day";
+
+		String revenueFilter = req.getParameter("revenueFilter");
+		if (revenueFilter == null) revenueFilter = "day";
+
+		String customerFilter = req.getParameter("customerFilter");
+		if (customerFilter == null) customerFilter = "day";
+		
+		// Card lượt đặt Tour
+		int bookings;
+		switch (bookingFilter) {
+		    case "month" -> bookings = reportFunction.getMonthlyTourBookings();
+		    case "year" -> bookings = reportFunction.getYearlyTourBookings();
+		    default -> bookings = reportFunction.getDailyTourBookings();
+		}
+
+		String bookingFilterLabel = switch (bookingFilter) {
+		    case "month" -> "Tháng";
+		    case "year" -> "Năm";
+		    default -> "Ngày";
+		};
+		
 		out.append("                <!-- Lượng đặt Tour Card -->");
-		out.append("                <div class=\"col-xxl-4 col-md-6\">");
+		out.append("                <div class=\"col-xl-4 col-md-4 col-sm-12\">");
 		out.append("                    <div class=\"card info-card sales-card\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
-		out.append("                                <li class=\"dropdown-header text-start\">");
-		out.append("                                    <h6>Lọc</h6>");
-		out.append("                                </li>");
-		out.append("");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Năm</a></li>");
+		out.append("                                <li class=\"dropdown-header text-start\"><h6>Lọc</h6></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=day&revenueFilter=" + revenueFilter  + "&customerFilter=" + customerFilter + "\">Ngày</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=month&revenueFilter=" + revenueFilter + "&customerFilter=" + customerFilter + "\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=year&revenueFilter=" + revenueFilter + "&customerFilter=" + customerFilter + "\">Năm</a></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
 		out.append("");
 		out.append("                        <div class=\"card-body\">");
-		out.append("                            <h5 class=\"card-title\">Lượng đặt Tour <span>| Ngày</span></h5>");
+
+		out.append("                            <h5 class=\"card-title\">Lượng đặt Tour <span>| " + bookingFilterLabel + "</span></h5>");
 		out.append("");
 		out.append("                            <div class=\"d-flex align-items-center\">");
-		out.append(
-				"                                <div class=\"card-icon rounded-circle d-flex align-items-center justify-content-center\">");
+		out.append("                                <div class=\"card-icon rounded-circle d-flex align-items-center justify-content-center\">");
 		out.append("                                    <i class=\"bi bi-cart\"></i>");
 		out.append("                                </div>");
 		out.append("                                <div class=\"ps-3\">");
-		out.append("                                    <h6>145</h6>");
-		out.append(
-				"                                    <span class=\"text-success small pt-1 fw-bold\">12%</span> <span");
-		out.append("                                        class=\"text-muted small pt-2 ps-1\">gia tăng</span>");
-		out.append("");
+		out.append("                                    <h6>" + bookings + "</h6>");
 		out.append("                                </div>");
 		out.append("                            </div>");
 		out.append("                        </div>");
 		out.append("");
 		out.append("                    </div>");
 		out.append("                </div>");
-		out.append("                <!-- End Lượng đặt Tour Card -->");
-		out.append("");
+
+		
+		// Card doanh thu
+		BigDecimal revenue;
+		switch (revenueFilter) {
+		    case "month" -> revenue = reportFunction.getMonthlyRevenue();
+		    case "year" -> revenue = reportFunction.getYearlyTourRevenue();
+		    default -> revenue = reportFunction.getDailyRevenue();
+		}
+		String revenueFormat = moneyFormatter.format(revenue);
+
+		String revenueFilterLabel = switch (revenueFilter) {
+		    case "month" -> "Tháng";
+		    case "year" -> "Năm";
+		    default -> "Ngày";
+		};
+		
 		out.append("                <!-- Doanh thu Card -->");
-		out.append("                <div class=\"col-xxl-4 col-md-6\">");
+		out.append("                <div class=\"col-xl-4 col-md-4 col-sm-12\">");
 		out.append("                    <div class=\"card info-card revenue-card\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
-		out.append("                                <li class=\"dropdown-header text-start\">");
-		out.append("                                    <h6>Lọc</h6>");
-		out.append("                                </li>");
-		out.append("");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Năm</a></li>");
+		out.append("                                <li class=\"dropdown-header text-start\"><h6>Lọc</h6></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=day&customerFilter=" + customerFilter + "\">Ngày</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=month&customerFilter=" + customerFilter + "\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=year&customerFilter=" + customerFilter + "\">Năm</a></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
 		out.append("");
 		out.append("                        <div class=\"card-body\">");
-		out.append("                            <h5 class=\"card-title\">Doanh thu <span>| Tháng</span></h5>");
+
+		out.append("                            <h5 class=\"card-title\">Doanh thu <span>| " + revenueFilterLabel + "</span></h5>");
 		out.append("");
 		out.append("                            <div class=\"d-flex align-items-center\">");
-		out.append(
-				"                                <div class=\"card-icon rounded-circle d-flex align-items-center justify-content-center\">");
+		out.append("                                <div class=\"card-icon rounded-circle d-flex align-items-center justify-content-center\">");
 		out.append("                                    <i class=\"bi bi-currency-dollar\"></i>");
 		out.append("                                </div>");
 		out.append("                                <div class=\"ps-3\">");
-		out.append("                                    <h6>$3,264</h6>");
-		out.append(
-				"                                    <span class=\"text-success small pt-1 fw-bold\">8%</span> <span");
-		out.append("                                        class=\"text-muted small pt-2 ps-1\">gia tăng</span>");
-		out.append("");
+		out.append("                                    <h6>" + revenueFormat + "</h6>");
 		out.append("                                </div>");
 		out.append("                            </div>");
 		out.append("                        </div>");
 		out.append("");
 		out.append("                    </div>");
 		out.append("                </div>");
-		out.append("                <!-- End Doanh thu Card -->");
-		out.append("");
+
+		
+		// Card lượng khách hàng
+		int customers;
+		switch (customerFilter) {
+		    case "month" -> customers = reportFunction.getMonthlyCustomers();
+		    case "year" -> customers = reportFunction.getYearlyCustomers();
+		    default -> customers = reportFunction.getDailyCustomers();
+		}
+
+		String customerFilterLabel = switch (customerFilter) {
+		    case "month" -> "Tháng";
+		    case "year" -> "Năm";
+		    default -> "Ngày";
+		};
+		
 		out.append("                <!-- Lượng khách hàng Card -->");
-		out.append("                <div class=\"col-xxl-4 col-xl-12\">");
+		out.append("                <div class=\"col-xl-4 col-md-4 col-sm-12\">");
 		out.append("");
 		out.append("                    <div class=\"card info-card customers-card\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
-		out.append("                                <li class=\"dropdown-header text-start\">");
-		out.append("                                    <h6>Lọc</h6>");
-		out.append("                                </li>");
-		out.append("");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Năm</a></li>");
+		out.append("                                <li class=\"dropdown-header text-start\"><h6>Lọc</h6></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter  + "&customerFilter=day\">Ngày</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter + "&customerFilter=month\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter + "&customerFilter=year\">Năm</a></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
 		out.append("");
 		out.append("                        <div class=\"card-body\">");
-		out.append("                            <h5 class=\"card-title\">Lượng khách hàng <span>| Năm</span></h5>");
+
+		out.append("                            <h5 class=\"card-title\">Lượng khách hàng <span>| " + customerFilterLabel + "</span></h5>");
 		out.append("");
 		out.append("                            <div class=\"d-flex align-items-center\">");
-		out.append(
-				"                                <div class=\"card-icon rounded-circle d-flex align-items-center justify-content-center\">");
+		out.append("                                <div class=\"card-icon rounded-circle d-flex align-items-center justify-content-center\">");
 		out.append("                                    <i class=\"bi bi-people\"></i>");
 		out.append("                                </div>");
 		out.append("                                <div class=\"ps-3\">");
-		out.append("                                    <h6>1244</h6>");
-		out.append(
-				"                                    <span class=\"text-danger small pt-1 fw-bold\">12%</span> <span");
-		out.append("                                        class=\"text-muted small pt-2 ps-1\">giảm bớt</span>");
-		out.append("");
+		out.append("                                    <h6>" + customers + "</h6>");
 		out.append("                                </div>");
 		out.append("                            </div>");
 		out.append("");
@@ -569,112 +645,20 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                    </div>");
 		out.append("");
 		out.append("                </div>");
-		out.append("                <!-- End Lượng khách hàng Card -->");
+
 		out.append("            </div>");
-		out.append("");
-		out.append("            <!-- Báo cáo tổng quan (Biểu đồ 3 đường: Lượng đặt Tour, Doanh thu, Khách hàng) -->");
-		out.append("            <div class=\"row\">");
-		out.append("                <div class=\"col-12\">");
-		out.append("                    <div class=\"card\">");
-		out.append("");
-		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
-		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
-		out.append("                                <li class=\"dropdown-header text-start\">");
-		out.append("                                    <h6>Lọc</h6>");
-		out.append("                                </li>");
-		out.append("");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Năm</a></li>");
-		out.append("                            </ul>");
-		out.append("                        </div>");
-		out.append("");
-		out.append("                        <div class=\"card-body\">");
-		out.append("                            <h5 class=\"card-title\">Báo cáo <span>| Ngày</span></h5>");
-		out.append("");
-		out.append("                            <!-- Line Chart -->");
-		out.append("                            <div id=\"reportsChart\"></div>");
-		out.append("");
-		out.append("                            <script>");
-		out.append("                                document.addEventListener(\"DOMContentLoaded\", () => {");
-		out.append("                                    new ApexCharts(document.querySelector(\"#reportsChart\"), {");
-		out.append("                                        series: [{");
-		out.append("                                            name: 'Lượng Tour',");
-		out.append("                                            data: [31, 40, 28, 51, 42, 82, 56],");
-		out.append("                                        }, {");
-		out.append("                                            name: 'Doanh thu',");
-		out.append("                                            data: [11, 32, 45, 32, 34, 52, 41]");
-		out.append("                                        }, {");
-		out.append("                                            name: 'Khách hàng',");
-		out.append("                                            data: [15, 11, 32, 18, 9, 24, 11]");
-		out.append("                                        }],");
-		out.append("                                        chart: {");
-		out.append("                                            height: 350,");
-		out.append("                                            type: 'area',");
-		out.append("                                            toolbar: {");
-		out.append("                                                show: false");
-		out.append("                                            },");
-		out.append("                                        },");
-		out.append("                                        markers: {");
-		out.append("                                            size: 4");
-		out.append("                                        },");
-		out.append("                                        colors: ['#4154f1', '#2eca6a', '#ff771d'],");
-		out.append("                                        fill: {");
-		out.append("                                            type: \"gradient\",");
-		out.append("                                            gradient: {");
-		out.append("                                                shadeIntensity: 1,");
-		out.append("                                                opacityFrom: 0.3,");
-		out.append("                                                opacityTo: 0.4,");
-		out.append("                                                stops: [0, 90, 100]");
-		out.append("                                            }");
-		out.append("                                        },");
-		out.append("                                        dataLabels: {");
-		out.append("                                            enabled: false");
-		out.append("                                        },");
-		out.append("                                        stroke: {");
-		out.append("                                            curve: 'smooth',");
-		out.append("                                            width: 2");
-		out.append("                                        },");
-		out.append("                                        xaxis: {");
-		out.append("                                            type: 'datetime',");
-		out.append(
-				"                                            categories: [\"2018-09-19T00:00:00.000Z\", \"2018-09-19T01:30:00.000Z\", \"2018-09-19T02:30:00.000Z\", \"2018-09-19T03:30:00.000Z\", \"2018-09-19T04:30:00.000Z\", \"2018-09-19T05:30:00.000Z\", \"2018-09-19T06:30:00.000Z\"]");
-		out.append("                                        },");
-		out.append("                                        tooltip: {");
-		out.append("                                            x: {");
-		out.append("                                                format: 'dd/MM/yy HH:mm'");
-		out.append("                                            },");
-		out.append("                                        }");
-		out.append("                                    }).render();");
-		out.append("                                });");
-		out.append("                            </script>");
-		out.append("                            <!-- End Line Chart -->");
-		out.append("");
-		out.append("                        </div>");
-		out.append("");
-		out.append("                    </div>");
-		out.append("                </div>");
-		out.append("            </div>");
-		out.append(
-				"            <!-- End Báo cáo tổng quan (Biểu đồ 3 đường: Lượng đặt Tour, Doanh thu, Khách hàng) -->");
-		out.append("");
-		out.append("            <!-- 2 biểu đồ (Top đánh giá, Xu hướng Tour)-->");
-		out.append("            <div class=\"row mb-4 g-3\">");
-		out.append("                <!-- Top 5 Tour được đánh giá cao nhất -->");
-		out.append("                <div class=\"col-12 col-lg-7\">");
-//		out.append("                    <div class=\"card h-100\">");
+		
+		// Báo cáo tổng quan (3 đường)
+//		out.append("            <!-- Báo cáo tổng quan (Biểu đồ 3 đường: Doanh thu, Chi phí, Lợi nhuận) -->");
+//		out.append("            <div class=\"row\">");
+//		out.append("                <div class=\"col-12\">");
+//		out.append("                    <div class=\"card\">");
 //		out.append("");
 //		out.append("                        <div class=\"filter\">");
-//		out.append(
-//				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
-//		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
-//		out.append("                                <li class=\"dropdown-header text-start\">");
-//		out.append("                                    <h6>Lọc</h6>");
-//		out.append("                                </li>");
-//		out.append("");
+//		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+
 //		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Ngày</a></li>");
+
 //		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Tháng</a></li>");
 //		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Năm</a></li>");
 //		out.append("                            </ul>");
@@ -723,15 +707,102 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                        <div class=\"filter\">");
 		out.append(
 				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+
+
+		out.append("            <!-- Báo cáo tổng quan (Biểu đồ 3 đường: Doanh thu, Chi phí, Lợi nhuận) -->");
+		out.append("            <div class=\"row\">");
+		out.append("                <div class=\"col-12\">");
+		out.append("                    <div class=\"card\">");
+
+		out.append("                        <div class=\"filter\">");
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
 		out.append("                                <li class=\"dropdown-header text-start\">");
 		out.append("                                    <h6>Lọc</h6>");
 		out.append("                                </li>");
+		out.append("                                <li><a class=\"dropdown-item\" onclick=\"loadReport('month')\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" onclick=\"loadReport('year')\">Năm</a></li>");
+		out.append("                            </ul>");
+		out.append("                        </div>");
+
+		out.append("                        <div class=\"card-body\">");
+		out.append("                            <h5 class=\"card-title\">Báo cáo <span id=\"reportModeLabel\">| Năm</span></h5>");
+
+		out.append("                            <!-- Line Chart -->");
+		out.append("                            <div id=\"reportsChart\"></div>");
+
+		out.append("                            <script>");
+		out.append("                                let chart;");
+		out.append("                                function loadReport(mode) {");
+		out.append("                                    if (chart) chart.destroy();");
+
+		out.append("                                    const revenueMonth = " + bigDecimalArraytoJSArray(revenueMonth) + ";");
+		out.append("                                    const costMonth = " + bigDecimalArraytoJSArray(costMonth) + ";");
+		out.append("                                    const profitMonth = " + bigDecimalArraytoJSArray(profitMonth) + ";");
+		out.append("                                    const timeMonth = " + stringArraytoJSArray(timeMonth) + ";");
+
+		out.append("                                    const revenueDay = " + bigDecimalArraytoJSArray(revenueDay) + ";");
+		out.append("                                    const costDay = " + bigDecimalArraytoJSArray(costDay) + ";");
+		out.append("                                    const profitDay = " + bigDecimalArraytoJSArray(profitDay) + ";");
+		out.append("                                    const timeDay = " + stringArraytoJSArray(timeDay) + ";");
+
+		out.append("                                    const series = [");
+		out.append("                                        { name: 'Doanh thu', data: mode === 'year' ? revenueMonth : revenueDay },");
+		out.append("                                        { name: 'Chi phí', data: mode === 'year' ? costMonth : costDay },");
+		out.append("                                        { name: 'Lợi nhuận', data: mode === 'year' ? profitMonth : profitDay }");
+		out.append("                                    ];");
+
+		out.append("                                    const categories = mode === 'year' ? timeMonth : timeDay;");
+		out.append("                                    const format = mode === 'year' ? 'MM/yyyy' : 'dd/MM/yyyy';");
+
+		out.append("                                    document.getElementById(\"reportModeLabel\").innerHTML = mode === 'year' ? '| Năm' : '| Tháng';");
+
+		out.append("                                    chart = new ApexCharts(document.querySelector(\"#reportsChart\"), {");
+		out.append("                                        series: series,");
+		out.append("                                        chart: { height: 350, type: 'area', toolbar: { show: false } },");
+		out.append("                                        markers: { size: 4 },");
+		out.append("                                        colors: ['#4154f1', '#2eca6a', '#ff771d'],");
+		out.append("                                        fill: {");
+		out.append("                                            type: \"gradient\",");
+		out.append("                                            gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.4, stops: [0, 90, 100] }");
+		out.append("                                        },");
+		out.append("                                        dataLabels: { enabled: false },");
+		out.append("                                        stroke: { curve: 'smooth', width: 2 },");
+		out.append("                                        xaxis: { type: 'datetime', categories: categories },");
+		out.append("                                        tooltip: { x: { format: format } }");
+		out.append("                                    });");
+		out.append("                                    chart.render();");
+		out.append("                                }");
+
+		out.append("                                document.addEventListener(\"DOMContentLoaded\", () => {");
+		out.append("                                    loadReport('year');");
+		out.append("                                });");
+		out.append("                            </script>");
+		out.append("                            <!-- End Line Chart -->");
+
+		out.append("                        </div>");
+		out.append("                    </div>");
+		out.append("                </div>");
+		out.append("            </div>");
+		out.append("            <!-- End Báo cáo tổng quan -->");
+		
+		
+		// 2 biểu đồ
+		// Lứa tuổi
+		out.append("            <!-- 2 biểu đồ (Top đánh giá, Xu hướng Tour)-->");
+		out.append("            <div class=\"row mb-4\">");
+		out.append("                <!-- Lứa tuổi -->");
+		out.append("                <div class=\"col-lg-8 col-sm-12\">");
+		out.append("                    <div class=\"card h-100\">");
 		out.append("");
+		out.append("                        <div class=\"filter\">");
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+
 		out.append("<li><button class=\"dropdown-item bg-warning\" onclick=\"loadChart('nextyear')\">Năm sau (Dự đoán)</button></li>");
 		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('year')\">Năm</button></li>");
 		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('month')\">Tháng</button></li>");
 		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('day')\">Ngày</button></li>");
+
 
 		out.append("                            </ul>");
 		out.append("                        </div>");
@@ -792,77 +863,77 @@ public class DashboardServlet extends HttpServlet {
         out.append("</script>");
 
 
+
 		out.append("");
 		out.append("                        </div>");
 		out.append("                    </div>");
 		out.append("                </div>");
 		out.append("            </div>");
 		out.append("");
+
+		// Danh sách các Tour được đặt gần đây
 		out.append("            <!-- Tour được đặt gần đây -->");
 		out.append("            <div class=\"row\">");
 		out.append("                <div class=\"col-12\">");
 		out.append("                    <div class=\"card recent-sales overflow-auto\">");
 		out.append("");
 		out.append("                        <div class=\"card-body\">");
-		out.append("                            <h5 class=\"card-title\">Tour đặt gần đây <span>| Ngày</span></h5>");
+
+		out.append("                            <h5 class=\"card-title\">Tour đặt gần đây</h5>");
 		out.append("");
 		out.append("                            <table class=\"table table-borderless datatable\">");
 		out.append("                                <thead>");
 		out.append("                                    <tr>");
 		out.append("                                        <th scope=\"col\">#</th>");
-		out.append("                                        <th scope=\"col\">ID</th>");
+
 		out.append("                                        <th scope=\"col\">Tour</th>");
 		out.append("                                        <th scope=\"col\">Khách hàng</th>");
-		out.append("                                        <th scope=\"col\">Giá</th>");
+		out.append("                                        <th scope=\"col\">Ngày đặt</th>");
 		out.append("                                        <th scope=\"col\">Trạng thái</th>");
 		out.append("                                    </tr>");
 		out.append("                                </thead>");
 		out.append("                                <tbody>");
-		out.append("                                    <tr>");
-		out.append("                                        <th>1</a></th>");
-		out.append("                                        <td>T001</td>");
-		out.append("                                        <td>Tuyên Quang</td>");
-		out.append("                                        <td>Phạm Việt Long</td>");
-		out.append("                                        <td>$64</td>");
-		out.append(
-				"                                        <td><span class=\"badge bg-success\">Đã khởi hành</span></td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append("                                        <th>2</a></th>");
-		out.append("                                        <td>T002</td>");
-		out.append("                                        <td>Đà Nẵng</td>");
-		out.append("                                        <td>Phạm Việt Long</td>");
-		out.append("                                        <td>$47</td>");
-		out.append(
-				"                                        <td><span class=\"badge bg-warning\">Chưa khởi hành</span></td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append("                                        <th>3</a></th>");
-		out.append("                                        <td>T003</td>");
-		out.append("                                        <td>Sapa</td>");
-		out.append("                                        <td>Phạm Việt Long</td>");
-		out.append("                                        <td>$147</td>");
-		out.append(
-				"                                        <td><span class=\"badge bg-success\">Đã khởi hành</span></td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append("                                        <th>4</a></th>");
-		out.append("                                        <td>T004</td>");
-		out.append("                                        <td>Hồ Chí Minh</td>");
-		out.append("                                        <td>Phạm Việt Long</td>");
-		out.append("                                        <td>$67</td>");
-		out.append(
-				"                                        <td><span class=\"badge bg-warning\">Chưa khởi hành</span></td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append("                                        <th>5</a></th>");
-		out.append("                                        <td>T005</td>");
-		out.append("                                        <td>Hội An</td>");
-		out.append("                                        <td>Phạm Việt Long</td>");
-		out.append("                                        <td>$165</td>");
-		out.append(
-				"                                        <td><span class=\"badge bg-success\">Đã phê duyệt</span></td>");
-		out.append("                                    </tr>");
+
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());;
+		int orderRecentBooking = 0;
+		for(Booking recentBooking : recentBookings) {
+			orderRecentBooking++;
+			String tourName = recentBooking.getTourUnit().getTour().getTourName();
+			String customerName = recentBooking.getC().getLastname() + " " + recentBooking.getC().getFirstname();
+			String bookingDate = formatter.format(recentBooking.getBookingDate());
+			String status = "N/A";
+			String statusColor = "bg-secondary";
+			if(recentBooking.getStatus().equals("C")) {
+				status = "Bị hủy";
+				statusColor = "bg-danger";
+			}
+			else if(recentBooking.getStatus().equals("D")) {
+				status = "Đã hoàn thành";
+				statusColor = "bg-success";
+			}
+			else if(recentBooking.getStatus().equals("O")) {
+				status = "Đang tiến hành";
+				statusColor = "bg-primary";
+			}
+			else if(recentBooking.getStatus().equals("W")) {
+				status = "Chờ duyệt";
+				statusColor = "bg-warning";
+			}
+			else if(recentBooking.getStatus().equals("P")) {
+				status = "Đang chuẩn bị";
+				statusColor = "bg-secondary";
+			}
+			
+			out.append("                                    <tr>");
+			out.append("                                        <th>" + orderRecentBooking + "</a></th>");
+			out.append("                                        <td title=\"" + tourName + "\" style=\"max-width: 500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;\">" + tourName + "</td>");
+			out.append("                                        <td>" + customerName + "</td>");
+			out.append("                                        <td>" + bookingDate + "</td>");
+			out.append("                                        <td><span class=\"badge " + statusColor + "\">" + status + "</span></td>");
+			out.append("                                    </tr>");
+		}
+		
 		out.append("                                </tbody>");
 		out.append("                            </table>");
 		out.append("");
@@ -871,15 +942,18 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                    </div>");
 		out.append("                </div>");
 		out.append("            </div>");
-		out.append("");
+
+		
+		
+		// Danh sách Tour chạy nhất
 		out.append("            <!-- Tour chạy nhất -->");
 		out.append("            <div class=\"row\">");
 		out.append("                <div class=\"col-12\">");
 		out.append("                    <div class=\"card top-selling overflow-auto\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
 		out.append("                                <li class=\"dropdown-header text-start\">");
 		out.append("                                    <h6>Lọc</h6>");
@@ -894,53 +968,36 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                        <div class=\"card-body pb-0\">");
 		out.append("                            <h5 class=\"card-title\">Tour chạy nhất <span>| Ngày</span></h5>");
 		out.append("");
-		out.append("                            <table class=\"table table-borderless\">");
+
+		out.append("                            <table class=\"table table-borderless datatable\">");
 		out.append("                                <thead>");
 		out.append("                                    <tr>");
-		out.append("                                        <th scope=\"col\"></th>");
+		out.append("                                        <th scope=\"col\">#</th>");
 		out.append("                                        <th scope=\"col\">Tour</th>");
-		out.append("                                        <th scope=\"col\">Giá</th>");
 		out.append("                                        <th scope=\"col\">Đã đặt</th>");
 		out.append("                                        <th scope=\"col\">Doanh thu</th>");
 		out.append("                                    </tr>");
 		out.append("                                </thead>");
 		out.append("                                <tbody>");
-		out.append("                                    <tr>");
-		out.append(
-				"                                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-1.jpg\" alt=\"\"></a>");
-		out.append("                                        </th>");
-		out.append("                                        <td>Tuyên Quang</td>");
-		out.append("                                        <td>$64</td>");
-		out.append("                                        <td class=\"fw-bold\">124</td>");
-		out.append("                                        <td>$5,828</td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append(
-				"                                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-1.jpg\" alt=\"\"></a>");
-		out.append("                                        </th>");
-		out.append("                                        <td>Tuyên Quang</td>");
-		out.append("                                        <td>$64</td>");
-		out.append("                                        <td class=\"fw-bold\">124</td>");
-		out.append("                                        <td>$5,828</td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append(
-				"                                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-1.jpg\" alt=\"\"></a>");
-		out.append("                                        </th>");
-		out.append("                                        <td>Tuyên Quang</td>");
-		out.append("                                        <td>$64</td>");
-		out.append("                                        <td class=\"fw-bold\">124</td>");
-		out.append("                                        <td>$5,828</td>");
-		out.append("                                    </tr>");
-		out.append("                                    <tr>");
-		out.append(
-				"                                        <th scope=\"row\"><a href=\"#\"><img src=\"assets/img/product-1.jpg\" alt=\"\"></a>");
-		out.append("                                        </th>");
-		out.append("                                        <td>Tuyên Quang</td>");
-		out.append("                                        <td>$64</td>");
-		out.append("                                        <td class=\"fw-bold\">124</td>");
-		out.append("                                        <td>$5,828</td>");
-		out.append("                                    </tr>");
+
+		
+		ArrayList<String> tourNames = (ArrayList<String>) topBookingTours.get(0);
+		ArrayList<Integer> totalBookings = (ArrayList<Integer>) topBookingTours.get(1);
+		ArrayList<BigDecimal> totalRevenues = (ArrayList<BigDecimal>) topBookingTours.get(2);
+		for(int i = 0; i < tourNames.size(); i++) {
+			String tourName = tourNames.get(i);
+			int totalBooking = totalBookings.get(i);
+			BigDecimal totalRevenue = totalRevenues.get(i);
+			String totalRenenueFormat =  moneyFormatter.format(totalRevenue);
+			
+			out.append("                                    <tr>");
+			out.append("                                        <td>" + (i + 1) + "</td>");
+			out.append("                                        <td title=\"" + tourName + "\" style=\"max-width: 650px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;\">" + tourName + "</td>");
+			out.append("                                        <td>" + totalBooking + "</td>");
+			out.append("                                        <td>" + totalRenenueFormat + "</td>");
+			out.append("                                    </tr>");
+		}
+		
 		out.append("                                </tbody>");
 		out.append("                            </table>");
 		out.append("");
@@ -949,6 +1006,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                    </div>");
 		out.append("                </div>");
 		out.append("            </div>");
+
 		out.append("        </section>");
 		out.append("");
 		out.append("    </main><!-- End #main -->");
@@ -975,9 +1033,41 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("    <!-- Template Main JS File -->");
 		out.append("    <script src=\"/adv/assets/js/main.js\"></script>");
+
 		out.append("</body>");
 		out.append("");
 		out.append("</html>");
+	}
+
+	
+	private String bigDecimalArraytoJSArray(ArrayList<BigDecimal> list) {
+	    StringBuilder sb = new StringBuilder("[");
+	    for (int i = 0; i < list.size(); i++) {
+	        Object item = list.get(i);
+	        if (item instanceof String) {
+	            sb.append("\"").append(item).append("\"");
+	        } else {
+	            sb.append(item);
+	        }
+	        if (i < list.size() - 1) sb.append(", ");
+	    }
+	    sb.append("]");
+	    return sb.toString();
+	}
+	
+	private String stringArraytoJSArray(ArrayList<String> list) {
+	    StringBuilder sb = new StringBuilder("[");
+	    for (int i = 0; i < list.size(); i++) {
+	        Object item = list.get(i);
+	        if (item instanceof String) {
+	            sb.append("\"").append(item).append("\"");
+	        } else {
+	            sb.append(item);
+	        }
+	        if (i < list.size() - 1) sb.append(", ");
+	    }
+	    sb.append("]");
+	    return sb.toString();
 	}
 
 }

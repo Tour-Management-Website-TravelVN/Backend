@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1033,4 +1034,344 @@ public class TourFunctionImpl implements TourFunction {
 
 	}
 	
+	public ArrayList<Tour> getAllTours() {
+		ResultSet rs = null;
+	    PreparedStatement pre = null;
+	    ArrayList<Tour> tours = new ArrayList<Tour>();
+	    
+	    try {
+	        this.con = getConnection(this.cp);
+	        
+	        String sql = "SELECT " +
+	                "    t.tour_id, " +
+	                "    t.category_id, " +
+	                "    t.tour_operator_id, " +
+	                "    t.last_updated_operator, " +
+	                "    t.tour_name, " +
+	                "    t.duration, " +
+	                "    t.target_audience, " +
+	                "    t.departure_place, " +
+	                "    t.places_to_visit, " +
+	                "    t.cuisine, " +
+	                "    t.ideal_time, " + 
+	                "    t.vehicle, " +
+	                "    t.description, " +
+	                "    t.created_time, " +
+	                "    t.last_updated_time, " +
+	                "    t.exclusions, " +
+	                "    c.category_name, " +
+	                "    o1.firstname AS operator_firstname, " +
+	                "    o1.lastname AS operator_lastname, " +
+	                "    o2.firstname AS last_updated_firstname, " +
+	                "    o2.lastname AS last_updated_lastname, " +
+	                "    i.image_id, " +
+	                "    i.image_name, " +
+	                "    i.url " +
+	                "FROM tour t " +
+	                "JOIN category c ON t.category_id = c.category_id " +
+	                "JOIN tour_operator o1 ON t.tour_operator_id = o1.tour_operator_id " +
+	                "LEFT JOIN tour_operator o2 ON t.last_updated_operator = o2.tour_operator_id " +
+	                "LEFT JOIN image i ON i.image_id = (" +
+	                "    SELECT MIN(image_id) FROM image WHERE tour_id = t.tour_id" +
+	                ")";
+
+	        
+	        pre = this.con.prepareStatement(sql);
+	        
+	        rs = pre.executeQuery();
+	        
+	        while(rs.next()) {
+	        	Tour tour = new Tour();
+	        	
+	        	Category category = new Category();
+	        	category.setId(rs.getInt("category_id"));
+	        	category.setCategoryName(rs.getString("category_name"));
+	        	
+	        	TourOperator tourOperator = new TourOperator();
+	        	tourOperator.setFirstname(rs.getString("operator_firstname"));
+	        	tourOperator.setLastname(rs.getString("operator_lastname"));
+	        	
+	        	TourOperator lastUpdatedOperator = new TourOperator();
+	        	lastUpdatedOperator.setFirstname(rs.getString("last_updated_firstname"));
+	        	lastUpdatedOperator.setLastname(rs.getString("last_updated_lastname"));
+	        	
+	        	Set<Image> images = new HashSet<Image>();
+	        	Image image = new Image();
+	        	image.setId(rs.getInt("image_id"));
+	        	image.setImageName(rs.getString("image_name"));
+	        	image.setUrl(rs.getString("url"));
+	        	images.add(image);
+	        	
+	        	tour.setTourId(rs.getString("tour_id"));
+	        	tour.setCategory(category);
+	        	tour.setTourOperator(tourOperator);
+	        	tour.setLastUpdatedOperator(lastUpdatedOperator);
+	        	tour.setTourName(rs.getString("tour_name"));
+	        	tour.setDuration(rs.getString("duration"));
+	        	tour.setVehicle(rs.getString("vehicle"));
+	        	tour.setTargetAudience(rs.getString("target_audience"));
+	        	tour.setDeparturePlace(rs.getString("departure_place"));
+	        	tour.setPlacesToVisit(rs.getString("places_to_visit"));
+	        	tour.setCuisine(rs.getString("cuisine"));
+	        	tour.setIdealTime(rs.getString("ideal_time"));
+	        	tour.setImageSet(images);
+	        	
+	        	tours.add(tour);
+	        }
+	        
+	        return tours;
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            if(this.con != null) {
+	                this.con.rollback();
+	            }
+	        }
+	        catch(SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	        return new ArrayList<>();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pre != null) pre.close();
+	            if(this.con != null) {
+	                this.cp.releaseConnection(this.con, "Tour");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+
+	@Override
+	public Tour getTourById(String tourId) {
+	    ResultSet rs = null;
+	    PreparedStatement pre = null;
+
+	    try {
+	        this.con = getConnection(this.cp);
+
+	        String sql = "SELECT " +
+	                "    t.tour_id, " +
+	                "    t.category_id, " +
+	                "    t.tour_operator_id, " +
+	                "    t.last_updated_operator, " +
+	                "    t.tour_name, " +
+	                "    t.duration, " +
+	                "    t.target_audience, " +
+	                "    t.departure_place, " +
+	                "    t.places_to_visit, " +
+	                "    t.cuisine, " +
+	                "    t.ideal_time, " +
+	                "    t.vehicle, " +
+	                "    t.description, " +
+	                "    t.created_time, " +
+	                "    t.last_updated_time, " +
+	                "    t.exclusions, " +
+	                "    c.category_name, " +
+	                "    o1.firstname AS operator_firstname, " +
+	                "    o1.lastname AS operator_lastname, " +
+	                "    o2.firstname AS last_updated_firstname, " +
+	                "    o2.lastname AS last_updated_lastname, " +
+	                "    i.image_id, " +
+	                "    i.image_name, " +
+	                "    i.url " +
+	                "FROM tour t " +
+	                "JOIN category c ON t.category_id = c.category_id " +
+	                "JOIN tour_operator o1 ON t.tour_operator_id = o1.tour_operator_id " +
+	                "LEFT JOIN tour_operator o2 ON t.last_updated_operator = o2.tour_operator_id " +
+	                "LEFT JOIN image i ON i.image_id = (" +
+	                "    SELECT MIN(image_id) FROM image WHERE tour_id = t.tour_id" +
+	                ") " +
+	                "WHERE t.tour_id = ?";
+
+	        pre = this.con.prepareStatement(sql);
+	        pre.setString(1, tourId);
+	        rs = pre.executeQuery();
+
+	        if (rs.next()) {
+	            Tour tour = new Tour();
+
+	            Category category = new Category();
+	            category.setId(rs.getInt("category_id"));
+	            category.setCategoryName(rs.getString("category_name"));
+	            tour.setCategory(category);
+
+	            TourOperator tourOperator = new TourOperator();
+	            tourOperator.setFirstname(rs.getString("operator_firstname"));
+	            tourOperator.setLastname(rs.getString("operator_lastname"));
+	            tour.setTourOperator(tourOperator);
+
+	            TourOperator lastUpdatedOperator = new TourOperator();
+	            lastUpdatedOperator.setFirstname(rs.getString("last_updated_firstname"));
+	            lastUpdatedOperator.setLastname(rs.getString("last_updated_lastname"));
+	            tour.setLastUpdatedOperator(lastUpdatedOperator);
+
+	            Set<Image> images = new HashSet<>();
+	            if (rs.getInt("image_id") > 0) {
+	                Image image = new Image();
+	                image.setId(rs.getInt("image_id"));
+	                image.setImageName(rs.getString("image_name"));
+	                image.setUrl(rs.getString("url"));
+	                images.add(image);
+	            }
+
+	            tour.setTourId(rs.getString("tour_id"));
+	        	tour.setCategory(category);
+	        	tour.setTourOperator(tourOperator);
+	        	tour.setLastUpdatedOperator(lastUpdatedOperator);
+	        	tour.setTourName(rs.getString("tour_name"));
+	        	tour.setDuration(rs.getString("duration"));
+	        	tour.setVehicle(rs.getString("vehicle"));
+	        	tour.setTargetAudience(rs.getString("target_audience"));
+	        	tour.setDeparturePlace(rs.getString("departure_place"));
+	        	tour.setPlacesToVisit(rs.getString("places_to_visit"));
+	        	tour.setCuisine(rs.getString("cuisine"));
+	        	tour.setIdealTime(rs.getString("ideal_time"));
+	        	tour.setImageSet(images);
+
+	            return tour;
+	        }
+
+	        return null;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            if (this.con != null) {
+	                this.con.rollback();
+	            }
+	        } catch (SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	        return null;
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pre != null) pre.close();
+	            if (this.con != null) {
+	                this.cp.releaseConnection(this.con, "Tour");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+
+	@Override
+	public ArrayList<Tour> getToursByCategoryId(int categoryId) {
+	    ArrayList<Tour> tourList = new ArrayList<>();
+	    ResultSet rs = null;
+	    PreparedStatement pre = null;
+
+	    try {
+	        this.con = getConnection(this.cp);
+
+	        String sql = "SELECT " +
+	                "    t.tour_id, " +
+	                "    t.category_id, " +
+	                "    t.tour_operator_id, " +
+	                "    t.last_updated_operator, " +
+	                "    t.tour_name, " +
+	                "    t.duration, " +
+	                "    t.target_audience, " +
+	                "    t.departure_place, " +
+	                "    t.places_to_visit, " +
+	                "    t.cuisine, " +
+	                "    t.ideal_time, " +
+	                "    t.vehicle, " +
+	                "    t.description, " +
+	                "    t.created_time, " +
+	                "    t.last_updated_time, " +
+	                "    t.exclusions, " +
+	                "    c.category_name, " +
+	                "    o1.firstname AS operator_firstname, " +
+	                "    o1.lastname AS operator_lastname, " +
+	                "    o2.firstname AS last_updated_firstname, " +
+	                "    o2.lastname AS last_updated_lastname, " +
+	                "    i.image_id, " +
+	                "    i.image_name, " +
+	                "    i.url " +
+	                "FROM tour t " +
+	                "JOIN category c ON t.category_id = c.category_id " +
+	                "JOIN tour_operator o1 ON t.tour_operator_id = o1.tour_operator_id " +
+	                "LEFT JOIN tour_operator o2 ON t.last_updated_operator = o2.tour_operator_id " +
+	                "LEFT JOIN image i ON i.image_id = (" +
+	                "    SELECT MIN(image_id) FROM image WHERE tour_id = t.tour_id" +
+	                ") " +
+	                "WHERE t.category_id = ?";
+
+	        pre = this.con.prepareStatement(sql);
+	        pre.setInt(1, categoryId);
+	        rs = pre.executeQuery();
+
+	        while (rs.next()) {
+	            Tour tour = new Tour();
+
+	            Category category = new Category();
+	            category.setId(rs.getInt("category_id"));
+	            category.setCategoryName(rs.getString("category_name"));
+	            tour.setCategory(category);
+
+	            TourOperator tourOperator = new TourOperator();
+	            tourOperator.setFirstname(rs.getString("operator_firstname"));
+	            tourOperator.setLastname(rs.getString("operator_lastname"));
+	            tour.setTourOperator(tourOperator);
+
+	            TourOperator lastUpdatedOperator = new TourOperator();
+	            lastUpdatedOperator.setFirstname(rs.getString("last_updated_firstname"));
+	            lastUpdatedOperator.setLastname(rs.getString("last_updated_lastname"));
+	            tour.setLastUpdatedOperator(lastUpdatedOperator);
+
+	            Set<Image> images = new HashSet<>();
+	            if (rs.getInt("image_id") > 0) {
+	                Image image = new Image();
+	                image.setId(rs.getInt("image_id"));
+	                image.setImageName(rs.getString("image_name"));
+	                image.setUrl(rs.getString("url"));
+	                images.add(image);
+	            }
+	            tour.setImageSet(images);
+
+	            tour.setTourId(rs.getString("tour_id"));
+	            tour.setTourName(rs.getString("tour_name"));
+	            tour.setDuration(rs.getString("duration"));
+	            tour.setVehicle(rs.getString("vehicle"));
+	            tour.setTargetAudience(rs.getString("target_audience"));
+	            tour.setDeparturePlace(rs.getString("departure_place"));
+	            tour.setPlacesToVisit(rs.getString("places_to_visit"));
+	            tour.setCuisine(rs.getString("cuisine"));
+	            tour.setIdealTime(rs.getString("ideal_time"));
+
+	            tourList.add(tour);
+	        }
+
+	        return tourList;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            if (this.con != null) {
+	                this.con.rollback();
+	            }
+	        } catch (SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	        return new ArrayList<>();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pre != null) pre.close();
+	            if (this.con != null) {
+	                this.cp.releaseConnection(this.con, "Tour");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+
+
 }

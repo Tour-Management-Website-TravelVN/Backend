@@ -99,4 +99,41 @@ public class CategoryFunctionImpl implements CategoryFunction {
 		return null;
 	}
 
+	@Override
+	public ArrayList<Category> getAllCategories() {
+		ResultSet rs = null;
+		PreparedStatement pre = null;
+		Connection con = null;
+		try {
+			ArrayList<Category> categories = new ArrayList<Category>();
+			con = getConnection(cp);
+			pre = con.prepareStatement("SELECT category_id, category_name FROM category ORDER BY category_id ");
+			rs = pre.executeQuery();
+			
+			while(rs.next()) {
+				Category category = new Category();
+				category.setId(rs.getInt("category_id"));
+				category.setCategoryName(rs.getString("category_name"));
+				
+				categories.add(category);
+			}
+			
+			return categories;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			try {
+				if(con != null) this.cp.releaseConnection(con, "Category");
+				if(rs!=null) rs.close();
+				if (pre != null)
+					pre.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
 }

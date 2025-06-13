@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.netlib.util.booleanW;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ads.ConnectionPool;
 import ads.ConnectionPoolImpl;
@@ -364,6 +369,69 @@ public class CustomerFunctionImpl implements CustomerFunction{
 	public int getMaxPage() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	@Override
+	public ArrayList<Customer> getFirst100Customers() {
+		ResultSet rs = null;
+	    PreparedStatement pre = null;
+	    ArrayList<Customer> customers = new ArrayList<>();
+	    
+	    try {
+	        this.con = getConnection(this.cp);
+	        
+	        //Lấy 100 bản ghi
+	        String sql = "SELECT c_id, firstname, lastname, date_of_birth, gender, address, phone_number, citizen_id, nationality, passport, note " +
+	                     "FROM customer LIMIT 500";
+	        pre = this.con.prepareStatement(sql);
+	        
+	        rs = pre.executeQuery();
+	        
+	        while(rs.next()) {
+	            Customer customer = new Customer();
+	            
+	            customer.setId(rs.getInt("c_id"));
+	            customer.setFirstname(rs.getString("firstname"));
+	            customer.setLastname(rs.getString("lastname"));
+	            
+	            java.sql.Date sqlDate = rs.getDate("date_of_birth");
+	            LocalDate dateOfBirth = (sqlDate != null) ? sqlDate.toLocalDate() : null;
+	            customer.setDateOfBirth(dateOfBirth);
+	            
+	            customer.setGender(rs.getBoolean("gender"));
+	            customer.setAddress(rs.getString("address"));
+	            customer.setPhoneNumber(rs.getString("phone_number"));
+	            customer.setCitizenId(rs.getString("citizen_id"));
+	            customer.setNationality(rs.getString("nationality"));
+	            customer.setPassport(rs.getString("passport"));
+	            customer.setNote(rs.getString("note"));
+	            
+	            customers.add(customer);
+	        }
+	        
+	        return customers;
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            if(this.con != null) {
+	                this.con.rollback();
+	            }
+	        }
+	        catch(SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	        return new ArrayList<>();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pre != null) pre.close();
+	            if(this.con != null) {
+	                this.cp.releaseConnection(this.con, "Customer");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 	}
 
 }

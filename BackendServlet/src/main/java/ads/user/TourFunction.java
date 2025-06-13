@@ -1,5 +1,6 @@
 package ads.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,4 +20,10 @@ public interface TourFunction {
 	List<Map<String, Object>> getStatsForEchart(String filter);
 	
 	
+	
+	public ArrayList<Tour> getAllTours();
+	
+	public Tour getTourById(String tourId);
+	
+	public ArrayList<Tour> getToursByCategoryId(int categoryId);
 }
