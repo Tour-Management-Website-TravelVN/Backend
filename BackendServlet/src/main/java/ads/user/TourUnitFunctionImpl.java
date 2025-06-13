@@ -11,6 +11,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import ads.ConnectionPool;
@@ -553,6 +554,70 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 			}
 		}
 
+		return false;
+	}
+
+	@Override
+	public boolean isGuide(int tour_guide_id, LocalDate newStart, LocalDate dateEnd) {
+		// TODO Auto-generated method stub
+		String sql = """
+		        SELECT 1
+		        FROM guide g
+		        JOIN tour_unit tu ON g.tour_unit_id = tu.tour_unit_id
+		        WHERE g.tour_guide_id = ?
+		        AND NOT (
+		            tu.return_date < ? OR tu.departure_date > ?
+		        )
+		        LIMIT 1
+		    """;
+		try {
+			 con = getConnection(cp);
+	         PreparedStatement stmt = con.prepareStatement(sql);
+		        stmt.setInt(1, tour_guide_id);
+		        stmt.setDate(2, java.sql.Date.valueOf(newStart));
+		        stmt.setDate(3,  java.sql.Date.valueOf(dateEnd));
+		        
+
+		        try (ResultSet rs = stmt.executeQuery()) {
+		            return rs.next(); // Có trùng ⇒ true
+		        }
+		    }catch (Exception e) {
+		    	e.printStackTrace();
+			}
+		finally {
+				try {
+			        cp.releaseConnection(con, "Tour_Unit");
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			    }
+			}
+		
+		return false;
+	}
+
+	@Override
+	public boolean arrangeTourGuide(int tour_guide_id, String tour_unit_id,int tour_operator_id) {
+	    String sql = "INSERT INTO guide (tour_unit_id, tour_guide_id,tour_operator_id, updated_at) VALUES (?, ?,?, NOW())";
+
+		try {
+			 con = getConnection(cp);
+	         PreparedStatement stmt = con.prepareStatement(sql);
+		        stmt.setString(1, tour_unit_id);
+		        stmt.setInt(2, tour_guide_id);
+		        stmt.setInt(3, tour_operator_id);
+
+		       return exe(stmt);
+		    }catch (Exception e) {
+		    	e.printStackTrace();
+			}
+		finally {
+				try {
+			        cp.releaseConnection(con, "Tour_Unit");
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			    }
+			}
+		
 		return false;
 	}
 

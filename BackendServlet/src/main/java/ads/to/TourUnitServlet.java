@@ -224,9 +224,11 @@ public class TourUnitServlet extends HttpServlet {
 		    out.append("<a href='#' class='btn btn-sm btn-danger me-1' data-bs-toggle='modal' " +
 		               "data-bs-target='#staticBackdrop_" + to.getTourUnitId() + "' data-bs-toggle='tooltip' title='Xóa'>");
 		    out.append("<i class='bi bi-trash3-fill'></i></a>");
-		    out.append("<a href='#' class='btn btn-sm btn-secondary' data-bs-toggle='modal' " +
+		    out.append("<a href='#' class='btn btn-sm btn-secondary me-1' data-bs-toggle='modal' " +
 		               "data-bs-target='#tourUnitDetailModal_" + to.getTourUnitId() + "' data-bs-toggle='tooltip' title='Chi tiết'>");
 		    out.append("<i class='bi bi-info-circle'></i></a>");
+		    out.append("<a href='Arrange-Tour-Guide?tourUnitId="+ to.getTourUnitId() +"' class='btn btn-sm btn-success' >");
+		    out.append("<i class=\"bi bi-flag-fill\"></i></a>");
 		    out.append("</td>");
 		    out.append("</tr>");
 
