@@ -522,33 +522,51 @@ public class TourFunctionImpl implements TourFunction {
 		ResultSet rs = null;
 		PreparedStatement preCheckTour = null;
 		PreparedStatement pre = null;
-
+		Connection con = null;
 		try {
-			this.con = getConnection(this.cp);
+			con = getConnection(this.cp);
 
-			preCheckTour = this.con.prepareStatement("SELECT tour_id FROM tour WHERE tour_id = ?");
+			preCheckTour = this.con.prepareStatement("SELECT tour_unit_id FROM tour_unit WHERE tour_unit.tour_id = ?");
 			preCheckTour.setString(1, tourId);
-			if (preCheckTour.executeQuery().next())
+			rs = preCheckTour.executeQuery();
+			if (rs.next()) {
 				return false;
-
+			}
+				
+			pre = con.prepareStatement("DELETE FROM tour_program WHERE tour_id = ?");
+			pre.setString(1, tourId);
+			pre.executeUpdate();
+			
+			pre = con.prepareStatement("DELETE FROM image WHERE tour_id = ?");
+			pre.setString(1, tourId);
+			pre.executeUpdate();
+			
 			String sql = "DELETE FROM tour WHERE tour.tour_id = ?";
-			pre = this.con.prepareStatement(sql);
+			pre = con.prepareStatement(sql);
 			pre.setString(1, tourId);
 
 			int del = pre.executeUpdate();
+			
+			con.commit();
 
 			return del > 0;
 
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		} finally {
 			try {
-				this.cp.releaseConnection(this.con, "Tour");
+				this.cp.releaseConnection(con, "Tour");
 				if (rs != null)
 					rs.close();
 				preCheckTour.close();
-				pre.close();
+				if(pre!=null) pre.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

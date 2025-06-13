@@ -310,16 +310,18 @@ public class TourDetailServlet extends HttpServlet {
 //		out.append("</section>");
 		out.append("</main><!-- End #main -->");
 		
-//		if(actionTour.equalsIgnoreCase("Thêm tour thành công")) {
-//			out.append("<script>localStorage.removeItem(\"tourFormDraft\")</script>");
-//		} else if(actionTour.equalsIgnoreCase("Sửa tour thành công")){
-//			out.append("<script>")
-//			.append("let tourFormDraft2 = localStorage.getItem(\"tourFormDraft2\");")
-//			.append("if(tourFormDraf2){")
-//			.append("if(tourFormDraft2.tour.tourId==\"").append(tourId).append("\") localStorage.removeItem(\"tourFormDraft2\")")
-//			.append("}")
-//			.append("</script>");
-//		}
+		if(actionTour != null) {
+			if(actionTour.equalsIgnoreCase("Thêm tour thành công")) {
+				out.append("<script>localStorage.removeItem(\"tourFormDraft\")</script>");
+			} else if(actionTour.equalsIgnoreCase("Sửa tour thành công")){
+				out.append("<script>")
+				.append("let tourFormDraft2 = localStorage.getItem(\"tourFormDraft2\");")
+				.append("if(tourFormDraf2){")
+				.append("if(tourFormDraft2.tour.tourId==\"").append(tourId).append("\") localStorage.removeItem(\"tourFormDraft2\")")
+				.append("}")
+				.append("</script>");
+			}
+		}
 		
 		
 		RequestDispatcher fo = request.getRequestDispatcher("/fo");

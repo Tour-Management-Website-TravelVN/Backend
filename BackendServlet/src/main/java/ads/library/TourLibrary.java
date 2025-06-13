@@ -560,7 +560,7 @@ public class TourLibrary {
 		sBuilder.append("<p class=\"mb-0 fst-italic\">Lưu ý: Tour phải có ít nhất 1 ảnh</p>");
 		sBuilder.append("<!--tourImage-->");
 		sBuilder.append(
-				"<input class=\"form-control d-none\" type=\"file\" id=\"image-input\" placeholder=\"Ảnh\" multiple");
+				"<input class=\"form-control d-none\" type=\"file\" id=\"image-input\" placeholder=\"Ảnh\" multiple ");
 		sBuilder.append("accept=\"/image/*\" required>");
 		sBuilder.append("<label for=\"image-input\" class=\"d-none\">Ảnh</label>");
 		sBuilder.append("</div>");
@@ -1004,7 +1004,7 @@ public class TourLibrary {
 		sBuilder.append("<p class=\"mb-0 fst-italic\">Lưu ý: Tour phải có ít nhất 1 ảnh</p>");
 		sBuilder.append("<!--tourImage-->");
 		sBuilder.append(
-				"<input class=\"form-control d-none\" type=\"file\" id=\"image-input\" placeholder=\"Ảnh\" multiple");
+				"<input class=\"form-control d-none\" type=\"file\" id=\"image-input\" placeholder=\"Ảnh\" multiple ");
 		sBuilder.append("accept=\"/image/*\" required>");
 		sBuilder.append("<label for=\"image-input\" class=\"d-none\">Ảnh</label>");
 		sBuilder.append("</div>");
