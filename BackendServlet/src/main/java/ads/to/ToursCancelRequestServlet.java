@@ -285,9 +285,9 @@ public class ToursCancelRequestServlet extends HttpServlet{
 		out.append("          <dt class=\"col-sm-4\"><i class=\"bi bi-cash-coin\"></i> Tổng tiền:</dt>");
 		out.append("          <dd class=\"col-sm-8\" id=\"totalAmount\">"+b.getTotalAmount()+"</dd>");
 		out.append("");
-		out.append("          <dt class=\"col-sm-4\"><i class=\"bi bi-credit-card\"></i> Mã thanh toán:</dt>");
-		out.append("          <dd class=\"col-sm-8\" id=\"paymentId\">"+b.getPaymentId()+"</dd>");
-		out.append("");
+//		out.append("          <dt class=\"col-sm-4\"><i class=\"bi bi-credit-card\"></i> Mã thanh toán:</dt>");
+//		out.append("          <dd class=\"col-sm-8\" id=\"paymentId\">"+b.getPaymentId()+"</dd>");
+//		out.append("");
 		out.append("          <dt class=\"col-sm-4\"><i class=\"bi bi-upc-scan\"></i> Mã đơn hàng:</dt>");
 		out.append("          <dd class=\"col-sm-8\" id=\"orderCode\">"+b.getOrderCode()+"</dd>");
 		out.append("        </dl>");

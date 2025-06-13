@@ -180,13 +180,13 @@ public class LoginServlet extends HttpServlet {
 	        if (rs.next()) {
 	            HttpSession session = req.getSession();
 	            session.setAttribute("username", username);
-	            resp.sendRedirect("ad-dashboard");
+	            resp.sendRedirect("ad/ad-dashboard");
 	        } else {
-	            resp.sendRedirect("ad-login?error=1");
+	            resp.sendRedirect("ad/ad-login?error=1");
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        resp.sendRedirect("ad-login?error=1");
+	        resp.sendRedirect("ad/ad-login?error=1");
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();

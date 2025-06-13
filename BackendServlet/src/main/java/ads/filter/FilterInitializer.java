@@ -29,7 +29,7 @@ public class FilterInitializer implements ServletContextListener{
 //		//2. Đăng ký TourOperatorFilter chạy
 //		FilterRegistration.Dynamic toFilter = context.addFilter("TOFilter", new TourOperatorFilter());
 //		toFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/to/*");
-//				
+////				
 //		//3. Đăng ký AdministratorFilter chạy
 //		FilterRegistration.Dynamic adFilter = context.addFilter("ADFilter", new AdministratorFilter());
 //		adFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/ad/*");

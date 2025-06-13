@@ -527,9 +527,9 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
 		out.append("                                <li class=\"dropdown-header text-start\"><h6>Lọc</h6></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=day&revenueFilter=" + revenueFilter  + "&customerFilter=" + customerFilter + "\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=month&revenueFilter=" + revenueFilter + "&customerFilter=" + customerFilter + "\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=year&revenueFilter=" + revenueFilter + "&customerFilter=" + customerFilter + "\">Năm</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=day&revenueFilter=" + revenueFilter  + "&customerFilter=" + customerFilter + "\">Ngày</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=month&revenueFilter=" + revenueFilter + "&customerFilter=" + customerFilter + "\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=year&revenueFilter=" + revenueFilter + "&customerFilter=" + customerFilter + "\">Năm</a></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
 		out.append("");
@@ -574,9 +574,9 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
 		out.append("                                <li class=\"dropdown-header text-start\"><h6>Lọc</h6></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=day&customerFilter=" + customerFilter + "\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=month&customerFilter=" + customerFilter + "\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=year&customerFilter=" + customerFilter + "\">Năm</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=day&customerFilter=" + customerFilter + "\">Ngày</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=month&customerFilter=" + customerFilter + "\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=year&customerFilter=" + customerFilter + "\">Năm</a></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
 		out.append("");
@@ -622,9 +622,9 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
 		out.append("                                <li class=\"dropdown-header text-start\"><h6>Lọc</h6></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter  + "&customerFilter=day\">Ngày</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter + "&customerFilter=month\">Tháng</a></li>");
-		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter + "&customerFilter=year\">Năm</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter  + "&customerFilter=day\">Ngày</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter + "&customerFilter=month\">Tháng</a></li>");
+		out.append("                                <li><a class=\"dropdown-item\" href=\"" + req.getContextPath() + "/ad/ad-dashboard?bookingFilter=" + bookingFilter + "&revenueFilter=" + revenueFilter + "&customerFilter=year\">Năm</a></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
 		out.append("");
@@ -648,67 +648,7 @@ public class DashboardServlet extends HttpServlet {
 
 		out.append("            </div>");
 		
-		// Báo cáo tổng quan (3 đường)
-//		out.append("            <!-- Báo cáo tổng quan (Biểu đồ 3 đường: Doanh thu, Chi phí, Lợi nhuận) -->");
-//		out.append("            <div class=\"row\">");
-//		out.append("                <div class=\"col-12\">");
-//		out.append("                    <div class=\"card\">");
-//		out.append("");
-//		out.append("                        <div class=\"filter\">");
-//		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
-
-//		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Ngày</a></li>");
-
-//		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Tháng</a></li>");
-//		out.append("                                <li><a class=\"dropdown-item\" href=\"#\">Năm</a></li>");
-//		out.append("                            </ul>");
-//		out.append("                        </div>");
-//		out.append("");
-//		out.append("                        <div class=\"card-body\">");
-//		out.append(
-//				"                            <h5 class=\"card-title\">Tour được đánh giá cao nhất <span>| Ngày</span></h5>");
-//		out.append("");
-//		out.append("                            <!-- Bar Chart -->");
-//		out.append(
-//				"                            <div id=\"barChart\" style=\"min-height: 400px;\" class=\"echart\"></div>");
-//		out.append("");
-//		out.append("                            <script>");
-//		out.append("                                document.addEventListener(\"DOMContentLoaded\", () => {");
-//		out.append(
-//				"                                    echarts.init(document.querySelector(\"#barChart\")).setOption({");
-//		out.append("                                        xAxis: {");
-//		out.append("                                            type: 'category',");
-//		out.append(
-//				"                                            data: ['Tuyên Quang', 'Hà Nội', 'Đà Năng', 'Sapa', 'Hồ Chí Minh']");
-//		out.append("                                        },");
-//		out.append("                                        yAxis: {");
-//		out.append("                                            type: 'value'");
-//		out.append("                                        },");
-//		out.append("                                        series: [{");
-//		out.append("                                            data: [120, 200, 150, 80, 70],");
-//		out.append("                                            type: 'bar'");
-//		out.append("                                        }]");
-//		out.append("                                    });");
-//		out.append("                                });");
-//		out.append("                            </script>");
-//		out.append("                            <!-- End Bar Chart -->");
-//		out.append("");
-//		out.append("                        </div>");
-//		out.append("");
-//		out.append("                    </div>");
 		
-		out.append(StatisticLibrary.getStackedBarChart());
-		
-		out.append("                </div>");
-		out.append("");
-		out.append("                <!-- Xu hướng Tour (Thể hiện theo tỷ lệ category) -->");
-		out.append("                <div class=\"col-5\">");
-		out.append("                    <div class=\"card h-100\">");
-		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
-
-
 		out.append("            <!-- Báo cáo tổng quan (Biểu đồ 3 đường: Doanh thu, Chi phí, Lợi nhuận) -->");
 		out.append("            <div class=\"row\">");
 		out.append("                <div class=\"col-12\">");
@@ -786,26 +726,37 @@ public class DashboardServlet extends HttpServlet {
 		out.append("            </div>");
 		out.append("            <!-- End Báo cáo tổng quan -->");
 		
+		out.append("                </div>");
+		out.append("");
+	
+
+
+		
+		
 		
 		// 2 biểu đồ
 		// Lứa tuổi
 		out.append("            <!-- 2 biểu đồ (Top đánh giá, Xu hướng Tour)-->");
-		out.append("            <div class=\"row mb-4\">");
+		out.append("            <div class=\"row mb-4 g-3\">");
+		out.append("                <!-- Top 5 Tour được đánh giá cao nhất -->");
+		out.append("                <div class=\"col-12 col-lg-7\">");
+		out.append(StatisticLibrary.getStackedBarChart());
+		out.append("                    </div>");
+
 		out.append("                <!-- Lứa tuổi -->");
-		out.append("                <div class=\"col-lg-8 col-sm-12\">");
-		out.append("                    <div class=\"card h-100\">");
+		out.append("                <div class=\"col-lg-5 col-sm-12\">");
+		out.append("                    <div class=\"card \">");
 		out.append("");
-		out.append("                        <div class=\"filter\">");
+		out.append("                        <div class=\"filter dropdown\">");
 		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
-
-		out.append("<li><button class=\"dropdown-item bg-warning\" onclick=\"loadChart('nextyear')\">Năm sau (Dự đoán)</button></li>");
-		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('year')\">Năm</button></li>");
-		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('month')\">Tháng</button></li>");
-		out.append("<li><button class=\"dropdown-item\" onclick=\"loadChart('day')\">Ngày</button></li>");
-
-
+		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
+		out.append("                                <li><button class=\"dropdown-item bg-warning\" onclick=\"loadChart('nextyear')\">Năm sau (Dự đoán)</button></li>");
+		out.append("                                <li><button class=\"dropdown-item\" onclick=\"loadChart('year')\">Năm</button></li>");
+		out.append("                                <li><button class=\"dropdown-item\" onclick=\"loadChart('month')\">Tháng</button></li>");
+		out.append("                                <li><button class=\"dropdown-item\" onclick=\"loadChart('day')\">Ngày</button></li>");
 		out.append("                            </ul>");
 		out.append("                        </div>");
+
 		out.append("");
 		out.append("                        <div class=\"card-body pb-0\">");
 		out.append("                            <h5 class=\"card-title\" id=\"fil\">Xu hướng Tour <span >| </span></h5>");
@@ -869,6 +820,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                    </div>");
 		out.append("                </div>");
 		out.append("            </div>");
+		
 		out.append("");
 
 		// Danh sách các Tour được đặt gần đây
@@ -922,6 +874,10 @@ public class DashboardServlet extends HttpServlet {
 			}
 			else if(recentBooking.getStatus().equals("P")) {
 				status = "Đang chuẩn bị";
+				statusColor = "bg-secondary";
+			}
+			else if(recentBooking.getStatus().equals("H")) {
+				status = "Đang giữ";
 				statusColor = "bg-secondary";
 			}
 			

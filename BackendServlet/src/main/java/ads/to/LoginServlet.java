@@ -249,7 +249,7 @@ public class LoginServlet extends HttpServlet {
 
 				// Chuyển hướng
 				if (userAccount.getAdministrator() != null) {
-					resp.sendRedirect("/adv/ad/userview");
+					resp.sendRedirect("/adv/ad/ad-dashboard");
 				} else {
 					resp.sendRedirect("/adv/to/tour");
 				}
