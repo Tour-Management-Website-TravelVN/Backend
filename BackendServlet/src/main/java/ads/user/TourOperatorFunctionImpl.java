@@ -80,7 +80,7 @@ public class TourOperatorFunctionImpl implements TourOperatorFunction {
 	        
 	        //Lấy 100 bản ghi
 	        String sql = "SELECT tour_operator_id, firstname, lastname, date_of_birth, gender, address, phone_number, citizen_id, hometown, salary, start_date, end_date " +
-	                     "FROM tour_operator LIMIT 100";
+	                     "FROM tour_operator LIMIT 500";
 	        pre = this.con.prepareStatement(sql);
 	        
 	        rs = pre.executeQuery();

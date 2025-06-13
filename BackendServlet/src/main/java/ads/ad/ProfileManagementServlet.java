@@ -154,7 +154,7 @@ public class ProfileManagementServlet extends HttpServlet {
 		out.append("            <li class=\"nav-item\">");
 		out.append("                <a class=\"nav-link\" href=\"" + req.getContextPath() + "/ad-dashboard\">");
 		out.append("                    <i class=\"bx bx-category\"></i>");
-		out.append("                    <span>Bảng điều khiển</span>");
+		out.append("                    <span>Tổng quan</span>");
 		out.append("                </a>");
 		out.append("            </li>");
 		out.append("            <!-- End Dashboard Nav -->");
@@ -176,12 +176,12 @@ public class ProfileManagementServlet extends HttpServlet {
 		out.append("                <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
 		out.append("                    <li>");
 		out.append("                        <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
-		out.append("                            <i class=\"bi bi-circle\"></i><span>Người điều hành Tour</span>");
+		out.append("              				<i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                    <li>");
 		out.append("                        <a href=\"" + req.getContextPath() + "/ad-tourguide-management\">");
-		out.append("                            <i class=\"bi bi-circle\"></i><span>Hướng dẫn viên du lịch</span>");
+		out.append("              				<i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                </ul>");
@@ -206,15 +206,6 @@ public class ProfileManagementServlet extends HttpServlet {
 		out.append("            </li>");
 		out.append("            <!-- End Tour Management Nav -->");
 		out.append("");
-		out.append("            <!-- Report Nav -->");
-		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"report.html\">");
-		out.append("                    <i class=\"bx bx-bar-chart-alt-2\"></i>");
-		out.append("                    <span>Báo cáo thống kê</span>");
-		out.append("                </a>");
-		out.append("            </li>");
-		out.append("            <!-- End Report Nav -->");
-		out.append("");
 		out.append("            <!-- Review Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
 		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tourrating-management\">");
@@ -233,8 +224,6 @@ public class ProfileManagementServlet extends HttpServlet {
 		out.append("      <h1>Hồ sơ</h1>");
 		out.append("      <nav class=\"ms-auto\">");
 		out.append("        <ol class=\"breadcrumb\">");
-		out.append("          <li class=\"breadcrumb-item\"><a href=\"index.html\">Trang chủ</a></li>");
-		out.append("          <li class=\"breadcrumb-item\">Người dùng</li>");
 		out.append("          <li class=\"breadcrumb-item active\">Hồ sơ</li>");
 		out.append("        </ol>");
 		out.append("      </nav>");

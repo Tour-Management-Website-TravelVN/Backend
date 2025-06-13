@@ -191,12 +191,12 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
 		out.append("                    <li>");
 		out.append("                        <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
-		out.append("                            <i class=\"bi bi-circle\"></i><span>Người điều hành Tour</span>");
+		out.append("                            <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                    <li>");
 		out.append("                        <a href=\"" + req.getContextPath() + "/ad-tourguide-management\">");
-		out.append("                            <i class=\"bi bi-circle\"></i><span>Hướng dẫn viên du lịch</span>");
+		out.append("                            <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                </ul>");
@@ -273,7 +273,7 @@ public class DashboardServlet extends HttpServlet {
 		};
 		
 		out.append("                <!-- Lượng đặt Tour Card -->");
-		out.append("                <div class=\"col-xxl-4 col-md-6\">");
+		out.append("                <div class=\"col-xl-4 col-md-4 col-sm-12\">");
 		out.append("                    <div class=\"card info-card sales-card\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
@@ -318,7 +318,7 @@ public class DashboardServlet extends HttpServlet {
 		};
 		
 		out.append("                <!-- Doanh thu Card -->");
-		out.append("                <div class=\"col-xxl-4 col-md-6\">");
+		out.append("                <div class=\"col-xl-4 col-md-4 col-sm-12\">");
 		out.append("                    <div class=\"card info-card revenue-card\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
@@ -362,7 +362,7 @@ public class DashboardServlet extends HttpServlet {
 		};
 		
 		out.append("                <!-- Lượng khách hàng Card -->");
-		out.append("                <div class=\"col-xxl-4 col-xl-12\">");
+		out.append("                <div class=\"col-xl-4 col-md-4 col-sm-12\">");
 		out.append("");
 		out.append("                    <div class=\"card info-card customers-card\">");
 		out.append("");
@@ -570,7 +570,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("            <!-- 2 biểu đồ (Top đánh giá, Xu hướng Tour)-->");
 		out.append("            <div class=\"row mb-4\">");
 		out.append("                <!-- Lứa tuổi -->");
-		out.append("                <div class=\"col-7\">");
+		out.append("                <div class=\"col-lg-8 col-sm-12\">");
 		out.append("                    <div class=\"card h-100\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
@@ -596,25 +596,25 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                                    new Chart(document.querySelector('#stakedBarChart'), {");
 		out.append("                                        type: 'bar',");
 		out.append("                                        data: {");
-		out.append("                                            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7'],");
+		out.append("                                            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],");
 		out.append("                                            datasets: [{");
 		out.append("                                                label: 'Người lớn',");
-		out.append("                                                data: [75, 15, 18, 48, 74],");
+		out.append("                                                data: [75, 15, 18, 48, 74, 75],");
 		out.append("                                                backgroundColor: 'rgb(255, 99, 132)',");
 		out.append("                                            },");
 		out.append("                                            {");
 		out.append("                                                label: 'Trẻ em',");
-		out.append("                                                data: [11, 1, 12, 62, 95],");
+		out.append("                                                data: [11, 1, 12, 62, 95, 32],");
 		out.append("                                                backgroundColor: 'rgb(75, 192, 192)',");
 		out.append("                                            },");
 		out.append("                                            {");
 		out.append("                                                label: 'Trẻ nhỏ',");
-		out.append("                                                data: [44, 5, 22, 35, 62],");
+		out.append("                                                data: [44, 5, 22, 35, 62, 41],");
 		out.append("                                                backgroundColor: 'rgb(255, 205, 86)',");
 		out.append("                                            },");
 		out.append("                                            {");
 		out.append("                                                label: 'Trẻ sơ sinh',");
-		out.append("                                                data: [44, 5, 22, 35, 62],");
+		out.append("                                                data: [44, 5, 22, 35, 62, 52],");
 		out.append("                                                backgroundColor: 'rgb(255, 150, 70)',");
 		out.append("                                            }");
 		out.append("                                            ]");
@@ -649,7 +649,7 @@ public class DashboardServlet extends HttpServlet {
 		
 		// Xu hướng Tour
 		out.append("                <!-- Xu hướng Tour (Thể hiện theo tỷ lệ category) -->");
-		out.append("                <div class=\"col-5\">");
+		out.append("                <div class=\"col-lg-4 col-sm-12\">");
 		out.append("                    <div class=\"card h-100\">");
 		out.append("                        <div class=\"filter\">");
 		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");

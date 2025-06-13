@@ -166,12 +166,12 @@ public class TourGuideManagementServlet extends HttpServlet {
 		out.append("        <ul id=\"staff-management-nav\" class=\"nav-content collapse show\" data-bs-parent=\"#sidebar-nav\">");
 		out.append("          <li>");
 		out.append("            <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
-		out.append("              <i class=\"bi bi-circle\"></i><span>Người điều hành Tour</span>");
+		out.append("              <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("            </a>");
 		out.append("          </li>");
 		out.append("          <li>");
 		out.append("            <a href=\"" + req.getContextPath() + "/ad-tourguide-management\" class=\"active\">");
-		out.append("              <i class=\"bi bi-circle\"></i><span>Hướng dẫn viên du lịch</span>");
+		out.append("              <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("            </a>");
 		out.append("          </li>");
 		out.append("        </ul>");

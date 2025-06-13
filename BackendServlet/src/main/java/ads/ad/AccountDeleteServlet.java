@@ -18,40 +18,60 @@ public class AccountDeleteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private UserAccountFunction userAccountFunction = new UserAccountFunctionImpl();
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("username") == null) {
-            resp.sendRedirect(req.getContextPath() + "/ad-login");
-            return;
-        }
-        
-        String delete = req.getParameter("delete");
-        if ("all".equals(delete)) {
-            boolean isDeletedAll = userAccountFunction.deleteAllSoftDeleteAccounts();
-            
-            if (isDeletedAll) {
-                resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete_all");
-            } else {
-                resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete_all");
-            }
-            return;
-        }
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    HttpSession session = req.getSession(false);
+	    if (session == null || session.getAttribute("username") == null) {
+	        resp.sendRedirect(req.getContextPath() + "/ad-login");
+	        return;
+	    }
 
-        String username = req.getParameter("username");
-        
-        if (username == null || username.isEmpty()) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username is required");
-            return;
-        }
+	    // Xóa tất cả
+//	    String delete = req.getParameter("delete");
+//	    if ("all".equals(delete)) {
+//	        boolean isDeletedAll = userAccountFunction.deleteAllSoftDeleteAccounts();
+//
+//	        if (isDeletedAll) {
+//	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete_all");
+//	        } else {
+//	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete_all");
+//	        }
+//	        return;
+//	    }
 
-        boolean isDeleted = userAccountFunction.deleteUserAccount(username);
-        
-        if (isDeleted) {
-            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete");
-        }
-        else {
-            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete");
-        }
-    }
+	    // Xóa nhiều tài khoản đã chọn
+	    String[] usernames = req.getParameterValues("usernames");
+
+	    if (usernames != null && usernames.length > 0) {
+	        boolean allDeleted = true;
+	        for (String username : usernames) {
+	            if (!userAccountFunction.deleteUserAccount(username)) {
+	                allDeleted = false;
+	                break;
+	            }
+	        }
+
+	        if (allDeleted) {
+	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete_multiple");
+	        } else {
+	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete_multiple");
+	        }
+	        return;
+	    }
+
+	    // Xóa 1
+	    String username = req.getParameter("username");
+	    if (username == null || username.isEmpty()) {
+	        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username is required");
+	        return;
+	    }
+
+	    boolean isDeleted = userAccountFunction.deleteUserAccount(username);
+	    if (isDeleted) {
+	        resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete");
+	    } else {
+	        resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete");
+	    }
+	}
+
 }

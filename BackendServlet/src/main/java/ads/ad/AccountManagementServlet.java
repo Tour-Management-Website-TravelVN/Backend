@@ -159,12 +159,12 @@ public class AccountManagementServlet extends HttpServlet{
 		out.append("        <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
 		out.append("          <li>");
 		out.append("            <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
-		out.append("              <i class=\"bi bi-circle\"></i><span>Người điều hành Tour</span>");
+		out.append("              <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("            </a>");
 		out.append("          </li>");
 		out.append("          <li>");
 		out.append("            <a href=\"" + req.getContextPath() + "/ad-tourguide-management\">");
-		out.append("              <i class=\"bi bi-circle\"></i><span>Hướng dẫn viên du lịch</span>");
+		out.append("              <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("            </a>");
 		out.append("          </li>");
 		out.append("        </ul>");
@@ -278,7 +278,7 @@ public class AccountManagementServlet extends HttpServlet{
 			out.append("                      <th class=\"text-center\"></th>");
 			out.append("                      <td class=\"text-center\">" + id + "</td>");
 			out.append("                      <td>" + userAccount.getUsername() + "</td>");
-			out.append("                      <td>" + userAccount.getPassword() + "</td>");
+			out.append("                      <td>*********</td>");
 			out.append("                      <td>" + userAccount.getEmail() + "</td>");
 			out.append("                      <td>" + role + "</td>");
 			out.append("                      <td class=\"text-center\">" + userAccount.getStatus() + "</td>");
@@ -301,7 +301,14 @@ public class AccountManagementServlet extends HttpServlet{
 			}
 			
 			out.append("                        <button type=\"button\" class=\"btn btn-primary btn-sm\" data-bs-toggle=\"modal\" data-bs-target=\"#changeInforModal-" + userAccount.getUsername() + "\"><i class=\"bx bxs-pencil\"></i></button>");
-			out.append("                        <button type=\"button\" class=\"btn btn-danger btn-sm\" data-bs-toggle=\"modal\" data-bs-target=\"#confirmDeleteModal-" + userAccount.getUsername() + "\"><i class=\"bx bx-trash\"></i></button>");
+			
+			if(!isCurrentUser) {
+				out.append("                    <button type=\"button\" class=\"btn btn-danger btn-sm\" data-bs-toggle=\"modal\" data-bs-target=\"#confirmDeleteModal-" + userAccount.getUsername() + "\"><i class=\"bx bx-trash\"></i></button>");
+			}
+			else {
+				out.append("                    <button type=\"button\" class=\"btn btn-danger btn-sm\" disabled><i class=\"bx bx-trash\"></i></button>");
+			}
+						
 			out.append("                      </td>");
 			out.append("                    </tr>");
 			

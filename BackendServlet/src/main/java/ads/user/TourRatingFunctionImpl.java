@@ -1,4 +1,4 @@
-package ads.ad;
+package ads.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -80,7 +80,7 @@ private static ConnectionPool cp = ConnectionPoolImpl.getInstance();
 	        
 	        //Lấy 100 bản ghi
 	        String sql = "SELECT tour_rating_id, administrator_id, c_id, tour_unit_id, rating_value, comment, status " +
-	                     "FROM tour_rating LIMIT 100";
+	                     "FROM tour_rating LIMIT 500";
 	        pre = this.con.prepareStatement(sql);
 	        
 	        rs = pre.executeQuery();

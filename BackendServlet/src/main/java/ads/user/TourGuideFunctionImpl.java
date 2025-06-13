@@ -76,7 +76,7 @@ private static ConnectionPool cp = ConnectionPoolImpl.getInstance();
 	        
 	        //Lấy 100 bản ghi
 	        String sql = "SELECT tour_guide_id, firstname, lastname, date_of_birth, gender, address, phone_number, citizen_id, hometown, salary, start_date, end_date, card_id, language " +
-	                     "FROM tour_guide LIMIT 100";
+	                     "FROM tour_guide LIMIT 500";
 	        pre = this.con.prepareStatement(sql);
 	        
 	        rs = pre.executeQuery();

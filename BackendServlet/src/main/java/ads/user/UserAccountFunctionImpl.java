@@ -291,7 +291,7 @@ public class UserAccountFunctionImpl implements UserAccountFunction {
 	        String sql = "SELECT username, password, c_id, administrator_id, tour_guide_id, tour_operator_id, email, status " +
 	                     "FROM user_account " +
 	                     "WHERE status <> 'DEL' " +
-	                     "LIMIT 100";
+	                     "LIMIT 500";
 	        pre = this.con.prepareStatement(sql);
 	        
 	        rs = pre.executeQuery();
