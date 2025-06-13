@@ -146,59 +146,53 @@ public class ToursCancelRequestServlet extends HttpServlet{
 		 out.append("          <div class=\"card\">");
 		 out.append("            <div class=\"card-body\">");
 		 out.append("<form method=\"post\" action=\"\">");
-		 out.append("              <!-- Table with stripped rows -->");
-			 out.append("              <table class=\"table datatable table-striped \" style=\"font-size: small;\" >");
-			 out.append("<button name=\"action\" value=\"approve\" class=\"btn btn-success mt-2 me-2\"><i class=\"bi bi-check2-circle\"></i>\r\n"
-			 		+ "Đồng ý tất cả lựa chọn</button>");
-			 out.append("<button name=\"action\" value=\"reject\" class=\"btn btn-danger mt-2 \"><i class=\"bi bi-x-circle\"></i>\r\n"
-			 		+ "Từ chối tất cả lựa chọn</button>");
-	
-			 out.append("                <thead>");
-			 out.append("                 ");
-			 out.append("                  <tr>");
-			 out.append("                    <th>");
-			 out.append("                      <b>Mã đặt tour</b>");
-			 out.append("                    </th>");
-			 out.append("                    <th>Ngày đặt tour</th>");
-			 out.append("                    <th>Số lượng trẻ sơ sinh</th>");
-			 out.append("                    <th>Số lượng trẻ em</th>");
-			 out.append("                    <th>Số lượng người lớn</th>");
-			 out.append("                    <th>Ghi chú</th>");
-			 out.append("                    <th>Tuỳ chọn</th>");
-			 out.append("                    <th>Lựa chọn</th>");
-	
-	
-			 out.append("                  </tr>");
-			 out.append("                </thead>");
-			 out.append("                <tbody>");
-			 if (list_b != null)
-			 {
-			 list_b.forEach(tmp ->{ 
-				 
-			 out.append("                  <tr>");
-			 out.append(getDetailModal(tmp).toString());
-			 out.append("                    <td>"+tmp.getBookingId()+"</td>");
-			 out.append("                    <td>"+tmp.getBookingDate()+"</td>");
-			 out.append("                    <td>"+tmp.getBabyNumber()+"</td>");
-			 out.append("                    <td>"+tmp.getChildNumber()+"</td>");
-			 out.append("                    <td>"+tmp.getAdultNumber()+"</td>");
-			String nd = (tmp.getNote() != null) ? tmp.getNote():" < trống >";
-	
-			 out.append("                    <td>"+nd+"</td>");
-			 out.append("                    <td class=\"row\">");
-			 out.append("                       <a class=\"btn btn-secondary btn-sm text-light col\" data-bs-toggle=\"modal\" data-bs-target=\"#bookingDetailModal_"+tmp.getBookingId()+"\"><i class=\"bi bi-info-circle\"></i>");
-			 out.append("                      </a>");
-			 out.append("                    </td>");
-			 out.append("                  <td >");
-			 out.append("<input class =\"ms-4\" type=\"checkbox\" id=\"booking\" name=\"booking\" value=\""+tmp.getBookingId()+"\">");
-			 out.append("                  </td>");
-			 out.append("                  </tr>");
-	
-			 });
-			 }
-	
-			 out.append("                </tbody>");
-			 out.append("              </table>");
+		 out.append("<div class=\"d-flex flex-wrap gap-2 mb-3\">");
+		 out.append("  <button name=\"action\" value=\"approve\" class=\"btn btn-success\"><i class=\"bi bi-check2-circle\"></i> Đồng ý tất cả lựa chọn</button>");
+		 out.append("  <button name=\"action\" value=\"reject\" class=\"btn btn-danger\"><i class=\"bi bi-x-circle\"></i> Từ chối tất cả lựa chọn</button>");
+		 out.append("</div>");
+
+		 out.append("<!-- Table with stripped rows and responsive wrapper -->");
+		 out.append("<div class=\"table-responsive\">");
+		 out.append("  <table class=\"table table-striped datatable\" style=\"font-size: small;\">");
+
+		 out.append("    <thead>");
+		 out.append("      <tr>");
+		 out.append("        <th><b>Mã đặt tour</b></th>");
+		 out.append("        <th>Ngày đặt tour</th>");
+		 out.append("        <th>Số lượng trẻ sơ sinh</th>");
+		 out.append("        <th>Số lượng trẻ em</th>");
+		 out.append("        <th>Số lượng người lớn</th>");
+		 out.append("        <th>Ghi chú</th>");
+		 out.append("        <th>Tuỳ chọn</th>");
+		 out.append("        <th>Lựa chọn</th>");
+		 out.append("      </tr>");
+		 out.append("    </thead>");
+
+		 out.append("    <tbody>");
+		 if (list_b != null) {
+		     list_b.forEach(tmp -> {
+		         out.append("      <tr>");
+		         out.append(getDetailModal(tmp).toString());
+		         out.append("        <td>" + tmp.getBookingId() + "</td>");
+		         out.append("        <td>" + tmp.getBookingDate() + "</td>");
+		         out.append("        <td>" + tmp.getBabyNumber() + "</td>");
+		         out.append("        <td>" + tmp.getChildNumber() + "</td>");
+		         out.append("        <td>" + tmp.getAdultNumber() + "</td>");
+		         String nd = (tmp.getNote() != null) ? tmp.getNote() : "&lt;trống&gt;";
+		         out.append("        <td>" + nd + "</td>");
+		         out.append("        <td class=\"row\">");
+		         out.append("          <a class=\"btn btn-secondary btn-sm text-light col\" data-bs-toggle=\"modal\" data-bs-target=\"#bookingDetailModal_" + tmp.getBookingId() + "\"><i class=\"bi bi-info-circle\"></i></a>");
+		         out.append("        </td>");
+		         out.append("        <td>");
+		         out.append("          <input class=\"ms-4\" type=\"checkbox\" id=\"booking\" name=\"booking\" value=\"" + tmp.getBookingId() + "\">");
+		         out.append("        </td>");
+		         out.append("      </tr>");
+		     });
+		 }
+		 out.append("    </tbody>");
+		 out.append("  </table>");
+		 out.append("</div>");
+
 			 out.append("              <!-- End Table with stripped rows -->");
 			 out.append("</form>");
 			 out.append("            </div>");

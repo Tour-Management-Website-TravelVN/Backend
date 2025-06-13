@@ -1279,12 +1279,6 @@ a{
     padding: 8px; /* Giảm padding để tiết kiệm không gian */
 }
 
-/* Ẩn cột trên màn hình nhỏ */
-@media (max-width: 767px) {
-    .table th, .table td {
-        font-size: 12px; /* Giảm cỡ chữ trên mobile */
-    }
-}
 
 /* Tăng kích thước nút trên mobile */
 @media (max-width: 576px) {
@@ -1293,6 +1287,11 @@ a{
     }
 }
 
+@media (max-width: 576px) {
+  .form-floating label {
+    font-size: 14px;
+  }
+}
 /* Tooltip cho nút hành động */
 [data-bs-toggle="tooltip"] {
     position: relative;

@@ -139,69 +139,60 @@ public class CustomerServlet extends HttpServlet{
 		out.append("");
 		out.append("          <div class=\"card\">");
 		out.append("            <div class=\"card-body\">");
-		out.append("              <!-- Table with stripped rows -->");
-		out.append("              <table class=\"table datatable table-striped\" style=\"font-size: smaller;\">");
-		out.append("                <thead>");
-		out.append("                  <tr class=\"d-flex\">");
-		out.append("                    <div class=\"row\">");
-		out.append("                    <div class=\"col-md-4\">");
-		out.append("                      <select id=\"tourUnitSelect\" class=\"form-select mt-3\">");
-		out.append("                        <option value=\"\" selected disabled>Chọn mã đơn vị tour</option>");
-		out.append("                        <option value=\"T001\">T001 - Đơn vị A</option>");
+		// Đặt phần chọn đơn vị tour phía trên bảng
+		out.append("<div class=\"row mb-3\">");
+		out.append("  <div class=\"col-md-4\">");
+		out.append("    <label for=\"tourUnitSelect\" class=\"form-label\">Chọn mã đơn vị tour</label>");
+		out.append("    <select id=\"tourUnitSelect\" class=\"form-select\">");
+		out.append("      <option value=\"\" selected disabled>Chọn mã đơn vị tour</option>");
+		out.append("      <option value=\"T001\">T001 - Đơn vị A</option>");
+		out.append("    </select>");
+		out.append("  </div>");
+		out.append("</div>");
 
-		out.append("                      </select>");
-		out.append("                    </div>");
-		out.append("              </div>");
-		out.append("                  </tr>");
-		out.append("                  <tr>");
-		out.append("                    <th>");
-		out.append("                      <b>Họ và tên</b>");
-		out.append("                    </th>");
-		out.append("                    <th>Giới tính</th>");
-		out.append("                    <th>Quốc tịch</th>");
-		out.append("                    <th data-type=\"date\" data-format=\"YYYY/DD/MM\">Ngày sinh</th>");
-		out.append("                    <th>Số căn cước/passport</th>");
-		out.append("                    <th>Số điện thoại</th>");
-		out.append("                    <th>Tuỳ chọn</th>");
-		out.append("                  </tr>");
-		out.append("                </thead>");
-		out.append("                <tbody>");
-		
-		ArrayList<Customer> tmp =  CustomerFunctionImpl.getInstance().getCustomers(1);
-		tmp.forEach(c ->{
-		out.append("                  <tr>");
-		out.append("                    <td>");
-		out.append("                      <b>"+c.getLastname()+" "+c.getFirstname()+"</b>");
-		out.append("                    </td>"); 
-		String gender = (c.getGender())?"Nam" :"Nữ";
-		out.append("                    <td>"+gender+"</td>");
-		out.append("                    <td>"+c.getNationality()+"</td>");
-		out.append("                    <td data-type=\"date\" data-format=\"YYYY/DD/MM\">"+c.getDateOfBirth()+"</td>");
-		out.append("                    <td>"+c.getPassport()+"</td>");
-		out.append("                    <td>"+c.getPhoneNumber()+"</td>");
-		
-		out.append("<td >");
-		out.append("<a href=\"#\" class=\"btn btn-sm btn-primary me-1\" data-bs-toggle=\"modal\" ");
-		out.append("data-bs-target=\"#editCustomerModal_" + c.getId() + "\">");
-		out.append("<i class=\"bi bi-pen-fill\"></i></a>");
-		out.append("<a href=\"#\" class=\"btn btn-sm btn-danger me-1\" data-bs-toggle=\"modal\" ");
-		out.append("data-bs-target=\"#staticBackdrop_" + c.getId() + "\">");
-		out.append("<i class=\"bi bi-trash3-fill\"></i></a>");
-		out.append("<a href=\"#\" class=\"btn btn-sm btn-secondary\" data-bs-toggle=\"modal\" ");
-		out.append("data-bs-target=\"#tourUnitDetailModal_" + c.getId() + "\">");
-		out.append("<i class=\"bi bi-info-circle\"></i></a>");
-		out.append("</td>");
-		out.append("                  </tr>");
-		out.append("<!-- Modal Xem Chi Tiết -->");
-		out.append(getDetailModal(c));
-		out.append("<!-- Modal Xoá -->");
-		out.append(getDelModal(c));
-		out.append(getEditModal(c));
+		// Table responsive wrapper
+		out.append("<div class=\"table-responsive\">");
+		out.append("  <table class=\"table table-striped datatable\" style=\"font-size: smaller;\">");
+
+		out.append("    <thead>");
+		out.append("      <tr>");
+		out.append("        <th><b>Họ và tên</b></th>");
+		out.append("        <th>Giới tính</th>");
+		out.append("        <th>Quốc tịch</th>");
+		out.append("        <th data-type=\"date\" data-format=\"YYYY/DD/MM\">Ngày sinh</th>");
+		out.append("        <th>Số căn cước/passport</th>");
+		out.append("        <th>Số điện thoại</th>");
+		out.append("        <th>Tuỳ chọn</th>");
+		out.append("      </tr>");
+		out.append("    </thead>");
+
+		out.append("    <tbody>");
+		ArrayList<Customer> tmp = CustomerFunctionImpl.getInstance().getCustomers(1);
+		tmp.forEach(c -> {
+		    out.append("      <tr>");
+		    out.append("        <td><b>" + c.getLastname() + " " + c.getFirstname() + "</b></td>");
+		    String gender = (c.getGender()) ? "Nam" : "Nữ";
+		    out.append("        <td>" + gender + "</td>");
+		    out.append("        <td>" + c.getNationality() + "</td>");
+		    out.append("        <td data-type=\"date\" data-format=\"YYYY/DD/MM\">" + c.getDateOfBirth() + "</td>");
+		    out.append("        <td>" + c.getPassport() + "</td>");
+		    out.append("        <td>" + c.getPhoneNumber() + "</td>");
+		    out.append("        <td>");
+		    out.append("          <a href=\"#\" class=\"btn btn-sm btn-primary me-1\" data-bs-toggle=\"modal\" data-bs-target=\"#editCustomerModal_" + c.getId() + "\"><i class=\"bi bi-pen-fill\"></i></a>");
+		    out.append("          <a href=\"#\" class=\"btn btn-sm btn-danger me-1\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop_" + c.getId() + "\"><i class=\"bi bi-trash3-fill\"></i></a>");
+		    out.append("          <a href=\"#\" class=\"btn btn-sm btn-secondary\" data-bs-toggle=\"modal\" data-bs-target=\"#tourUnitDetailModal_" + c.getId() + "\"><i class=\"bi bi-info-circle\"></i></a>");
+		    out.append("        </td>");
+		    out.append("      </tr>");
+		    // Modal liên quan
+		    out.append(getDetailModal(c));
+		    out.append(getDelModal(c));
+		    out.append(getEditModal(c));
 		});
-		out.append("                </tbody>");
-	
-		out.append("              </table>");
-		out.append("              <!-- End Table with stripped rows -->");
+		out.append("    </tbody>");
+
+		out.append("  </table>");
+		out.append("</div>");
+
 		out.append("");
 		out.append("            </div>");
 		out.append("          </div>");

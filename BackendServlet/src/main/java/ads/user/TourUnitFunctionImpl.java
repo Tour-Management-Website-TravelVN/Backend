@@ -89,12 +89,17 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 		sql.append("f.festival_name, ");
 		sql.append("d.discount_name, d.discount_value, d.discount_unit, ");
 		sql.append("op.lastname AS lastname, ");
-		sql.append("op.firstname AS firstname ");
+		sql.append("op.firstname AS firstname, ");
+		sql.append("op1.lastname AS lastname1, ");
+		sql.append("op1.firstname AS firstname1 ");
+		
 		sql.append("FROM tour_unit tu ");
 		sql.append("JOIN tour t ON tu.tour_id = t.tour_id ");
 		sql.append("LEFT JOIN festival f ON tu.festival_id = f.festival_id ");
 		sql.append("LEFT JOIN discount d ON tu.discount_id = d.discount_id ");
 		sql.append("LEFT JOIN tour_operator op ON tu.tour_operator_id = op.tour_operator_id ");
+		sql.append("LEFT JOIN tour_operator op1 ON tu.last_updated_operator = op1.tour_operator_id ");
+
 		sql.append("WHERE tu.tour_id = ? ");
 		sql.append("LIMIT ").append((page - 1) * MAX_ITEM_OF_PAGE).append(", ").append(MAX_ITEM_OF_PAGE);
 
@@ -143,7 +148,10 @@ public class TourUnitFunctionImpl implements TourUnitFunction{
 	            		 .firstname(rs.getString("firstname"))
 	            		 .lastname(rs.getString("lastname"))
 	            		 .build());
-	             tu.setLastUpdatedOperator(TourOperatorFunctionImpl.getInstance().getById(""+rs.getInt("last_updated_operator")));
+	             tu.setLastUpdatedOperator(TourOperator.builder()
+	            		 .firstname(rs.getString("firstname1"))
+	            		 .lastname(rs.getString("lastname1"))
+	            		 .build());
 	            list.add(tu);
 	        }
 	    } catch (SQLException e) {

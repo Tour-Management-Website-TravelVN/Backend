@@ -104,131 +104,153 @@ public class TourUnitEditServlet extends HttpServlet{
 		 out.append("  <div class=\"card-body\">");
 		 out.append("    <h5 class=\"card-title\">Nhập thông tin mới cho đơn vị tour</h5>");
 		 out.append("");
-		 out.append("    <!-- General Form Elements -->");
-		 out.append("    <form action=\"Tour-Unit-Edit?tourId="+tu.getTour().getTourId()+"\" method=\"post\" id=\"edit\">");
-		 out.append("      <div class=\"row mb-3\">");
-		 out.append("        <div class=\"col-md-6\">");
-		 out.append("          <div class=\"form-floating\">");
-		 out.append("            <input type=\"text\" value=\""+tu.getTourUnitId() +"\" class=\"form-control\" id=\"tourUnitId\" name=\"tourUnitId\"  placeholder=\"ID tour\" readonly>");
-		 out.append("            <label for=\"tourId\">ID tour unit</label>");
-		 out.append("          </div>");
-		 out.append("        </div>");
-		 out.append("        <div class=\"col-md-6\">");
-		 out.append("          <div class=\"form-floating\">");
-		 out.append("            <select class=\"form-control form-control-sm fw-bold\" id=\"festival\" name=\"festival\" >");
-		 for(Festival f:list_fes) {
-			 out.append("<option value=\""+f.getId()+"\">"+f.getFestivalName()+"</option> ");
+		 out.append("<div class=\"container-fluid\">");
+		 out.append("<form action=\"Tour-Unit-Edit?tourId="+tu.getTour().getTourId()+"\" method=\"post\" id=\"edit\">");
+
+		 out.append("<div class=\"row g-3\">");
+
+		 out.append("<div class=\"col-12 col-md-6\">");
+		 out.append("<div class=\"form-floating\">");
+		 out.append("<input type=\"text\" value=\""+tu.getTourUnitId()+"\" class=\"form-control\" id=\"tourUnitId\" name=\"tourUnitId\" placeholder=\"ID tour\" readonly>");
+		 out.append("<label for=\"tourUnitId\">ID tour unit</label>");
+		 out.append("</div>");
+		 out.append("</div>");
+
+		 out.append("<div class=\"col-12 col-md-6\">");
+		 out.append("<div class=\"form-floating\">");
+		 out.append("<select class=\"form-select fw-bold\" id=\"festival\" name=\"festival\">");
+		 for(Festival f : list_fes){
+		     out.append("<option value=\""+f.getId()+"\">"+f.getFestivalName()+"</option>");
 		 }
-		 out.append("            </select>        ");
-		 out.append("            <label for=\"festival\">Lễ hội</label>           ");
-		 out.append("          </div>");
-		 out.append("        </div>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" value=\""+tu.getTour().getTourName()+"\" id=\"tourName\" id=\"tourName\" placeholder=\"Tên tour\" readonly>");
-		 out.append("        <label for=\"tourName\">Tên tour</label>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"row\">");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <select class=\"form-control form-control-sm fw-bold\" id=\"discount\" name=\"discount\" >");
+		 out.append("</select>");
+		 out.append("<label for=\"festival\">Lễ hội</label>");
+		 out.append("</div>");
+		 out.append("</div>");
+
+		 out.append("</div>"); // end row
+
+		 out.append("<div class=\"form-floating my-3\">");
+		 out.append("<input type=\"text\" class=\"form-control\" value=\""+tu.getTour().getTourName()+"\" id=\"tourName\" name=\"tourName\" placeholder=\"Tên tour\" readonly>");
+		 out.append("<label for=\"tourName\">Tên tour</label>");
+		 out.append("</div>");
 		 ArrayList<Discount> list_dis = (ArrayList<Discount>) DiscountFunctionImpl.getInstance().getDiscounts(1);
-		 for(Discount d: list_dis )
-		 {
-			 out.append("<option value=\""+d.getId()+"\">"+d.getDiscountName()+"</option> ");
 
+		 out.append("  <div class=\"row\">");
+
+		// Chương trình giảm giá
+		out.append("    <div class=\"form-floating mb-3 col-6 col-md-3\">");
+		out.append("      <select class=\"form-control form-control-sm fw-bold\" id=\"discount\" name=\"discount\">");
+		for (Discount d : list_dis) {
+		    out.append("        <option value=\"" + d.getId() + "\">" + d.getDiscountName() + "</option>");
+		}
+		out.append("        <option value=\"null\">Không giảm giá</option>");
+		out.append("      </select>");
+		out.append("      <label for=\"discount\" class=\"ms-2\">Chương trình giảm giá</label>");
+		out.append("    </div>");
+
+		// Chỗ
+		out.append("    <div class=\"form-floating mb-3 col-6 col-md-3\">");
+		out.append("      <input type=\"text\" class=\"form-control\" value=\"" + tu.getMaximumCapacity() + "\" id=\"availableCapacity\" name=\"availableCapacity\" placeholder=\"Chỗ\">");
+		out.append("      <label for=\"availableCapacity\" class=\"ms-2\">Chỗ</label>");
+		out.append("      <div class=\"invalid-feedback\" id=\"tourIncluded-feedback\"></div>");
+		out.append("    </div>");
+
+		// Ngày khởi hành
+		out.append("    <div class=\"form-floating mb-3 col-6 col-md-3\">");
+		out.append("      <input type=\"date\" class=\"form-control\" id=\"departure\" name=\"departure\" value=\"" + tu.getDepartureDate() + "\">");
+		out.append("      <label for=\"departure\" class=\"ms-2\">Ngày khởi hành</label>");
+		out.append("      <div class=\"invalid-feedback\" id=\"departure-feedback\"></div>");
+		out.append("    </div>");
+
+		// Ngày về
+		out.append("    <div class=\"form-floating mb-3 col-6 col-md-3\">");
+		out.append("      <input type=\"date\" class=\"form-control\" id=\"return\" name=\"return\" value=\"" + tu.getReturnDate() + "\">");
+		out.append("      <label for=\"return\" class=\"ms-2\">Ngày về</label>");
+		out.append("      <div class=\"invalid-feedback\" id=\"return-feedback\"></div>");
+		out.append("    </div>");
+
+		out.append("  </div>");
+
+
+		 // Các phần input giá + chi phí
+		 String[] prices = {
+		     "adultprice:Giá người lớn", "childprice:Giá trẻ em", "toldlerprice:Giá trẻ em 6-10 tuổi", "babyprice:Giá trẻ sơ sinh"
+		 };
+		 String[] costs = {
+		     "adultcost:Chi phí người lớn", "childcost:Chi phí trẻ em", "toldlercost:Chi phí trẻ em 6-10 tuổi", "babycost:Chi phí trẻ sơ sinh"
+		 };
+
+		 out.append("<div class=\"row g-3\">");
+		 for(String p : prices){
+		     String[] parts = p.split(":");
+		     String id = parts[0];
+		     String label = parts[1];
+		     String value = "";
+		     switch(id){
+		         case "adultprice": value = tu.getAdultTourPrice().toString(); break;
+		         case "childprice": value = tu.getChildTourPrice().toString(); break;
+		         case "toldlerprice": value = tu.getToddlerTourPrice().toString(); break;
+		         case "babyprice": value = tu.getBabyTourPrice().toString(); break;
+		     }
+		     out.append("<div class=\"form-floating col-12 col-md-3\">");
+		     out.append("<input type=\"text\" class=\"form-control\" id=\""+id+"\" name=\""+id+"\" placeholder=\""+label+"\" value=\""+value+"\" "+(id.equals("adultprice")?"oninput=\"inputprice()\"":"readonly")+">");
+		     out.append("<label for=\""+id+"\" class=\"ms-2\">"+label+"</label>");
+		     out.append("</div>");
 		 }
-		 out.append("<option value=\"null\">Không giảm giá</option> ");
+		 out.append("</div>");
 
-		 out.append("        </select>     ");
-		 out.append("        <label for=\"discount\" class=\"ms-2\">Chương trình giảm giá</label>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" value=\""+ tu.getMaximumCapacity()+"\" id=\"availableCapacity\" name=\"availableCapacity\" placeholder=\"Chỗ\">");
-		 out.append("        <label for=\"availableCapacity\" class=\"ms-2\">Chỗ</label>");
-	     out.append("   <div class=\"invalid-feedback\" id=\"tourIncluded-feedback\"></div>");
+		 out.append("<div class=\"row g-3\">");
+		 for(String c : costs){
+		     String[] parts = c.split(":");
+		     String id = parts[0];
+		     String label = parts[1];
+		     String value = "";
+		     switch(id){
+		         case "adultcost": value = tu.getAdultTourCost().toString(); break;
+		         case "childcost": value = tu.getChildTourCost().toString(); break;
+		         case "toldlercost": value = tu.getToddlerTourCost().toString(); break;
+		         case "babycost": value = tu.getBabyTourCost().toString(); break;
+		     }
+		     out.append("<div class=\"form-floating col-12 col-md-3\">");
+		     out.append("<input type=\"text\" class=\"form-control\" id=\""+id+"\" name=\""+id+"\" placeholder=\""+label+"\" value=\""+value+"\" "+(id.equals("adultcost")?"oninput=\"inputcost()\"":"")+" required>");
+		     out.append("<label for=\""+id+"\" class=\"ms-2\">"+label+"</label>");
+		     out.append("</div>");
+		 }
+		 out.append("</div>");
 
-		 out.append("      </div>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"row\">");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"date\" class=\"form-control\" id=\"departure\" name=\"departure\" value=\""+tu.getDepartureDate()+"\">");
-		 out.append("        <label for=\"departure\" class=\"ms-2\">Ngày khởi hành</label>");
-	     out.append(" <div class=\"invalid-feedback\" id=\"departure-feedback\"></div>");
+		 // Private Room & Additional Cost
+		 out.append("<div class=\"row g-3\">");
 
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"date\" class=\"form-control\" id=\"return\" name=\"return\" value=\""+tu.getReturnDate()+"\">");
-		 out.append("        <label for=\"return\" class=\"ms-2\">Ngày về</label>");
-	     out.append(" <div class=\"invalid-feedback\" id=\"return-feedback\"></div>");
+		 out.append("<div class=\"form-floating col-12 col-md-6\">");
+		 out.append("<input type=\"text\" class=\"form-control\" id=\"privateRoom\" name=\"privateRoom\" placeholder=\"Giá phòng riêng\" value=\""+tu.getPrivateRoomPrice()+"\" required>");
+		 out.append("<label for=\"privateRoom\" class=\"ms-2\">Giá phòng riêng</label>");
+		 out.append("<div class=\"invalid-feedback\" id=\"privateroom-feedback\"></div>");
+		 out.append("</div>");
 
-		 out.append("      </div>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"row\">");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"adultprice\" name=\"adultprice\" placeholder=\"Giá người lớn\" oninput=\"inputprice()\" value=\""+tu.getAdultTourPrice()+"\" >");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Giá người lớn</label>");
-	     out.append(" <div class=\"invalid-feedback\" id=\"adultprice-feedback\"></div>");
+		 out.append("<div class=\"form-floating col-12 col-md-6\">");
+		 out.append("<input type=\"text\" class=\"form-control\" id=\"additionalCost\" name=\"additionalCost\" placeholder=\"Chi phí phát sinh\" value=\""+tu.getTotalAdditionalCost()+"\" required>");
+		 out.append("<label for=\"additionalCost\" class=\"ms-2\">Chi phí phát sinh</label>");
+		 out.append("<div class=\"invalid-feedback\" id=\"totaladditional-feedback\"></div>");
+		 out.append("</div>");
 
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"childprice\" name=\"childprice\" placeholder=\"Giá trẻ em\" readonly value=\""+tu.getChildTourPrice()+"\" >");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Giá trẻ em</label>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"toldlerprice\" name=\"toldlerprice\" placeholder=\"Giá trẻ em 6-10 tuổi\" readonly value=\""+tu.getToddlerTourPrice()+"\">");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Giá trẻ em 6-10 tuổi</label>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"babyprice\" name=\"babyprice\" placeholder=\"Giá trẻ sơ sinh\" readonly value=\""+tu.getBabyTourPrice()+"\">");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Giá trẻ sơ sinh</label>");
-		 out.append("      </div>");
-		 out.append("    </div>");
-		 out.append("    <div class=\"row\">");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"adultcost\" name=\"adultcost\" placeholder=\"Giá người lớn\" oninput=\"inputcost()\" value=\""+tu.getAdultTourCost()+"\">");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Chi phí người lớn</label>");
-	     out.append(" <div class=\"invalid-feedback\" id=\"adultcost-feedback\"></div>");
+		 out.append("</div>");
 
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("      ");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"childcost\" name=\"childcost\" placeholder=\"Giá trẻ em\" value=\""+tu.getChildTourCost()+"\" required>");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Chi phí trẻ em</label>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"toldlercost\" name=\"toldlercost\" placeholder=\"Giá trẻ em 6-10 tuổi\" value=\""+tu.getToddlerTourCost()+"\" required>");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Chi phí trẻ em 6-10 tuổi</label>");
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"babycost\" name=\"babycost\" placeholder=\"Giá trẻ sơ sinh\"  value=\""+tu.getBabyTourCost()+"\" required>");
-		 out.append("        <label for=\"adultprice\" class=\"ms-2\">Chi phí trẻ sơ sinh</label>");
-		 out.append("      </div>");
-		 out.append("    </div>");
-		 out.append("    <div class=\"row\">");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"privateRoom\"  name=\"privateRoom\" placeholder=\"Giá phòng riêng\" value=\""+tu.getPrivateRoomPrice()+"\" required>");
-		 out.append("        <label for=\"privateRoom\" class=\"ms-2\">Giá phòng riêng</label>");
-	     out.append(" <div class=\"invalid-feedback\" id=\"privateroom-feedback\"></div>");
+		 // Nút hành động
+		 out.append("<div class=\"row mt-4\">");
 
-		 out.append("      </div>");
-		 out.append("      <div class=\"form-floating mb-3 col\">");
-		 out.append("        <input type=\"text\" class=\"form-control\" id=\"additionalCost\" name=\"additionalCost\" placeholder=\"Chi phí phát sinh\" value=\""+tu.getTotalAdditionalCost()+"\" required>");
-		 out.append("        <label for=\"additionalCost\" class=\"ms-2\">Chi phí phát sinh</label>");
-	     out.append(" <div class=\"invalid-feedback\" id=\"totaladditional-feedback\"></div>");
+		 out.append("<div class=\"col-6 col-md-3\">");
+		 out.append("<button type=\"button\" class=\"btn btn-danger w-100\" data-bs-toggle=\"modal\" data-bs-target=\"#cancelModal\">Huỷ bỏ</button>");
+		 out.append("</div>");
 
-		 out.append("      </div>");
-		 out.append("    </div>");
-		 out.append("     ");
-		 out.append("      <div class=\"row mb-3 d-flex\">");
-		 out.append("        <div class=\"col ms-auto\">");
-		 out.append("          <button type=\"button\" class=\"btn btn-danger text-light\" data-bs-toggle=\"modal\" data-bs-target=\"#cancelModal\">Huỷ bỏ</a>");
-		 out.append("");
-		 out.append("        </div>");
-		 out.append("        <div class=\"col-sm-2 ms-auto\">");
-		 out.append("          <button  type=\"submit\" id=\"confirm\" class=\"btn btn-primary text-light\">Sửa tour unit</a>");
-		 out.append("        </div>");
-		 out.append("      </div>");
-		 out.append("    </form><!-- End General Form Elements -->");
+		 out.append("<div class=\"col-6 col-md-3 ms-auto\">");
+		 out.append("<button type=\"submit\" class=\"btn btn-primary w-100\">Sửa tour unit</button>");
+		 out.append("</div>");
+
+		 out.append("</div>");
+
+		 out.append("</form>");
+		 out.append("</div>");
+
 		 out.append("  </div>");
 		 out.append("</div>");
 		 out.append("<!-- ...existing code... -->");

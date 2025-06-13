@@ -149,15 +149,15 @@ public class TourUnitServlet extends HttpServlet {
 		out.append("");
 		out.append("<div class=\"card\">");
 		out.append("<div class=\"card-body\">");
-		// Java code để tạo HTML responsive
+		
 		out.append("<!-- Container cho nút hành động và bảng -->");
 		out.append("<div class='container-fluid'>");
 
 		// Nút hành động (Thêm đơn vị tour, Tải lại) được tách ra khỏi bảng
 		out.append("<div class='d-flex justify-content-end mb-3'>");
-		out.append("<a href='Tour-Unit-Add?tourId=" + tour_id + "' class='btn btn-success fw-bold me-2'>");
+		out.append("<a href='Tour-Unit-Add?tourId=" + tour_id + "' class='btn btn-success fw-bold me-2 mt-3'>");
 		out.append("<i class='bi bi-plus-circle-fill'></i> Thêm đơn vị tour mới</a>");
-		out.append("<a href='?tour_id=" + tour_id + "&recordArea=1' id='load' class='btn btn-primary fw-bold'>");
+		out.append("<a href='?tour_id=" + tour_id + "&recordArea=1' id='load' class='btn btn-primary fw-bold mt-3'>");
 		out.append("<i class='bi bi-arrow-repeat'></i> Tải lại</a>");
 		out.append("</div>");
 
@@ -167,13 +167,13 @@ public class TourUnitServlet extends HttpServlet {
 		out.append("<thead>");
 		out.append("<tr>");
 		out.append("<th>ID đơn vị tour</th>");
-		out.append("<th>Giá người lớn</th>");
+		out.append("<th class='d-none d-md-table-cell'>Giá người lớn</th>");
 		out.append("<th>Tối đa (người)</th>");
 		out.append("<th class='d-none d-lg-table-cell'>Người điều hành</th>"); // Ẩn trên mobile
 		out.append("<th data-type='date' data-format='YYYY/DD/MM'>Ngày khởi hành</th>");
 		out.append("<th data-type='date' data-format='YYYY/DD/MM'>Ngày trở về</th>");
 		out.append("<th class='text-warning'>Số lượng (dự kiến)</th>");
-		out.append("<th class='d-none d-md-table-cell'>Tùy chọn</th>"); // Ẩn trên mobile nhỏ
+		out.append("<th >Tùy chọn</th>"); // Ẩn trên mobile nhỏ
 		out.append("</tr>");
 		out.append("</thead>");
 		out.append("<tbody>");
@@ -183,7 +183,7 @@ public class TourUnitServlet extends HttpServlet {
 		tmp.forEach(to -> {
 		    out.append("<tr>");
 		    out.append("<td id='tourUnitId'>" + to.getTourUnitId() + "</td>");
-		    out.append("<td id='adultPrice'>" + to.getAdultTourPrice() + "</td>");
+		    out.append("<td id='adultPrice' class='d-none d-md-table-cell'>" + to.getAdultTourPrice() + "</td>");
 		    out.append("<td id='maximumCapacity'>" + to.getMaximumCapacity() + "</td>");
 		    out.append("<td id='tourOperator' class='d-none d-lg-table-cell'>" + 
 		               to.getTourOperator().getFirstname() + " " + to.getTourOperator().getLastname() + "</td>");
@@ -217,7 +217,7 @@ public class TourUnitServlet extends HttpServlet {
 		    }
 
 		    // Cột tùy chọn (Sửa, Xóa, Chi tiết)
-		    out.append("<td class='d-none d-md-table-cell'>");
+		    out.append("<td >");
 		    out.append("<a href='Tour-Unit-Edit?tourUnitId=" + to.getTourUnitId() + 
 		               "' class='btn btn-sm btn-primary me-1' data-bs-toggle='tooltip' title='Sửa'>");
 		    out.append("<i class='bi bi-pencil-fill'></i></a>");
