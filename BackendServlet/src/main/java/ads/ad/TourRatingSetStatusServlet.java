@@ -3,6 +3,7 @@ package ads.ad;
 import java.io.IOException;
 
 import ads.user.TourRatingFunction;
+import ads.user.TourRatingFunctionImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

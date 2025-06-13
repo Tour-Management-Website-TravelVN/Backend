@@ -309,35 +309,6 @@ public class TourManagementServlet extends HttpServlet {
 			out.append("          </a>");
 		}
 		
-//		out.append("          <a class=\"card mb-3 text-decoration-none text-dark\" style=\"cursor: pointer;\">");
-//		out.append("            <div class=\"row g-0\">");
-//		out.append("              <div class=\"col-md-2\">");
-//		out.append("                <img src=\"assets/img/card.png\" class=\"img-fluid rounded-start\" alt=\"...\">");
-//		out.append("              </div>");
-//		out.append("              <div class=\"col-md-10\">");
-//		out.append("                <div class=\"card-body pb-0\">");
-//		out.append("                  <h5 class=\"mt-3 fw-semibold mb-1\">Hà Nội - Sapa - Hà Khẩu - Check In Nóc Nhà Đông Dương Fansipan</h5>");
-//		out.append("");
-//		out.append("                  <div class=\"d-flex\">");
-//		out.append("                    <span class=\"me-2\">ID:</span>");
-//		out.append("                    <span>T001-1440-2N1D</span>");
-//		out.append("                  </div>");
-//		out.append("");
-//		out.append("                  <div class=\"d-flex\">");
-//		out.append("                    <span class=\"me-2\">Danh mục:</span>");
-//		out.append("                    <span>Du lịch biển</span>");
-//		out.append("                  </div>");
-//		out.append("");
-//		out.append("                  <div class=\"d-flex\">");
-//		out.append("                    <span class=\"me-2\">Người điều hành:</span>");
-//		out.append("                    <span>Phạm Việt Long</span>");
-//		out.append("                  </div>");
-//		out.append("");
-//		out.append("                </div>");
-//		out.append("              </div>");
-//		out.append("            </div>");
-//		out.append("          </a>");
-		
 		
 		out.append("");
 		out.append("        </div>");

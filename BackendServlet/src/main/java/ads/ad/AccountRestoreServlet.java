@@ -43,18 +43,6 @@ public class AccountRestoreServlet extends HttpServlet {
             return;
         }
 
-        // Khôi phục tất cả
-//        String restore = req.getParameter("restore");
-//        if ("all".equals(restore)) {
-//            boolean isRestoredAll = userAccountFunction.restoreAllAccounts();
-//            if (isRestoredAll) {
-//                resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=restore_all");
-//            } else {
-//                resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=restore_all");
-//            }
-//            return;
-//        }
-
         
         // Khôi phục 1
         String username = req.getParameter("username");

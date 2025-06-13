@@ -235,8 +235,6 @@ public class AccountRecentDeleteServlet extends HttpServlet {
 		out.append("                    <button type=\"button\" class=\"btn btn-outline-primary btn-sm\" id=\"toggleCheckAll\">Chọn tất cả</button>");
 		out.append("                    <button type=\"button\" class=\"btn btn-success btn-sm\" id=\"restoreSelectedBtn\">Khôi phục</button>");
 		out.append("                    <button type=\"button\" class=\"btn btn-danger btn-sm\" id=\"deleteSelectedBtn\">Xóa</button>");
-//		out.append("                    <button type=\"button\" class=\"btn btn-success btn-sm\" data-bs-toggle=\"modal\" data-bs-target=\"#confirmRestoreAllModal\">Khôi phục tất cả</button>");
-//		out.append("                    <button type=\"button\" class=\"btn btn-danger btn-sm\" data-bs-toggle=\"modal\" data-bs-target=\"#confirmDeleteAllModal\">Xóa tất cả</button>");
 		out.append("                  </div>");
 		out.append("                </div>");
 		out.append("");
@@ -341,12 +339,11 @@ public class AccountRecentDeleteServlet extends HttpServlet {
 			out.append("      </div>");
 		}
 		
-		out.append("                    ");
 		out.append("                  </tbody>");
 		out.append("                </table>");
 		out.append("                <!-- End Table with stripped rows -->");
 		
-		// Xử lý chọn và khôi phục
+		// JS xử lý chọn và khôi phục
 		out.append("<script>");
 		out.append("  let allChecked = false;");
 		out.append("");
@@ -390,28 +387,51 @@ public class AccountRecentDeleteServlet extends HttpServlet {
 		out.append("    });");
 		out.append("  });");
 		out.append("</script>");
-		
-		// Xử lý xóa đã chọn
-		out.append("<script>");
-		out.append("  document.getElementById(\"deleteSelectedBtn\").addEventListener(\"click\", function () {");
-		out.append("    const selected = [];");
 
+		// Modal xác nhận xóa các tài khoản đã chọn
+		out.append("<div class='modal fade' id='confirmDeleteModal' tabindex='-1' aria-labelledby='confirmDeleteModalLabel' aria-hidden='true'>");
+		out.append("  <div class='modal-dialog'>");
+		out.append("    <div class='modal-content'>");
+		out.append("      <div class='modal-header text-bg-danger'>");
+		out.append("        <h5 class='modal-title' id='confirmDeleteModalLabel'>Xác nhận xóa</h5>");
+		out.append("        <button type='button' class='btn-close fs-2' data-bs-dismiss='modal' aria-label='Đóng'></button>");
+		out.append("      </div>");
+		out.append("      <div class='modal-body text-dark'>");
+		out.append("        Bạn có chắc chắn muốn xóa các tài khoản đã chọn không?");
+		out.append("      </div>");
+		out.append("      <div class='modal-footer'>");
+		out.append("        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Hủy</button>");
+		out.append("        <button type='button' class='btn btn-danger' id='confirmDeleteBtn'>Xác nhận</button>");
+		out.append("      </div>");
+		out.append("    </div>");
+		out.append("  </div>");
+		out.append("</div>");
+		
+		// JS xử lý chọn và xóa các tài khoản đã chọn
+		out.append("<script>");
+		out.append("  let selectedToDelete = [];");
+
+		out.append("  document.getElementById(\"deleteSelectedBtn\").addEventListener(\"click\", function () {");
+		out.append("    selectedToDelete = [];");
 		out.append("    document.querySelectorAll(\"input[name='usernames']:checked\").forEach(cb => {");
-		out.append("      selected.push(cb.value);");
+		out.append("      selectedToDelete.push(cb.value);");
 		out.append("    });");
 
-		out.append("    if (selected.length === 0) {");
+		out.append("    if (selectedToDelete.length === 0) {");
 		out.append("      alert(\"Vui lòng chọn ít nhất một tài khoản để xóa.\");");
 		out.append("      return;");
 		out.append("    }");
 
-		out.append("    if (!confirm(\"Bạn có chắc chắn muốn xóa các tài khoản đã chọn không?\")) { return; }");
+		out.append("    const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));");
+		out.append("    modal.show();");
+		out.append("  });");
 
+		out.append("  document.getElementById(\"confirmDeleteBtn\").addEventListener(\"click\", function () {");
 		out.append("    const form = document.createElement(\"form\");");
 		out.append("    form.method = \"POST\";");
 		out.append("    form.action = \"" + req.getContextPath() + "/ad-account-management-recent-delete/delete\";");
 
-		out.append("    selected.forEach(username => {");
+		out.append("    selectedToDelete.forEach(username => {");
 		out.append("      const input = document.createElement(\"input\");");
 		out.append("      input.type = \"hidden\";");
 		out.append("      input.name = \"usernames\";");
@@ -423,79 +443,7 @@ public class AccountRecentDeleteServlet extends HttpServlet {
 		out.append("    form.submit();");
 		out.append("  });");
 		out.append("</script>");
-
-
 		
-		// Modal xác nhận khôi phục tất cả account
-//		out.append("      <!-- Modal Xác Nhận Khôi Phục -->");
-//		out.append("      <div class=\"modal fade\" id=\"confirmRestoreAllModal\" tabindex=\"-1\" aria-labelledby=\"confirmRestoreAllModalLabel\" aria-hidden=\"true\">");
-//		out.append("        <div class=\"modal-dialog\">");
-//		out.append("          <div class=\"modal-content\">");
-//		out.append("            <div class=\"modal-header text-bg-success\">");
-//		out.append("              <h5 class=\"modal-title text-light fw-bold\" id=\"confirmRestoreAllModalLabel\">Xác nhận khôi phục</h5>");
-//		out.append("              <button type=\"button\" class=\"btn-close fs-2\" data-bs-dismiss=\"modal\" aria-label=\"Đóng\"></button>");
-//		out.append("            </div>");
-//		out.append("            <div class=\"modal-body text-dark text-start\">");
-//		out.append("              	Bạn có muốn khôi phục tất cả tài khoản không?");
-//		out.append("            </div>");
-//		out.append("            <div class=\"modal-footer\">");
-//		out.append("              <form method=\"post\" action=\"" + req.getContextPath() + "/ad-account-management-recent-delete/restore\">");
-//		out.append("                  <input type='hidden' name='restore' value='all'>");
-//		out.append("              	  <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Hủy</button>");
-//		out.append("              	  <button type=\"submit\" class=\"btn btn-success\">Khôi phục</button>");
-//		out.append("              </form>");
-//		out.append("            </div>");
-//		out.append("          </div>");
-//		out.append("        </div>");
-//		out.append("      </div>");
-		
-		
-		// Modal xác nhận xóa tất cả account
-//		out.append("      <!-- Modal Xác Nhận Xóa -->");
-//		out.append("      <div class=\"modal fade\" id=\"confirmDeleteAllModal\" tabindex=\"-1\" aria-labelledby=\"confirmDeleteAllModalLabel\" aria-hidden=\"true\">");
-//		out.append("        <div class=\"modal-dialog\">");
-//		out.append("          <div class=\"modal-content\">");
-//		out.append("            <div class=\"modal-header text-bg-danger\">");
-//		out.append("              <h5 class=\"modal-title text-light fw-bold\" id=\"confirmDeleteAllModalLabel\">Xác nhận xóa</h5>");
-//		out.append("              <button type=\"button\" class=\"btn-close fs-2\" data-bs-dismiss=\"modal\" aria-label=\"Đóng\"></button>");
-//		out.append("            </div>");
-//		out.append("            <div class=\"modal-body text-dark text-start\">");
-//		out.append("              	Bạn có chắc chắn muốn xóa tất cả tài khoản không?");
-//		out.append("            </div>");
-//		out.append("            <div class=\"modal-footer\">");
-//		out.append("              <form method=\"post\" action=\"" + req.getContextPath() + "/ad-account-management-recent-delete/delete\">");
-//		out.append("                  <input type='hidden' name='delete' value='all'>");
-//		out.append("              	  <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Hủy</button>");
-//		out.append("              	  <button type=\"submit\" class=\"btn btn-danger\">Xóa</button>");
-//		out.append("              </form>");
-//		out.append("            </div>");
-//		out.append("          </div>");
-//		out.append("        </div>");
-//		out.append("      </div>");
-		
-		
-//		out.append("      <!-- Modal Xác Nhận Xóa -->");
-//		out.append("      <div class=\"modal fade\" id=\"confirmDeleteModal\" tabindex=\"-1\" aria-labelledby=\"confirmDeleteModalLabel\" aria-hidden=\"true\">");
-//		out.append("        <div class=\"modal-dialog\">");
-//		out.append("          <div class=\"modal-content\">");
-//		out.append("            <div class=\"modal-header text-bg-danger\">");
-//		out.append("              <h5 class=\"modal-title text-light fw-bold\" id=\"confirmDeleteModalLabel\">Xác nhận xóa</h5>");
-//		out.append("              <button type=\"button\" class=\"btn-close fs-2\" data-bs-dismiss=\"modal\" aria-label=\"Đóng\"></button>");
-//		out.append("            </div>");
-//		out.append("            <div class=\"modal-body text-dark\">");
-//		out.append("              Bạn có chắc chắn muốn xóa tài khoản này không?");
-//		out.append("            </div>");
-//		out.append("            <div class=\"modal-footer\">");
-//		out.append("              <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Hủy</button>");
-//		out.append("              <button type=\"submit\" class=\"btn btn-danger\">Xóa</button>");
-//		out.append("            </div>");
-//		out.append("          </div>");
-//		out.append("        </div>");
-//		out.append("      </div>");
-		
-		
-		
-		out.append("      <!-- End Modal -->");
 		out.append("  </main><!-- End #main -->");
 		out.append("");
 		out.append("  <!-- ======= Footer ======= -->");

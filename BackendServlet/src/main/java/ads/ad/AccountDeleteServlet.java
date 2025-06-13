@@ -26,19 +26,6 @@ public class AccountDeleteServlet extends HttpServlet {
 	        return;
 	    }
 
-	    // Xóa tất cả
-//	    String delete = req.getParameter("delete");
-//	    if ("all".equals(delete)) {
-//	        boolean isDeletedAll = userAccountFunction.deleteAllSoftDeleteAccounts();
-//
-//	        if (isDeletedAll) {
-//	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete_all");
-//	        } else {
-//	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete_all");
-//	        }
-//	        return;
-//	    }
-
 	    // Xóa nhiều tài khoản đã chọn
 	    String[] usernames = req.getParameterValues("usernames");
 

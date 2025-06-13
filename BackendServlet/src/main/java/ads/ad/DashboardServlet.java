@@ -812,8 +812,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                    <div class=\"card top-selling overflow-auto\">");
 		out.append("");
 		out.append("                        <div class=\"filter\">");
-		out.append(
-				"                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
+		out.append("                            <a class=\"icon\" href=\"#\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-three-dots\"></i></a>");
 		out.append("                            <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow\">");
 		out.append("                                <li class=\"dropdown-header text-start\">");
 		out.append("                                    <h6>Lọc</h6>");
