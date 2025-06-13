@@ -33,7 +33,7 @@ public class SecurityConfig {
             "/payment/**"};
 
     //Các endpoint được phép gọi khi chưa có token với phương thức GET
-    private final String[] PUBLIC_GET_ENDPOINTS = {"/tourunit/foundtourlist", "/tourunit/calendar", "/tour/calendar/*", "/festival/carousel", "/rating/tour-detail/*", "/program/tour-detail/*"/*, "/order/**"*/};
+    private final String[] PUBLIC_GET_ENDPOINTS = {"/tourunit/foundtourlist", "/tourunit/calendar", "/tour/calendar/*", "/festival/carousel", "/rating/tour-detail/*", "/program/tour-detail/*", "/tourunit/detail" /*, "/order/**"*/};
 
     //Các endpoint GET của khách hàng
     private final String[] CUSTOMER_GET_ENDPOINTS = {"/booking/checkbeforebooking", "/booking/*","/customer/myinfo", /*"/tourunit/mytours",*/ "/booking/mytours", "/rating/rating-tour/check"};
