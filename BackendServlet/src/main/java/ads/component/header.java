@@ -222,12 +222,12 @@ public class header extends HttpServlet {
 		out.append(
 				"          <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
 //			out.append("            <img src=\"assets/img/profile-img.jpg\" alt=\"Profile\" class=\"rounded-circle\">");
-		out.append("            <span class=\"d-none d-md-block dropdown-toggle ps-2\">").append(userAccount.getUsername()).append("</span>");
+		out.append("            <span class=\"d-none d-md-block dropdown-toggle ps-2\">").append(fullname).append("</span>");
 		out.append("          </a><!-- End Profile Iamge Icon -->");
 		out.append("");
 		out.append("          <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow profile\">");
 		out.append("            <li class=\"dropdown-header\">");
-		out.append("              <h6>Kiều Đức Thịnh</h6>");
+		out.append("              <h6>").append(fullname).append("</h6>");
 		out.append("              <span>" + role + "</span>");
 		out.append("            </li>");
 		out.append("            <li>");

@@ -775,7 +775,7 @@ public class DashboardServlet extends HttpServlet {
         out.append("    loadChart('year');");
         out.append("});");
         out.append("function loadChart(filter) {");
-        out.append("fetch('/adv/to/tour/ad/ad-dashboard?filter='+filter)");
+        out.append("fetch('/adv/ad/ad-dashboard?filter='+filter)");
         out.append("  .then(res => res.json())");
         out.append("  .then(rawData => {");
         out.append("    const chartData = rawData.map(item => ({");

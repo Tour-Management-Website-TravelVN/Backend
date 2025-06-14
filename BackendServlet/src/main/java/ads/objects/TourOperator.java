@@ -197,6 +197,5 @@ public class TourOperator {
 	public void setUserAccount(UserAccount userAccount) {
 		this.userAccount = userAccount;
 	}
-    
-    
+	
 }

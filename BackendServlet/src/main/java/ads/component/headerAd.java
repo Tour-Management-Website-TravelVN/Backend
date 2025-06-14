@@ -47,7 +47,7 @@ public class headerAd extends HttpServlet {
 		out.append("");
 		out.append("        <div class=\"d-flex align-items-center justify-content-between\">");
 		out.append("            <a href=\"index.html\" class=\"logo d-flex align-items-center\">");
-		out.append("                <img src=\"assets/img/Logo.svg\" alt=\"\">");
+		out.append("                <img src=\"/adv/assets/img/Logo.svg\" alt=\"\">");
 		out.append("                <span class=\"d-none d-lg-block\">TravelVN</span>");
 		out.append("            </a>");
 		out.append("            <i class=\"bi bi-list toggle-sidebar-btn\"></i>");

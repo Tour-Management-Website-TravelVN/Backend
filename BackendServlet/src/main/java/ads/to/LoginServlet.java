@@ -245,14 +245,17 @@ public class LoginServlet extends HttpServlet {
 
 			if (userAccount != null) {
 				HttpSession session = req.getSession();
-				session.setAttribute("userLogined", userAccount);
-
+				
 				// Chuyển hướng
 				if (userAccount.getAdministrator() != null) {
 					resp.sendRedirect("/adv/ad/ad-dashboard");
 				} else {
+					UserAccountFunctionImpl.getInstance().getFullNameOfTO(userAccount);
 					resp.sendRedirect("/adv/to/tour");
 				}
+				
+				session.setAttribute("userLogined", userAccount);
+				
 			} else {
 				resp.sendRedirect("/adv/Login?err=notok");
 			}

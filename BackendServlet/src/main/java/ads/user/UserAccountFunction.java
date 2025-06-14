@@ -42,4 +42,5 @@ public interface UserAccountFunction {
 	
 	public boolean restoreAllAccounts();
 	
+	public void getFullNameOfTO(UserAccount userAccount);
 }
