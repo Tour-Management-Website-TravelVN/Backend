@@ -137,6 +137,78 @@ private static ConnectionPool cp = ConnectionPoolImpl.getInstance();
 	        }
 	    }
 	}
+	@Override
+	public ArrayList<TourGuide> getTourGuidesCurrentWorking() {
+		ResultSet rs = null;
+	    PreparedStatement pre = null;
+	    ArrayList<TourGuide> tourGuides = new ArrayList<>();
+	    
+	    try {
+	        this.con = getConnection(this.cp);
+	        
+	        //Lấy 100 bản ghi
+	        String sql = "SELECT tour_guide_id, firstname, lastname, date_of_birth, gender, address, phone_number, citizen_id, hometown, salary, start_date, end_date, card_id, language " +
+	                     "FROM tour_guide where end_date is null LIMIT 500 ";
+	        pre = this.con.prepareStatement(sql);
+	        
+	        rs = pre.executeQuery();
+	        
+	        while(rs.next()) {
+	        	TourGuide tourGuide = new TourGuide();
+	            
+	        	tourGuide.setId(rs.getInt("tour_guide_id"));
+	        	tourGuide.setFirstname(rs.getString("firstname"));
+	        	tourGuide.setLastname(rs.getString("lastname"));
+	            
+	            java.sql.Date sqlDate = rs.getDate("date_of_birth");
+	            LocalDate dateOfBirth = (sqlDate != null) ? sqlDate.toLocalDate() : null;
+	            tourGuide.setDateOfBirth(dateOfBirth);
+	            
+	            tourGuide.setGender(rs.getBoolean("gender"));
+	            tourGuide.setAddress(rs.getString("address"));
+	            tourGuide.setPhoneNumber(rs.getString("phone_number"));
+	            tourGuide.setCitizenId(rs.getString("citizen_id"));
+	            tourGuide.setHometown(rs.getString("hometown"));
+	            tourGuide.setSalary(rs.getBigDecimal("salary"));
+	            tourGuide.setCardId(rs.getString("card_id"));
+	            tourGuide.setLanguage(rs.getString("language"));
+	            
+	            java.sql.Date startSqlDate = rs.getDate("start_date");
+	            LocalDate startDate = (startSqlDate != null) ? startSqlDate.toLocalDate() : null;
+	            tourGuide.setStartDate(startDate);
+	            
+	            java.sql.Date endSqlDate = rs.getDate("end_date");
+	            LocalDate endDate = (endSqlDate != null) ? endSqlDate.toLocalDate() : null;
+	            tourGuide.setEndDate(endDate);
+	            
+	            tourGuides.add(tourGuide);
+	        }
+	        
+	        return tourGuides;
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try {
+	            if(this.con != null) {
+	                this.con.rollback();
+	            }
+	        }
+	        catch(SQLException e1) {
+	            e1.printStackTrace();
+	        }
+	        return new ArrayList<>();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pre != null) pre.close();
+	            if(this.con != null) {
+	                this.cp.releaseConnection(this.con, "TourGuide");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
 
 	@Override
 	public boolean addTourGuide(TourGuide tourGuide) {

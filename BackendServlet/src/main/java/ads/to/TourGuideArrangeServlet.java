@@ -45,7 +45,7 @@ public class TourGuideArrangeServlet extends HttpServlet {
 		 RequestDispatcher foot = req.getRequestDispatcher("/fo");
 
 		String tour_unit_id = req.getParameter("tourUnitId");
-		ArrayList<TourGuide> tourGuides = tourGuideFunction.getFirst100TourGuide();
+		ArrayList<TourGuide> tourGuides = tourGuideFunction.getTourGuidesCurrentWorking();
 		
 		PrintWriter out = resp.getWriter();
 		
@@ -61,8 +61,8 @@ public class TourGuideArrangeServlet extends HttpServlet {
 		out.append("  <meta content=\"\" name=\"keywords\">");
 		out.append("");
 		out.append("  <!-- Favicons -->");
-		out.append("  <link href=\"../assets/img/Logo.svg\" rel=\"icon\"> ");
-		out.append("  <link href=\"../assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
+		out.append("  <link href=\"../../assets/img/Logo.svg\" rel=\"icon\"> ");
+		out.append("  <link href=\"../../assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
 		out.append("");
 		out.append("  <!-- Google Fonts -->");
 		out.append("  <link href=\"https://fonts.gstatic.com\" rel=\"preconnect\">");
@@ -140,11 +140,11 @@ public class TourGuideArrangeServlet extends HttpServlet {
 		 out.append("  <main id=\"main\" class=\"main\">");
 		 out.append("");
 		 out.append("    <div class=\"pagetitle d-flex\">");
-		 out.append("      <h1>Duyệt yêu cầu huỷ tour</h1>");
+		 out.append("      <h1>Lựa chọn hướng dẫn viên</h1>");
 		 out.append("      <nav class=\"ms-auto\">");
 		 out.append("        <ol class=\"breadcrumb\">");
 		 out.append("          <li class=\"breadcrumb-item\"><i class=\"bi bi-house-door\"></i></a></li>");
-		 out.append("          <li class=\"breadcrumb-item\">Duyệt yêu cầu huỷ tour</li>");
+		 out.append("          <li class=\"breadcrumb-item\">Lựa chọn hướng dẫn viên</li>");
 		 out.append("        </ol>");
 		 out.append("      </nav>");
 		 out.append("    </div><!-- End Page Title -->");
