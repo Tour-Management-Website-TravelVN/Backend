@@ -7,6 +7,9 @@ import ads.objects.TourGuide;
 public interface TourGuideFunction {
 	public ArrayList<TourGuide> getFirst100TourGuide();
 	
+	public ArrayList<TourGuide> getTourGuidesCurrentWorking();
+
+	
 	public boolean addTourGuide(TourGuide tourGuide);
 	
 	public boolean isPhoneNumberExist(String phoneNumber);
