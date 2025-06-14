@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 
 import ads.library.StatisticLibrary;
 import ads.objects.Booking;
+import ads.objects.UserAccount;
 import ads.user.ReportFunction;
 import ads.user.ReportFunctionImpl;
 import ads.user.TourFunctionImpl;
@@ -90,7 +91,7 @@ public class DashboardServlet extends HttpServlet {
 
 //		HttpSession session = req.getSession(false);
 //		if (session == null || session.getAttribute("username") == null) {
-//			resp.sendRedirect("/Backend/ad-login");
+//			resp.sendRedirect("/Backend/ad/login");
 //			return;
 //		}
 //
@@ -98,12 +99,14 @@ public class DashboardServlet extends HttpServlet {
 		resp.setContentType("text/html; charset=UTF-8");
 
 		HttpSession session = req.getSession(false);
-		if (session == null || session.getAttribute("username") == null) {
-			resp.sendRedirect(req.getContextPath() + "/ad-login");
-			return;
-		}
+//		if (session == null || session.getAttribute("username") == null) {
+//			resp.sendRedirect(req.getContextPath() + "/ad/login");
+//			return;
+//		}
 
-		String username = (String) session.getAttribute("username");
+		UserAccount userAccount = (UserAccount) session.getAttribute("userLogined");
+		String username = userAccount.getUsername();
+		session.setAttribute("username", username);
 		
 		// Định dạng tiền
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
@@ -172,7 +175,8 @@ public class DashboardServlet extends HttpServlet {
 		out.append("");
 		out.append("<body>");
 		out.append("");
-		RequestDispatcher h = req.getRequestDispatcher("/he");
+		
+		RequestDispatcher h = req.getRequestDispatcher("/heAd");
 		if (h != null) {
 			h.include(req, resp);
 		}
@@ -181,7 +185,7 @@ public class DashboardServlet extends HttpServlet {
 //		out.append("");
 //		out.append("        <div class=\"d-flex align-items-center justify-content-between\">");
 //		out.append("            <a href=\"index.html\" class=\"logo d-flex align-items-center\">");
-//		out.append("                <img src=\"assets/img/logo.png\" alt=\"\">");
+//		out.append("                <img src=\"/adv/assets/img/logo.png\" alt=\"\">");
 //		out.append("                <span class=\"d-none d-lg-block\">TravelVN</span>");
 //		out.append("            </a>");
 //		out.append("            <i class=\"bi bi-list toggle-sidebar-btn\"></i>");
@@ -301,7 +305,7 @@ public class DashboardServlet extends HttpServlet {
 //		out.append("                        <li class=\"message-item\">");
 //		out.append("                            <a href=\"#\">");
 //		out.append(
-//				"                                <img src=\"assets/img/messages-1.jpg\" alt=\"\" class=\"rounded-circle\">");
+//				"                                <img src=\"/adv/assets/img/messages-1.jpg\" alt=\"\" class=\"rounded-circle\">");
 //		out.append("                                <div>");
 //		out.append("                                    <h4>Maria Hudson</h4>");
 //		out.append(
@@ -317,7 +321,7 @@ public class DashboardServlet extends HttpServlet {
 //		out.append("                        <li class=\"message-item\">");
 //		out.append("                            <a href=\"#\">");
 //		out.append(
-//				"                                <img src=\"assets/img/messages-2.jpg\" alt=\"\" class=\"rounded-circle\">");
+//				"                                <img src=\"/adv/assets/img/messages-2.jpg\" alt=\"\" class=\"rounded-circle\">");
 //		out.append("                                <div>");
 //		out.append("                                    <h4>Anna Nelson</h4>");
 //		out.append(
@@ -333,7 +337,7 @@ public class DashboardServlet extends HttpServlet {
 //		out.append("                        <li class=\"message-item\">");
 //		out.append("                            <a href=\"#\">");
 //		out.append(
-//				"                                <img src=\"assets/img/messages-3.jpg\" alt=\"\" class=\"rounded-circle\">");
+//				"                                <img src=\"/adv/assets/img/messages-3.jpg\" alt=\"\" class=\"rounded-circle\">");
 //		out.append("                                <div>");
 //		out.append("                                    <h4>David Muldon</h4>");
 //		out.append(
@@ -359,7 +363,7 @@ public class DashboardServlet extends HttpServlet {
 //		out.append(
 //				"                    <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
 //		out.append(
-//				"                        <img src=\"assets/img/profile-img.jpg\" alt=\"Profile\" class=\"rounded-circle\">");
+//				"                        <img src=\"/adv/assets/img/profile-img.jpg\" alt=\"Profile\" class=\"rounded-circle\">");
 //		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\">" + /*username*/"Kiều Đức Thịnh" + "</span>");
 //		out.append("                    </a><!-- End Profile Iamge Icon -->");
 //		out.append("");
@@ -407,7 +411,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("            <!-- Dashboard Nav -->");
 		out.append("            <li class=\"nav-item\">");
 
-		out.append("                <a class=\"nav-link\" href=\"" + req.getContextPath() + "/ad-dashboard\">");
+		out.append("                <a class=\"nav-link\" href=\"" + req.getContextPath() + "/ad/ad-dashboard\">");
 		out.append("                    <i class=\"bx bx-category\"></i>");
 		out.append("                    <span>Tổng quan</span>");
 		out.append("                </a>");
@@ -417,7 +421,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("            <!-- Account Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
 
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-account-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/account-management\">");
 		out.append("                    <i class=\"bx bx-user-circle\"></i>");
 		out.append("                    <span>Quản lý tài khoản</span>");
 		out.append("                </a>");
@@ -432,12 +436,12 @@ public class DashboardServlet extends HttpServlet {
 		out.append("                </a>");
 		out.append("                <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
 		out.append("                    <li>");
-		out.append("                        <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
+		out.append("                        <a href=\"" + req.getContextPath() + "/ad/touroperator-management\">");
 		out.append("                            <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                    <li>");
-		out.append("                        <a href=\"" + req.getContextPath() + "/ad-tourguide-management\">");
+		out.append("                        <a href=\"" + req.getContextPath() + "/ad/tourguide-management\">");
 		out.append("                            <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
@@ -448,7 +452,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("            <!-- Customer Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
 
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-customer-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/customer-management\">");
 		out.append("                    <i class=\"bx bx-group\"></i>");
 		out.append("                    <span>Quản lý khách hàng</span>");
 		out.append("                </a>");
@@ -458,7 +462,7 @@ public class DashboardServlet extends HttpServlet {
 		out.append("            <!-- Tour Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
 
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tour-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/tour-management\">");
 		out.append("                    <i class=\"bx bx-food-menu\"></i>");
 		out.append("                    <span>Quản lý Tour</span>");
 		out.append("                </a>");
@@ -468,7 +472,7 @@ public class DashboardServlet extends HttpServlet {
 
 		out.append("            <!-- Review Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tourrating-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/tourrating-management\">");
 		out.append("                    <i class=\"bx bx-message-square-detail\"></i>");
 		out.append("                    <span>Duyệt đánh giá</span>");
 		out.append("                </a>");
@@ -771,7 +775,7 @@ public class DashboardServlet extends HttpServlet {
         out.append("    loadChart('year');");
         out.append("});");
         out.append("function loadChart(filter) {");
-        out.append("fetch('/adv/to/tour/ad-dashboard?filter='+filter)");
+        out.append("fetch('/adv/to/tour/ad/ad-dashboard?filter='+filter)");
         out.append("  .then(res => res.json())");
         out.append("  .then(rawData => {");
         out.append("    const chartData = rawData.map(item => ({");

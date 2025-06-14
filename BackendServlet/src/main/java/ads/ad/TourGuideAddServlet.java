@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-tourguide-management/add")
+@WebServlet("/ad/tourguide-management/add")
 public class TourGuideAddServlet extends HttpServlet {
 	private TourGuideFunction tourGuideFunction = new TourGuideFunctionImpl();
 
@@ -47,18 +47,18 @@ public class TourGuideAddServlet extends HttpServlet {
             
             // Kiểm tra số điện thoại đã tồn tại chưa
             if (tourGuideFunction.isPhoneNumberExist(phoneNumber)) {
-                response.sendRedirect(request.getContextPath() + "/ad-tourguide-management?error=phone_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/tourguide-management?error=phone_exist");
                 return;
             }
             
             // Kiểm tra citizen_id đã tồn tại
             if (tourGuideFunction.isCitizenIdExist(citizenId)) {
-                response.sendRedirect(request.getContextPath() + "/ad-tourguide-management?error=citizen_id_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/tourguide-management?error=citizen_id_exist");
                 return;
             }
             
             if (tourGuideFunction.isCardIdExist(cardId)) {
-                response.sendRedirect(request.getContextPath() + "/ad-tourguide-management?error=citizen_card_id_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/tourguide-management?error=citizen_card_id_exist");
                 return;
             }
             
@@ -106,16 +106,16 @@ public class TourGuideAddServlet extends HttpServlet {
             boolean isSuccess = tourGuideFunction.addTourGuide(tourGuide);
             
             if (isSuccess) {
-                response.sendRedirect(request.getContextPath() + "/ad-tourguide-management?success=add");
+                response.sendRedirect(request.getContextPath() + "/ad/tourguide-management?success=add");
             } else {
-                response.sendRedirect(request.getContextPath() + "/ad-tourguide-management?error=add");
+                response.sendRedirect(request.getContextPath() + "/ad/tourguide-management?error=add");
             }
             
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("message", "Có lỗi xảy ra: " + e.getMessage());
             session.setAttribute("messageType", "error");
-            response.sendRedirect(request.getContextPath() + "/ad-tourguide-management?error=add");
+            response.sendRedirect(request.getContextPath() + "/ad/tourguide-management?error=add");
         }
     }
 }

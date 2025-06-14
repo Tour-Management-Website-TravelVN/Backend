@@ -9,8 +9,8 @@ public class LoadData {
 
         InstanceQuery query = new InstanceQuery();
         query.setDatabaseURL("jdbc:mysql://localhost:3306/tour_booking_system");
-        query.setUsername("Unknown");
-        query.setPassword("Drsunknown");
+        query.setUsername("root");
+        query.setPassword("abc123!");
 
         query.setQuery(
         	    "SELECT adult_tour_price, rating_value, discount_value, available_capacity, " +
@@ -32,8 +32,8 @@ public class LoadData {
 
         InstanceQuery query = new InstanceQuery();
         query.setDatabaseURL("jdbc:mysql://localhost:3306/tour_booking_system");
-        query.setUsername("Unknown");
-        query.setPassword("Drsunknown");
+        query.setUsername("root");
+        query.setPassword("abc123!");
 
         query.setQuery(
             "SELECT " +
@@ -60,8 +60,8 @@ public class LoadData {
 
         InstanceQuery query = new InstanceQuery();
         query.setDatabaseURL("jdbc:mysql://localhost:3306/tour_booking_system");
-        query.setUsername("Unknown");
-        query.setPassword("Drsunknown");
+        query.setUsername("root");
+        query.setPassword("abc123!");
 
         query.setQuery(
             "SELECT " +

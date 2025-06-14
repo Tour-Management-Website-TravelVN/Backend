@@ -41,4 +41,5 @@ public interface UserAccountFunction {
 	public boolean restoreAccount(String username);
 	
 	public boolean restoreAllAccounts();
+	
 }

@@ -11,6 +11,7 @@ import ads.objects.Customer;
 import ads.objects.TourOperator;
 import ads.user.CustomerFunction;
 import ads.user.CustomerFunctionImpl;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-customer-management")
+@WebServlet("/ad/customer-management")
 public class CustomerManagementServlet extends HttpServlet {
 	private CustomerFunction customerFunction = new CustomerFunctionImpl();
 
@@ -34,7 +35,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		
 		HttpSession session = req.getSession(false);
 		if (session == null || session.getAttribute("username") == null) {
-			resp.sendRedirect(req.getContextPath() + "/ad-login");
+			resp.sendRedirect(req.getContextPath() + "/ad/login");
 			return;
 		}
 
@@ -56,8 +57,8 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("  <meta content=\"\" name=\"keywords\">");
 		out.append("");
 		out.append("  <!-- Favicons -->");
-		out.append("  <link href=\"assets/img/Logo.svg\" rel=\"icon\">");
-		out.append("  <link href=\"assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
+		out.append("  <link href=\"/adv/assets/img/Logo.svg\" rel=\"icon\">");
+		out.append("  <link href=\"/adv/assets/img/apple-touch-icon.png\" rel=\"apple-touch-icon\">");
 		out.append("");
 		out.append("  <!-- Google Fonts -->");
 		out.append("  <link href=\"https://fonts.gstatic.com\" rel=\"preconnect\">");
@@ -66,73 +67,79 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("    rel=\"stylesheet\">");
 		out.append("");
 		out.append("  <!-- Vendor CSS Files -->");
-		out.append("  <link href=\"assets/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/bootstrap-icons/bootstrap-icons.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/boxicons/css/boxicons.min.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/quill/quill.snow.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/quill/quill.bubble.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/remixicon/remixicon.css\" rel=\"stylesheet\">");
-		out.append("  <link href=\"assets/vendor/simple-datatables/style.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/bootstrap-icons/bootstrap-icons.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/boxicons/css/boxicons.min.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/quill/quill.snow.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/quill/quill.bubble.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/remixicon/remixicon.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/vendor/simple-datatables/style.css\" rel=\"stylesheet\">");
 		out.append("");
 		out.append("  <!-- Template Main CSS File -->");
-		out.append("  <link href=\"assets/css/style.css\" rel=\"stylesheet\">");
+		out.append("  <link href=\"/adv/assets/css/style.css\" rel=\"stylesheet\">");
 		out.append("</head>");
 		out.append("");
 		out.append("<body>");
 		out.append("");
-		out.append("    <!-- ======= Header ======= -->");
-		out.append("    <header id=\"header\" class=\"header fixed-top d-flex align-items-center\">");
-		out.append("");
-		out.append("        <div class=\"d-flex align-items-center justify-content-between\">");
-		out.append("            <a href=\"index.html\" class=\"logo d-flex align-items-center\">");
-		out.append("                <img src=\"assets/img/Logo.svg\" alt=\"\">");
-		out.append("                <span class=\"d-none d-lg-block\">TravelVN</span>");
-		out.append("            </a>");
-		out.append("            <i class=\"bi bi-list toggle-sidebar-btn\"></i>");
-		out.append("        </div><!-- End Logo -->");
-		out.append("");
-		out.append("        <nav class=\"header-nav ms-auto\">");
-		out.append("            <ul class=\"d-flex align-items-center\">");
-		out.append("");
-		out.append("                <li class=\"nav-item dropdown pe-3\">");
-		out.append("");
-		out.append("                    <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
-		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\">" + username + "</span>");
-		out.append("                    </a>");
-		out.append("");
-		out.append("                    <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow profile\">");
-		out.append("                        <li class=\"dropdown-header\">");
-		out.append("                            <h6>" + username + "</h6>");
-		out.append("                            <span>Người quản lý</span>");
-		out.append("                        </li>");
-		out.append("                        <li>");
-		out.append("                            <hr class=\"dropdown-divider\">");
-		out.append("                        </li>");
-		out.append("");
-		out.append("                        <li>");
-		out.append("                            <a class=\"dropdown-item d-flex align-items-center\" href=\"" + req.getContextPath() + "/ad-profile-management\">");
-		out.append("                                <i class=\"bi bi-person\"></i>");
-		out.append("                                <span>Hồ sơ của tôi</span>");
-		out.append("                            </a>");
-		out.append("                        </li>");
-		out.append("                        <li>");
-		out.append("                            <hr class=\"dropdown-divider\">");
-		out.append("                        </li>");
-		out.append("");
-		out.append("                        <li>");
-		out.append("                            <a class=\"dropdown-item d-flex align-items-center\" href=\"" + req.getContextPath() + "/ad-logout\">");
-		out.append("                                <i class=\"bi bi-box-arrow-right\"></i>");
-		out.append("                                <span>Đăng xuất</span>");
-		out.append("                            </a>");
-		out.append("                        </li>");
-		out.append("");
-		out.append("                    </ul><!-- End Profile Dropdown Items -->");
-		out.append("                </li><!-- End Profile Nav -->");
-		out.append("");
-		out.append("            </ul>");
-		out.append("        </nav><!-- End Icons Navigation -->");
-		out.append("");
-		out.append("    </header><!-- End Header -->");
+//		out.append("    <!-- ======= Header ======= -->");
+//		out.append("    <header id=\"header\" class=\"header fixed-top d-flex align-items-center\">");
+//		out.append("");
+//		out.append("        <div class=\"d-flex align-items-center justify-content-between\">");
+//		out.append("            <a href=\"index.html\" class=\"logo d-flex align-items-center\">");
+//		out.append("                <img src=\"/adv/assets/img/Logo.svg\" alt=\"\">");
+//		out.append("                <span class=\"d-none d-lg-block\">TravelVN</span>");
+//		out.append("            </a>");
+//		out.append("            <i class=\"bi bi-list toggle-sidebar-btn\"></i>");
+//		out.append("        </div><!-- End Logo -->");
+//		out.append("");
+//		out.append("        <nav class=\"header-nav ms-auto\">");
+//		out.append("            <ul class=\"d-flex align-items-center\">");
+//		out.append("");
+//		out.append("                <li class=\"nav-item dropdown pe-3\">");
+//		out.append("");
+//		out.append("                    <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
+//		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\">" + username + "</span>");
+//		out.append("                    </a>");
+//		out.append("");
+//		out.append("                    <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow profile\">");
+//		out.append("                        <li class=\"dropdown-header\">");
+//		out.append("                            <h6>" + username + "</h6>");
+//		out.append("                            <span>Người quản lý</span>");
+//		out.append("                        </li>");
+//		out.append("                        <li>");
+//		out.append("                            <hr class=\"dropdown-divider\">");
+//		out.append("                        </li>");
+//		out.append("");
+//		out.append("                        <li>");
+//		out.append("                            <a class=\"dropdown-item d-flex align-items-center\" href=\"" + req.getContextPath() + "/ad/profile-management\">");
+//		out.append("                                <i class=\"bi bi-person\"></i>");
+//		out.append("                                <span>Hồ sơ của tôi</span>");
+//		out.append("                            </a>");
+//		out.append("                        </li>");
+//		out.append("                        <li>");
+//		out.append("                            <hr class=\"dropdown-divider\">");
+//		out.append("                        </li>");
+//		out.append("");
+//		out.append("                        <li>");
+//		out.append("                            <a class=\"dropdown-item d-flex align-items-center\" href=\"" + req.getContextPath() + "/ad/logout\">");
+//		out.append("                                <i class=\"bi bi-box-arrow-right\"></i>");
+//		out.append("                                <span>Đăng xuất</span>");
+//		out.append("                            </a>");
+//		out.append("                        </li>");
+//		out.append("");
+//		out.append("                    </ul><!-- End Profile Dropdown Items -->");
+//		out.append("                </li><!-- End Profile Nav -->");
+//		out.append("");
+//		out.append("            </ul>");
+//		out.append("        </nav><!-- End Icons Navigation -->");
+//		out.append("");
+//		out.append("    </header><!-- End Header -->");
+		
+		RequestDispatcher h = req.getRequestDispatcher("/heAd");
+		if (h != null) {
+			h.include(req, resp);
+		}
+		
 		out.append("");
 		out.append("    <!-- ======= Sidebar ======= -->");
 		out.append("    <aside id=\"sidebar\" class=\"sidebar\">");
@@ -141,7 +148,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Dashboard Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-dashboard\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/ad-dashboard\">");
 		out.append("                    <i class=\"bx bx-category\"></i>");
 		out.append("                    <span>Tổng quan</span>");
 		out.append("                </a>");
@@ -150,7 +157,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Account Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-account-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/account-management\">");
 		out.append("                    <i class=\"bx bx-user-circle\"></i>");
 		out.append("                    <span>Quản lý tài khoản</span>");
 		out.append("                </a>");
@@ -164,12 +171,12 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("                </a>");
 		out.append("                <ul id=\"staff-management-nav\" class=\"nav-content collapse \" data-bs-parent=\"#sidebar-nav\">");
 		out.append("                    <li>");
-		out.append("                        <a href=\"" + req.getContextPath() + "/ad-touroperator-management\">");
+		out.append("                        <a href=\"" + req.getContextPath() + "/ad/touroperator-management\">");
 		out.append("              <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Điều hành Tour</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
 		out.append("                    <li>");
-		out.append("                        <a href=\"" + req.getContextPath() + "/ad-tourguide-management\">");
+		out.append("                        <a href=\"" + req.getContextPath() + "/ad/tourguide-management\">");
 		out.append("              <i class=\"bi bi-circle\"></i><span style=\"font-size: 12px;\">Hướng dẫn viên</span>");
 		out.append("                        </a>");
 		out.append("                    </li>");
@@ -179,7 +186,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Customer Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link\" href=\"" + req.getContextPath() + "/ad-customer-management\">");
+		out.append("                <a class=\"nav-link\" href=\"" + req.getContextPath() + "/ad/customer-management\">");
 		out.append("                    <i class=\"bx bx-group\"></i>");
 		out.append("                    <span>Quản lý khách hàng</span>");
 		out.append("                </a>");
@@ -188,7 +195,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Tour Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tour-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/tour-management\">");
 		out.append("                    <i class=\"bx bx-food-menu\"></i>");
 		out.append("                    <span>Quản lý Tour</span>");
 		out.append("                </a>");
@@ -197,7 +204,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("");
 		out.append("            <!-- Review Management Nav -->");
 		out.append("            <li class=\"nav-item\">");
-		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad-tourrating-management\">");
+		out.append("                <a class=\"nav-link collapsed\" href=\"" + req.getContextPath() + "/ad/tourrating-management\">");
 		out.append("                    <i class=\"bx bx-message-square-detail\"></i>");
 		out.append("                    <span>Duyệt đánh giá</span>");
 		out.append("                </a>");
@@ -393,7 +400,7 @@ public class CustomerManagementServlet extends HttpServlet {
 		out.append("      class=\"bi bi-arrow-up-short\"></i></a>");
 		out.append("");
 		out.append("  <!-- JS Customize -->");
-		out.append("  <script src=\"assets/js/dataTableCustom.js\"></script>");
+		out.append("  <script src=\"/adv/assets/js/dataTableCustom.js\"></script>");
 		out.append("");
 		
 		// Copy nội dung
@@ -414,17 +421,17 @@ public class CustomerManagementServlet extends HttpServlet {
 
 
 		out.append("  <!-- Vendor JS Files -->");
-		out.append("  <script src=\"assets/vendor/apexcharts/apexcharts.min.js\"></script>");
-		out.append("  <script src=\"assets/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script>");
-		out.append("  <script src=\"assets/vendor/chart.js/chart.umd.js\"></script>");
-		out.append("  <script src=\"assets/vendor/echarts/echarts.min.js\"></script>");
-		out.append("  <script src=\"assets/vendor/quill/quill.js\"></script>");
-		out.append("  <script src=\"assets/vendor/simple-datatables/simple-datatables.js\"></script>");
-		out.append("  <script src=\"assets/vendor/tinymce/tinymce.min.js\"></script>");
-		out.append("  <script src=\"assets/vendor/php-email-form/validate.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/apexcharts/apexcharts.min.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/bootstrap/js/bootstrap.bundle.min.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/chart.js/chart.umd.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/echarts/echarts.min.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/quill/quill.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/simple-datatables/simple-datatables.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/tinymce/tinymce.min.js\"></script>");
+		out.append("  <script src=\"/adv/assets/vendor/php-email-form/validate.js\"></script>");
 		out.append("");
 		out.append("  <!-- Template Main JS File -->");
-		out.append("  <script src=\"assets/js/main.js\"></script>");
+		out.append("  <script src=\"/adv/assets/js/main.js\"></script>");
 		out.append("");
 		out.append("</body>");
 		out.append("");

@@ -18,9 +18,9 @@ public class JDBCconfig {
 //        String dbUsername = "Unknown";
 //        String dbPassword = "Drsunknoen";
         
-        String dbName = "tour_booking_system_long";
+        String dbName = "tour_booking_system";
         String dbUsername = "root";
-        String dbPassword = "";
+        String dbPassword = "abc123!";
   
         Class.forName(dbDriver);
         Connection con = DriverManager.getConnection(dbURL + dbName,

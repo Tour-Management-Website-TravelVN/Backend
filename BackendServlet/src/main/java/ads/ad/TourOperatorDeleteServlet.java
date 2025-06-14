@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-touroperator-management/delete")
+@WebServlet("/ad/touroperator-management/delete")
 public class TourOperatorDeleteServlet extends HttpServlet {
 	private TourOperatorFunction tourOperatorFunction = new TourOperatorFunctionImpl();
 
@@ -24,7 +24,7 @@ public class TourOperatorDeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
-            resp.sendRedirect(req.getContextPath() + "/ad-login");
+            resp.sendRedirect(req.getContextPath() + "/ad/login");
             return;
         }
 
@@ -33,10 +33,10 @@ public class TourOperatorDeleteServlet extends HttpServlet {
         boolean isDeleted = tourOperatorFunction.deleteTourOperatorAndAccount(tourOperatorId);
         
         if (isDeleted) {
-            resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management?success=delete");
+            resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management?success=delete");
         }
         else {
-            resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management?error=delete");
+            resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management?error=delete");
         }
     }
 }

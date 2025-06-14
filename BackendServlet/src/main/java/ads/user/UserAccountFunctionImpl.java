@@ -266,7 +266,7 @@ public class UserAccountFunctionImpl implements UserAccountFunction {
 			}
 		} finally {
 			try {
-				rs.close();
+				if(rs!=null) rs.close();
 				pre.close();
 				this.cp.releaseConnection(this.con, "UserAccount");
 			} catch (SQLException e) {

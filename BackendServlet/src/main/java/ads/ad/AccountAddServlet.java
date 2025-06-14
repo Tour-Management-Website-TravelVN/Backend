@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-account-management/add")
+@WebServlet("/ad/account-management/add")
 public class AccountAddServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UserAccountFunction userAccountFunction = new UserAccountFunctionImpl();
@@ -35,12 +35,12 @@ public class AccountAddServlet extends HttpServlet {
             
             if(userAccountFunction.isUsernameExist(username)) {
             	session.setAttribute("errorMessage", "Thêm tài khoản thất bại! Tên đăng nhập đã tồn tại!");
-                response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add_username_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add_username_exist");
             }
             
             if(userAccountFunction.isEmailExist(email)) {
             	session.setAttribute("errorMessage", "Thêm tài khoản thất bại! Email đã tồn tại!");
-                response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add_email_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add_email_exist");
             }
 
             UserAccount newAccount = new UserAccount();
@@ -53,7 +53,7 @@ public class AccountAddServlet extends HttpServlet {
                 case "customer":
                 	if(userAccountFunction.isCustomerIdExist(id)) {
                     	session.setAttribute("errorMessage", "Thêm tài khoản thất bại! ID đã tồn tại!");
-                        response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add_id_exist");
+                        response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add_id_exist");
                     }
                     Customer customer = new Customer();
                     customer.setId(id);
@@ -62,7 +62,7 @@ public class AccountAddServlet extends HttpServlet {
                 case "administrator":
                 	if(userAccountFunction.isAdministratorIdExist(id)) {
                     	session.setAttribute("errorMessage", "Thêm tài khoản thất bại! ID đã tồn tại!");
-                        response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add_id_exist");
+                        response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add_id_exist");
                     }
                     Administrator administrator = new Administrator();
                     administrator.setId(id);
@@ -71,7 +71,7 @@ public class AccountAddServlet extends HttpServlet {
                 case "tourGuide":
                 	if(userAccountFunction.isTourGuideIdExist(id)) {
                     	session.setAttribute("errorMessage", "Thêm tài khoản thất bại! ID đã tồn tại!");
-                        response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add_id_exist");
+                        response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add_id_exist");
                     }
                     TourGuide tourGuide = new TourGuide();
                     tourGuide.setId(id);
@@ -80,7 +80,7 @@ public class AccountAddServlet extends HttpServlet {
                 case "tourOperator":
                 	if(userAccountFunction.isTourOperatorIdExist(id)) {
                     	session.setAttribute("errorMessage", "Thêm tài khoản thất bại! ID đã tồn tại!");
-                        response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add_id_exist");
+                        response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add_id_exist");
                     }
                     TourOperator tourOperator = new TourOperator();
                     tourOperator.setId(id);
@@ -88,7 +88,7 @@ public class AccountAddServlet extends HttpServlet {
                     break;
                 default:
                     request.getSession().setAttribute("errorMessage", "Invalid role");
-                    response.sendRedirect(request.getContextPath() + "/ad-account-management");
+                    response.sendRedirect(request.getContextPath() + "/ad/account-management");
                     return;
             }
 
@@ -96,11 +96,11 @@ public class AccountAddServlet extends HttpServlet {
 
             if(isSuccess) {
                 session.setAttribute("successMessage", "Thêm tài khoản thành công!");
-                response.sendRedirect(request.getContextPath() + "/ad-account-management?success=add");
+                response.sendRedirect(request.getContextPath() + "/ad/account-management?success=add");
             }
             else {
                 session.setAttribute("errorMessage", "Thêm tài khoản thất bại!");
-                response.sendRedirect(request.getContextPath() + "/ad-account-management?error=add");
+                response.sendRedirect(request.getContextPath() + "/ad/account-management?error=add");
             }
 
         } catch (Exception e) {

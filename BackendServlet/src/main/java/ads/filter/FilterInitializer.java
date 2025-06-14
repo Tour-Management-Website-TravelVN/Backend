@@ -22,17 +22,17 @@ public class FilterInitializer implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 		ServletContext context = sce.getServletContext();
 		
-//		//1. Đăng ký AuthFilter chạy trước
-//		FilterRegistration.Dynamic authFilter = context.addFilter("AuthFilter", new AuthFilter());
-//		authFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/to/*", "/ad/*");
-//		
-//		//2. Đăng ký TourOperatorFilter chạy
-//		FilterRegistration.Dynamic toFilter = context.addFilter("TOFilter", new TourOperatorFilter());
-//		toFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/to/*");
-////				
-//		//3. Đăng ký AdministratorFilter chạy
-//		FilterRegistration.Dynamic adFilter = context.addFilter("ADFilter", new AdministratorFilter());
-//		adFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/ad/*");
+		//1. Đăng ký AuthFilter chạy trước
+		FilterRegistration.Dynamic authFilter = context.addFilter("AuthFilter", new AuthFilter());
+		authFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/to/*", "/ad/*");
+		
+		//2. Đăng ký TourOperatorFilter chạy
+		FilterRegistration.Dynamic toFilter = context.addFilter("TOFilter", new TourOperatorFilter());
+		toFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/to/*");
+				
+		//3. Đăng ký AdministratorFilter chạy
+		FilterRegistration.Dynamic adFilter = context.addFilter("ADFilter", new AdministratorFilter());
+		adFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/ad/*");
 	
 	}
 	

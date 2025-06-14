@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-profile-management/change-password")
+@WebServlet("/ad/profile-management/change-password")
 public class ProfileChangePasswordServlet extends HttpServlet {
 	private AdministratorFunction administratorFunction = new AdministratorFunctionImpl();
 
@@ -28,7 +28,7 @@ public class ProfileChangePasswordServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
 		if (session == null || session.getAttribute("username") == null) {
-			resp.sendRedirect(req.getContextPath() + "/ad-login");
+			resp.sendRedirect(req.getContextPath() + "/ad/login");
 			return;
 		}
 		
@@ -43,13 +43,13 @@ public class ProfileChangePasswordServlet extends HttpServlet {
         if (currentPassword == null || newPassword == null || renewPassword == null ||
             currentPassword.isEmpty() || newPassword.isEmpty() || renewPassword.isEmpty()) {
             req.setAttribute("error", "Vui lòng điền đầy đủ thông tin.");
-            req.getRequestDispatcher("/ad-profile-management").forward(req, resp);
+            req.getRequestDispatcher("/ad/profile-management").forward(req, resp);
             return;
         }
 
         if (!newPassword.equals(renewPassword)) {
             req.setAttribute("error", "Mật khẩu mới và xác nhận không khớp.");
-            req.getRequestDispatcher("/ad-profile-management").forward(req, resp);
+            req.getRequestDispatcher("/ad/profile-management").forward(req, resp);
             return;
         }
 
@@ -58,7 +58,7 @@ public class ProfileChangePasswordServlet extends HttpServlet {
 
         if (!match) {
             req.setAttribute("error", "Mật khẩu hiện tại không đúng.");
-            req.getRequestDispatcher("/ad-profile-management").forward(req, resp);
+            req.getRequestDispatcher("/ad/profile-management").forward(req, resp);
             return;
         }
 
@@ -66,11 +66,11 @@ public class ProfileChangePasswordServlet extends HttpServlet {
 
         if (isChange) {
             session.invalidate();
-            resp.sendRedirect(req.getContextPath() + "/ad-login?message=password-changed");
+            resp.sendRedirect(req.getContextPath() + "/ad/login?message=password-changed");
             return;
         } else {
             req.setAttribute("error", "Đổi mật khẩu thất bại. Vui lòng thử lại.");
-            resp.sendRedirect(req.getContextPath() + "/ad-profile-management?error=update");
+            resp.sendRedirect(req.getContextPath() + "/ad/profile-management?error=update");
             return;
         }
     }

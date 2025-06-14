@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-touroperator-management/add")
+@WebServlet("/ad/touroperator-management/add")
 public class TourOperatorAddServlet extends HttpServlet {
     private TourOperatorFunction tourOperatorFunction = TourOperatorFunctionImpl.getInstance();
     
@@ -41,13 +41,13 @@ public class TourOperatorAddServlet extends HttpServlet {
             
             // Kiểm tra số điện thoại đã tồn tại chưa
             if (tourOperatorFunction.isPhoneNumberExist(phoneNumber)) {
-                response.sendRedirect(request.getContextPath() + "/ad-touroperator-management?error=phone_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/touroperator-management?error=phone_exist");
                 return;
             }
             
             // Kiểm tra citizen_id đã tồn tại
             if (tourOperatorFunction.isCitizenIdExist(citizenId)) {
-                response.sendRedirect(request.getContextPath() + "/ad-touroperator-management?error=citizen_id_exist");
+                response.sendRedirect(request.getContextPath() + "/ad/touroperator-management?error=citizen_id_exist");
                 return;
             }
             
@@ -93,16 +93,16 @@ public class TourOperatorAddServlet extends HttpServlet {
             boolean isSuccess = tourOperatorFunction.addTourOperator(tourOperator);
             
             if (isSuccess) {
-                response.sendRedirect(request.getContextPath() + "/ad-touroperator-management?success=add");
+                response.sendRedirect(request.getContextPath() + "/ad/touroperator-management?success=add");
             } else {
-                response.sendRedirect(request.getContextPath() + "/ad-touroperator-management?error=add");
+                response.sendRedirect(request.getContextPath() + "/ad/touroperator-management?error=add");
             }
             
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("message", "Có lỗi xảy ra: " + e.getMessage());
             session.setAttribute("messageType", "error");
-            response.sendRedirect(request.getContextPath() + "/ad-touroperator-management?error=add");
+            response.sendRedirect(request.getContextPath() + "/ad/touroperator-management?error=add");
         }
     }
 }

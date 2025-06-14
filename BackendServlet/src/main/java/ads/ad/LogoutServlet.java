@@ -27,6 +27,6 @@ public class LogoutServlet extends HttpServlet {
         }
 
         // Chuyển hướng về trang đăng nhập
-        response.sendRedirect(request.getContextPath() + "/ad-login");
+        response.sendRedirect(request.getContextPath() + "/Login");
     }
 }

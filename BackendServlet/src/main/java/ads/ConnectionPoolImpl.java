@@ -16,8 +16,8 @@ public class ConnectionPoolImpl implements ConnectionPool {
 	private String username;
 	private String userpass;
 	
-	private final String USER_NAME = "Unknown";
-	private final String PWD = "Drsunknown";
+	private final String USER_NAME = "root";
+	private final String PWD = "abc123!";
 	
 	private static volatile ConnectionPool instance;
 	

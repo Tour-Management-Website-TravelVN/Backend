@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/ad-tourrating-management/set-status")
+@WebServlet("/ad/tourrating-management/set-status")
 public class TourRatingSetStatusServlet extends HttpServlet {
 	private TourRatingFunction tourRatingFunction = new TourRatingFunctionImpl();
 
@@ -34,17 +34,17 @@ public class TourRatingSetStatusServlet extends HttpServlet {
             }
             
             if(isSuccess) {
-            	response.sendRedirect(request.getContextPath() + "/ad-tourrating-management?success=set-status");
+            	response.sendRedirect(request.getContextPath() + "/ad/tourrating-management?success=set-status");
             }
             else {
-            	response.sendRedirect(request.getContextPath() + "/ad-tourrating-management?error=set-status");
+            	response.sendRedirect(request.getContextPath() + "/ad/tourrating-management?error=set-status");
             }
             
             
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Có lỗi xảy ra khi cập nhật trạng thái");
-            response.sendRedirect(request.getContextPath() + "/ad-tourrating-management?error=set-status");
+            response.sendRedirect(request.getContextPath() + "/ad/tourrating-management?error=set-status");
         }
     }
 }

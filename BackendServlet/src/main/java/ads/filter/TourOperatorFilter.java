@@ -30,7 +30,7 @@ public class TourOperatorFilter implements Filter{
 			if(login.getAdministrator() == null) {
 				res.sendRedirect("../Login?err=unauth");
 			} else {
-				res.sendRedirect("../ad/userview");
+				res.sendRedirect("/adv/ad/ad-dashboard");
 			}
 		} else {
 			chain.doFilter(request, response);

@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import ads.user.UserAccountFunction;
 import ads.user.UserAccountFunctionImpl;
 
-@WebServlet("/ad-account-management/update")
+@WebServlet("/ad/account-management/update")
 public class AccountUpdateServlet extends HttpServlet {
     private UserAccountFunction userAccountFunction = new UserAccountFunctionImpl();
 
@@ -22,10 +22,10 @@ public class AccountUpdateServlet extends HttpServlet {
         boolean isUpdated = userAccountFunction.updateUserAccount(username, password, email);
         
         if (isUpdated) {
-            resp.sendRedirect(req.getContextPath() + "/ad-account-management?success=update");
+            resp.sendRedirect(req.getContextPath() + "/ad/account-management?success=update");
         }
         else {
-            resp.sendRedirect(req.getContextPath() + "/ad-account-management?error=update");
+            resp.sendRedirect(req.getContextPath() + "/ad/account-management?error=update");
         }
     }
 }

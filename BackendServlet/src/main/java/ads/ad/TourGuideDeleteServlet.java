@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/ad-tourguide-management/delete")
+@WebServlet("/ad/tourguide-management/delete")
 public class TourGuideDeleteServlet extends HttpServlet {
 	private TourGuideFunction tourGuideFunction = new TourGuideFunctionImpl();
 
@@ -24,7 +24,7 @@ public class TourGuideDeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("username") == null) {
-            resp.sendRedirect(req.getContextPath() + "/ad-login");
+            resp.sendRedirect(req.getContextPath() + "/ad/login");
             return;
         }
 
@@ -33,10 +33,10 @@ public class TourGuideDeleteServlet extends HttpServlet {
         boolean isDeleted = tourGuideFunction.deleteTourGuideAndAccount(tourGuideId);
         
         if (isDeleted) {
-            resp.sendRedirect(req.getContextPath() + "/ad-tourguide-management?success=delete");
+            resp.sendRedirect(req.getContextPath() + "/ad/tourguide-management?success=delete");
         }
         else {
-            resp.sendRedirect(req.getContextPath() + "/ad-tourguide-management?error=delete");
+            resp.sendRedirect(req.getContextPath() + "/ad/tourguide-management?error=delete");
         }
     }
 }

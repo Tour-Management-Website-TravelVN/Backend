@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/ad-touroperator-management/update")
+@WebServlet("/ad/touroperator-management/update")
 public class TourOperatorUpdateServlet extends HttpServlet {
 	private TourOperatorFunction tourOperatorFunction = new TourOperatorFunctionImpl();
 
@@ -41,13 +41,13 @@ public class TourOperatorUpdateServlet extends HttpServlet {
             
 //            // Kiểm tra số điện thoại đã tồn tại chưa
 //            if (tourOperatorFunction.isPhoneNumberExist(phoneNumber)) {
-//                resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management?error=phone_exist");
+//                resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management?error=phone_exist");
 //                return;
 //            }
 //            
 //            // Kiểm tra citizen_id đã tồn tại chưa
 //            if (tourOperatorFunction.isCitizenIdExist(citizenId)) {
-//            	resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management?error=citizen_id_exist");
+//            	resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management?error=citizen_id_exist");
 //                return;
 //            }
 
@@ -70,18 +70,18 @@ public class TourOperatorUpdateServlet extends HttpServlet {
             if(success) {
                 req.getSession().setAttribute("message", "Cập nhật thông tin thành công!");
                 req.getSession().setAttribute("messageType", "success");
-                resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management?success=update");
+                resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management?success=update");
             }
             else {
                 req.getSession().setAttribute("message", "Cập nhật thông tin thất bại!");
                 req.getSession().setAttribute("messageType", "error");
-                resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management?error=update");
+                resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management?error=update");
             }
         } catch (Exception e) {
             e.printStackTrace();
             req.getSession().setAttribute("message", "Lỗi hệ thống: " + e.getMessage());
             req.getSession().setAttribute("messageType", "error");
-            resp.sendRedirect(req.getContextPath() + "/ad-touroperator-management");
+            resp.sendRedirect(req.getContextPath() + "/ad/touroperator-management");
         }
     }
 }

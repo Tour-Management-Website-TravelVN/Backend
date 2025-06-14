@@ -10,7 +10,7 @@ import java.io.IOException;
 import ads.user.UserAccountFunction;
 import ads.user.UserAccountFunctionImpl;
 
-@WebServlet("/ad-account-management-recent-delete/delete")
+@WebServlet("/ad/account-management-recent-delete/delete")
 public class AccountDeleteServlet extends HttpServlet {
     /**
 	 * 
@@ -22,7 +22,7 @@ public class AccountDeleteServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 	    HttpSession session = req.getSession(false);
 	    if (session == null || session.getAttribute("username") == null) {
-	        resp.sendRedirect(req.getContextPath() + "/ad-login");
+	        resp.sendRedirect(req.getContextPath() + "/ad/login");
 	        return;
 	    }
 
@@ -39,9 +39,9 @@ public class AccountDeleteServlet extends HttpServlet {
 	        }
 
 	        if (allDeleted) {
-	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete_multiple");
+	            resp.sendRedirect(req.getContextPath() + "/ad/account-management-recent-delete?success=delete_multiple");
 	        } else {
-	            resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete_multiple");
+	            resp.sendRedirect(req.getContextPath() + "/ad/account-management-recent-delete?error=delete_multiple");
 	        }
 	        return;
 	    }
@@ -55,9 +55,9 @@ public class AccountDeleteServlet extends HttpServlet {
 
 	    boolean isDeleted = userAccountFunction.deleteUserAccount(username);
 	    if (isDeleted) {
-	        resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?success=delete");
+	        resp.sendRedirect(req.getContextPath() + "/ad/account-management-recent-delete?success=delete");
 	    } else {
-	        resp.sendRedirect(req.getContextPath() + "/ad-account-management-recent-delete?error=delete");
+	        resp.sendRedirect(req.getContextPath() + "/ad/account-management-recent-delete?error=delete");
 	    }
 	}
 
