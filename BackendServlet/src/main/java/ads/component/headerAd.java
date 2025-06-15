@@ -58,10 +58,8 @@ public class headerAd extends HttpServlet {
 		out.append("");
 		out.append("                <li class=\"nav-item dropdown pe-3\">");
 		out.append("");
-		out.append(
-				"                    <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
-		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\">" + username
-				+ "</span>");
+		out.append("                    <a class=\"nav-link nav-profile d-flex align-items-center pe-0\" href=\"#\" data-bs-toggle=\"dropdown\">");
+		out.append("                        <span class=\"d-none d-md-block dropdown-toggle ps-2\">" + username + "</span>");
 		out.append("                    </a>");
 		out.append("");
 		out.append("                    <ul class=\"dropdown-menu dropdown-menu-end dropdown-menu-arrow profile\">");
@@ -74,8 +72,7 @@ public class headerAd extends HttpServlet {
 		out.append("                        </li>");
 		out.append("");
 		out.append("                        <li>");
-		out.append("                            <a class=\"dropdown-item d-flex align-items-center\" href=\""
-				+ request.getContextPath() + "/ad-profile-management\">");
+		out.append("                            <a class=\"dropdown-item d-flex align-items-center\" href=\"" + request.getContextPath() + "/ad/profile-management\">");
 		out.append("                                <i class=\"bi bi-person\"></i>");
 		out.append("                                <span>Hồ sơ của tôi</span>");
 		out.append("                            </a>");
