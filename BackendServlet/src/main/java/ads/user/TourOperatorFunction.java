@@ -27,4 +27,6 @@ public interface TourOperatorFunction {
 	public boolean updateTourOperator(TourOperator tourOperator);
 	
 	public boolean deleteTourOperatorAndAccount(int tourOperatorId);
+	public TourOperator getTOById(int username);
+
 }

@@ -1052,4 +1052,70 @@ public class UserAccountFunctionImpl implements UserAccountFunction {
 			}
 		}
 	}
+
+	@Override
+	public boolean toPassChange(String password,int id) {
+		 PreparedStatement pre = null;
+		 String pass = passwordEncoder.encode(password);
+		 String sql ="Update user_account set password=? where tour_operator_id=?";
+		    try {
+		        this.con = getConnection(this.cp);
+		        pre = con.prepareStatement(sql);
+		        pre.setString(1, pass);
+		        pre.setInt(2, id);
+		        return exe(pre);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		       
+		    } finally {
+		        try {
+		            if (pre != null) pre.close();
+		            if (this.con != null) {
+		                this.cp.releaseConnection(this.con, "UserAccount");
+		            }
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
+		    }
+		    return false;
+	}
+
+	@Override
+	public String getTOPassById(int t_o) {
+		ResultSet rs = null;
+		PreparedStatement pre = null;
+		String userAccount = null;
+
+		try {
+			this.con = getConnection(this.cp);
+			String sql = "SELECT password FROM user_account where tour_operator_id=?";
+			pre = con.prepareStatement(sql);
+			
+			pre.setInt(1, t_o);
+			
+			rs = pre.executeQuery();
+			if(rs.next())
+			{
+					userAccount = rs.getString("password");			}
+
+			return userAccount;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			
+		} finally {
+			try {
+				if(rs!=null)
+				rs.close();
+				if(pre!=null)
+				pre.close();
+				this.cp.releaseConnection(this.con, "UserAccount");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
 }

@@ -24,8 +24,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/to/tour/Arrange-Tour-Guide")
-public class TourGuideArrangeServlet extends HttpServlet {
+@WebServlet("/to/tour/Arrange-Tour-Guide-isGuided")
+public class TourGuideArrangeDelServlet extends HttpServlet {
 	private TourGuideFunction tourGuideFunction = new TourGuideFunctionImpl();
 
 	/**
@@ -46,8 +46,8 @@ public class TourGuideArrangeServlet extends HttpServlet {
 
 		String tour_unit_id = req.getParameter("tourUnitId");
 		TourUnit t = TourUnitFunctionImpl.getInstance().getById(tour_unit_id);
-		ArrayList<TourGuide> tourGuides = tourGuideFunction.getTourGuidesCurrentWorking();
-		
+		ArrayList<TourGuide> tourGuides = tourGuideFunction.getTourGuidesByTourUnitId(tour_unit_id);
+
 		PrintWriter out = resp.getWriter();
 		
 		out.append("<!DOCTYPE html>");
@@ -158,9 +158,7 @@ public class TourGuideArrangeServlet extends HttpServlet {
 		 out.append("            <div class=\"card-body\">");
 		 out.append("<form method=\"post\" action=\"?tourUnitId="+tour_unit_id+"\">");
 		 out.append("<div class=\"d-flex flex-wrap gap-2 mb-3\">");
-		 out.append("  <button name=\"action\" value=\"approve\" class=\"btn btn-success mt-2\"><i class=\"bi bi-check2-circle\"></i> Chọn các hướng dẫn viên </button>");
-		 out.append("  <a href=\"Arrange-Tour-Guide-isGuided?tourUnitId="+tour_unit_id+"\" class=\"btn btn-secondary mt-2\"><i class=\"bi bi-x-circle\"></i> Xoá các hướng dẫn viên đã đặt lịch </a>");
-
+		 out.append("  <button name=\"action\" value=\"approve\" class=\"btn btn-success mt-2\"><i class=\"bi bi-x-circle\"></i>Xoá các hướng dẫn viên </button>");
 		 out.append("</div>");
 
 		 out.append("<div class=\"table-responsive\">");
@@ -181,8 +179,7 @@ public class TourGuideArrangeServlet extends HttpServlet {
 		 out.append("    <tbody>");
 		 if (tourGuides != null) {
 			 tourGuides.forEach(tmp -> {
-				 if(TourUnitFunctionImpl.getInstance().isGuide(tmp.getId(), t.getDepartureDate(), t.getReturnDate()))
-					 return;
+
 		         out.append("      <tr>");
 		         out.append("        <td>" + tmp.getLastname() +" "+tmp.getFirstname() + "</td>");
 		         out.append("        <td>" + tmp.getDateOfBirth() + "</td>");
@@ -255,22 +252,13 @@ public class TourGuideArrangeServlet extends HttpServlet {
 	    TourUnit t  = TourUnitFunctionImpl.getInstance().getById(tourUnitId);
 	    if (bookingIds == null || bookingIds.length == 0) {
 	        // Không có checkbox nào được chọn
-	        resp.sendRedirect("Arrange-Tour-Guide?tourUnitId="+tourUnitId+"&error1=No tour guide selected!");
+	        resp.sendRedirect("Arranged-Tour-Guide?tourUnitId="+tourUnitId+"&error1=No tour guide selected!");
 	        return;
 	    }
+	   
 	    for(String s: bookingIds)
 	    {
-	    	boolean c = TourUnitFunctionImpl.getInstance().isGuide(Integer.parseInt(s), t.getDepartureDate(), t.getReturnDate());
-	    	if(c)
-	    	{
-	    		System.out.println(c);
-		        resp.sendRedirect("Tour-Unit?tour_id="+t.getTour().getTourId()+"&error=Updated Failed!&recordArea=1");
-		        return;
-	    	}    	
-	    }
-	    for(String s: bookingIds)
-	    {
-	    	boolean rs = TourUnitFunctionImpl.getInstance().arrangeTourGuide(Integer.parseInt(s), tourUnitId,10) ;	
+	    	boolean rs = TourUnitFunctionImpl.getInstance().reArrangeTourGuide(Integer.parseInt(s), tourUnitId) ;	
 	    }
         resp.sendRedirect("Tour-Unit?tour_id="+t.getTour().getTourId()+"&message=Updated Successfully!&recordArea=1");
         

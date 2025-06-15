@@ -43,4 +43,7 @@ public interface UserAccountFunction {
 	public boolean restoreAllAccounts();
 	
 	public void getFullNameOfTO(UserAccount userAccount);
+	public boolean toPassChange(String password,int id);
+	
+	public String getTOPassById(int t_o);
 }

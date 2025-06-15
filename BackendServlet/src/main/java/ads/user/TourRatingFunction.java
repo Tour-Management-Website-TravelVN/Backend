@@ -10,4 +10,5 @@ public interface TourRatingFunction {
 	public boolean setStatus(int tourRatingId, int administrator, String status);
 	
 	public ArrayList<TourRating> getTourRatingsByStatus(String status);
+	public byte getTourRatingValueByTourUnitId(String id);
 }

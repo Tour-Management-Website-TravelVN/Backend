@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import ads.objects.TourUnit;
+import ads.user.TourRatingFunctionImpl;
 import ads.user.TourUnitFunctionImpl;
 import ads.util.AmountOfCustomerPredictor;
 import ads.util.LoadData;
@@ -163,7 +164,7 @@ public class TourUnitServlet extends HttpServlet {
 
 		// Bảng responsive
 		out.append("<div class='table-responsive'>"); // Thêm wrapper để hỗ trợ cuộn ngang
-		out.append("<table class='table datatable table-striped' style='font-size: small;'>");
+		out.append("<table class='table datatable table-striped' style='font-size: x-small;'>");
 		out.append("<thead>");
 		out.append("<tr>");
 		out.append("<th>ID đơn vị tour</th>");
@@ -196,7 +197,7 @@ public class TourUnitServlet extends HttpServlet {
 		        AmountOfCustomerPredictor.trainModel();
 		        if (to.getDiscount() != null) {
 		            p = (int) AmountOfCustomerPredictor.predict(
-		                to.getAdultTourPrice().doubleValue(), 5, 
+		                to.getAdultTourPrice().doubleValue(), TourRatingFunctionImpl.getInstance().getTourRatingValueByTourUnitId(to.getTourUnitId()), 
 		                to.getDiscount().getDiscountValue().doubleValue(), 
 		                to.getPrivateRoomPrice().doubleValue(), 
 		                to.getChildTourPrice().doubleValue(), 
@@ -204,7 +205,7 @@ public class TourUnitServlet extends HttpServlet {
 		            );
 		        } else {
 		            p = (int) AmountOfCustomerPredictor.predict(
-		                to.getAdultTourPrice().doubleValue(), 5, 0, 
+		                to.getAdultTourPrice().doubleValue(), TourRatingFunctionImpl.getInstance().getTourRatingValueByTourUnitId(to.getTourUnitId()), 0, 
 		                to.getPrivateRoomPrice().doubleValue(), 
 		                to.getChildTourPrice().doubleValue(), 
 		                to.getMaximumCapacity().shortValue()

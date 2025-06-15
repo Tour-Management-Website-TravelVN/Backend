@@ -16,6 +16,7 @@ import ads.objects.TourUnit;
 import ads.user.DiscountFunctionImpl;
 import ads.user.FestivalFunctionImpl;
 import ads.user.TourFunctionImpl;
+import ads.user.TourGuideFunctionImpl;
 import ads.user.TourOperatorFunctionImpl;
 import ads.user.TourUnitFunctionImpl;
 import jakarta.servlet.RequestDispatcher;
@@ -561,7 +562,15 @@ public class TourUnitEditServlet extends HttpServlet{
 	    tu.setTotalAdditionalCost(new BigDecimal(req.getParameter("additionalCost")));
 	    tu.setTour(TourFunctionImpl.getInstance().getTourByTourId(req.getParameter("tourId")));
 	    tu.setTourOperator(TourOperatorFunctionImpl.getInstance().getById(req.getParameter("tourOperator")));
-	    System.out.println(tu.toString());
+	    
+	    boolean check = TourUnitFunctionImpl.getInstance().checkConflictDate(req.getParameter("tourUnitId"),LocalDate.parse(req.getParameter("departure")) , LocalDate.parse(req.getParameter("return")));
+	    
+	    if(check)
+	    {
+	        response.sendRedirect("Tour-Unit?tour_id="+tu.getTour().getTourId()+"&error=Updated Failed!&recordArea=1");
+	        return;
+	    }
+	    
 	    boolean updated = dao.updateTourUnit(tu);
 
 	    if (updated) {

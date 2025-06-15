@@ -239,4 +239,53 @@ private static ConnectionPool cp = ConnectionPoolImpl.getInstance();
 	    }
 	}
 
+	@Override
+	public byte getTourRatingValueByTourUnitId(String id) {
+		    PreparedStatement pre = null;
+		    ResultSet rs  =null;
+		    Byte result = null;
+
+try {
+		        this.con = getConnection(this.cp);
+		        
+		        String sql = "SELECT rating_value " +
+		                     "FROM tour_rating " +
+		                     "WHERE tour_unit_id = ? ";
+		        pre = this.con.prepareStatement(sql);
+		        pre.setString(1, id);
+		        
+		        rs = pre.executeQuery();
+		        
+		        if(rs.next()) {
+		            result = rs.getByte(1);
+		        }
+		        
+		        return result;
+		        
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        try {
+		            if(this.con != null) {
+		                this.con.rollback();
+		            }
+		        }
+		        catch(SQLException e1) {
+		            e1.printStackTrace();
+		        }
+		    } finally {
+		        try {
+		            if(rs != null) rs.close();
+		            if(pre != null) pre.close();
+		            if(this.con != null) {
+		                this.con.commit();
+		                this.cp.releaseConnection(this.con, "TourRating");
+		            }
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
+		    }
+			return 5;
+
+	}
+
 }

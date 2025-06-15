@@ -140,15 +140,7 @@ public class CustomerServlet extends HttpServlet{
 		out.append("          <div class=\"card\">");
 		out.append("            <div class=\"card-body\">");
 		// Đặt phần chọn đơn vị tour phía trên bảng
-		out.append("<div class=\"row mb-3\">");
-		out.append("  <div class=\"col-md-4\">");
-		out.append("    <label for=\"tourUnitSelect\" class=\"form-label\">Chọn mã đơn vị tour</label>");
-		out.append("    <select id=\"tourUnitSelect\" class=\"form-select\">");
-		out.append("      <option value=\"\" selected disabled>Chọn mã đơn vị tour</option>");
-		out.append("      <option value=\"T001\">T001 - Đơn vị A</option>");
-		out.append("    </select>");
-		out.append("  </div>");
-		out.append("</div>");
+
 
 		// Table responsive wrapper
 		out.append("<div class=\"table-responsive\">");

@@ -91,7 +91,7 @@ public class sidebar extends HttpServlet{
 			out.append("      </li><!-- End Charts Nav -->");
 			out.append("      <li class=\"nav-item\">");
 			out.append(
-					"        <a class=\"nav-link "+collapsed.getOrDefault("tourguide", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"tour_guide_management.html\">");
+					"        <a class=\"nav-link "+collapsed.getOrDefault("tourguide", "collapsed")+"\" data-bs-target=\"#charts-nav\" href=\"/adv/to/Tourguide-management\">");
 			out.append("          <i class=\"bi bi-flag-fill\"></i>");
 			out.append("");
 			out.append("    <span>Hướng dẫn viên</span>");
@@ -116,7 +116,7 @@ public class sidebar extends HttpServlet{
 			out.append("");
 			out.append("");
 			out.append("      <li class=\"nav-item\">");
-			out.append("        <a class=\"nav-link "+collapsed.getOrDefault("myinfo", "collapsed")+"\" href=\"users-profile.html\">");
+			out.append("        <a class=\"nav-link "+collapsed.getOrDefault("myinfo", "collapsed")+"\" href=\"/adv/to/to-profile-management\">");
 			out.append("          <i class=\"bi bi-person\"></i>");
 			out.append("          <span>Thông tin cá nhân</span>");
 			out.append("        </a>");

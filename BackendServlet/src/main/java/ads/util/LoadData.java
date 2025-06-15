@@ -20,11 +20,8 @@ public class LoadData {
         	    "INNER JOIN discount ON tour_unit.discount_id = discount.discount_id"
         	);
 
-
         Instances data = query.retrieveInstances();
-        
-        data.setClassIndex(data.numAttributes() - 1);
-        
+                
         return data;
     }
     public static Instances getCategoryYearlyBookingData() throws Exception {

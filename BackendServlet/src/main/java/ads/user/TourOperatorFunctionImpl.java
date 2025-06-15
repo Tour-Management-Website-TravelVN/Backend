@@ -8,7 +8,10 @@ import java.util.ArrayList;
 
 import ads.ConnectionPool;
 import ads.ConnectionPoolImpl;
+import ads.objects.Administrator;
 import ads.objects.TourOperator;
+import ads.objects.UserAccount;
+
 import java.sql.Date;
 
 import java.sql.Types;
@@ -103,7 +106,7 @@ public class TourOperatorFunctionImpl implements TourOperatorFunction {
 		PreparedStatement p = null;
 		ResultSet result = null;
 		try {
-			String query = "Select * from tour_operator where tour_operator_id like ?";
+			String query = "Select to.*, ua.* from tour_operator to join user_account ua where tour_operator_id like ?";
 			
 			p = con.prepareStatement(query);
 			
@@ -383,8 +386,14 @@ public class TourOperatorFunctionImpl implements TourOperatorFunction {
             pre.setString(7, tourOperator.getCitizenId());
             pre.setString(8, tourOperator.getHometown());
             pre.setBigDecimal(9, tourOperator.getSalary());
-            pre.setDate(10, Date.valueOf(tourOperator.getStartDate()));
+            if(tourOperator.getStartDate() != null)
+                pre.setDate(10, Date.valueOf(tourOperator.getStartDate()));
+                else
+                pre.setDate(10, null);            
+            if(tourOperator.getEndDate() != null)
             pre.setDate(11, Date.valueOf(tourOperator.getEndDate()));
+            else
+            pre.setDate(11, null);
             pre.setInt(12, tourOperator.getId());
 	        
             int rowsAffected  = pre.executeUpdate();
@@ -480,7 +489,65 @@ public class TourOperatorFunctionImpl implements TourOperatorFunction {
 
 
 }
+	@Override
+	public TourOperator getTOById(int id) {
+	    PreparedStatement pre = null;
+	    TourOperator operator = null;
 
+	    ResultSet rs = null;
+	    try {
+	        this.con = getConnection(this.cp);
+	        String sql = "SELECT t.* ,u.username,u.email " +
+	                 "FROM tour_operator t " +
+	                 "JOIN user_account u ON t.tour_operator_id = u.tour_operator_id " +
+	                 "WHERE t.tour_operator_id = ?";
+	        
+	        pre = this.con.prepareStatement(sql);
+	        	        
+	        pre.setInt(1, id);
+	         rs = pre.executeQuery();
+
+	        if (rs.next()) {
+	            operator = new TourOperator();
+	            operator.setId(null);
+	            operator.setFirstname(rs.getString("firstname"));
+	            operator.setLastname(rs.getString("lastname"));
+	            operator.setDateOfBirth(rs.getDate("date_of_birth").toLocalDate());
+	            operator.setGender(rs.getBoolean("gender"));
+	            operator.setAddress(rs.getString("address"));
+	            operator.setPhoneNumber(rs.getString("phone_number"));
+	            operator.setCitizenId(rs.getString("citizen_id"));
+	            operator.setHometown(rs.getString("hometown"));
+	            operator.setSalary(rs.getBigDecimal("salary"));
+	            operator.setStartDate(rs.getDate("start_date").toLocalDate());
+	            if(rs.getDate("end_date") != null)
+	            operator.setEndDate(rs.getDate("end_date").toLocalDate());
+	            else
+	            	operator.setEndDate(null);
+	            operator.setUserAccount(UserAccount.builder()
+	            		.username(rs.getString("username"))
+	            		.email(rs.getString("email"))
+	            		.build());
+	        
+	    }	        return operator;
+
+	        } catch (SQLException e) {
+	        e.printStackTrace();
+	  
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pre != null) pre.close();
+	            if (this.con != null) {
+	                this.cp.releaseConnection(this.con, "TourOperator");
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+        return operator;
+
+	}
 	@Override
 	public boolean deleteById(String id) {
 		// TODO Auto-generated method stub

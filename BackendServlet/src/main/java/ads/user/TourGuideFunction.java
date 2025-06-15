@@ -9,6 +9,7 @@ public interface TourGuideFunction {
 	
 	public ArrayList<TourGuide> getTourGuidesCurrentWorking();
 
+	public ArrayList<TourGuide> getTourGuidesByTourUnitId(String id);
 	
 	public boolean addTourGuide(TourGuide tourGuide);
 	

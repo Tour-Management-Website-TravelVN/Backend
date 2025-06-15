@@ -42,8 +42,6 @@ public class AmountOfCustomerPredictor {
 	        model = new LinearRegression(); // <-- Quan trọng: KHỞI TẠO model
 	        model.buildClassifier(dataset);
 
-
-	        model.buildClassifier(dataset);
 	        
 	    }
 	    public static LinearRegression trainModel(Instances trainingData) throws Exception {
