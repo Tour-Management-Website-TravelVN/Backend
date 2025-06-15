@@ -33,7 +33,7 @@ public class LoadData {
         InstanceQuery query = new InstanceQuery();
         query.setDatabaseURL("jdbc:mysql://localhost:3306/tour_booking_system");
         query.setUsername("root");
-        query.setPassword("abc123!");
+        query.setPassword(""); //abc123!
 
         query.setQuery(
             "SELECT " +
@@ -61,7 +61,7 @@ public class LoadData {
         InstanceQuery query = new InstanceQuery();
         query.setDatabaseURL("jdbc:mysql://localhost:3306/tour_booking_system");
         query.setUsername("root");
-        query.setPassword("abc123!");
+        query.setPassword(""); //abc123!
 
         query.setQuery(
             "SELECT " +

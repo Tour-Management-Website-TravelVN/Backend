@@ -301,12 +301,12 @@ public class TourLibraryAD {
 //		sBuilder.append("<i class=\"bi bi-gear-fill text-warning\"></i>");
 		sBuilder.append("</a>");
 
-		if (tourUnitsQuant == 0) {
-			sBuilder.append(
-					"<a class=\" fw-bold text-danger fw-bold col-md-auto mt-3 ms-0 text-end fs-3\" style=\"cursor: pointer;\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\">");
-			sBuilder.append("<i class=\"bi bi-trash-fill\"></i>");
-			sBuilder.append("</a>");
-		}
+//		if (tourUnitsQuant == 0) {
+//			sBuilder.append(
+//					"<a class=\" fw-bold text-danger fw-bold col-md-auto mt-3 ms-0 text-end fs-3\" style=\"cursor: pointer;\" data-bs-toggle=\"modal\" data-bs-target=\"#staticBackdrop\">");
+//			sBuilder.append("<i class=\"bi bi-trash-fill\"></i>");
+//			sBuilder.append("</a>");
+//		}
 		sBuilder.append("<!-- Modal -->");
 		sBuilder.append("<div class=\"modal\" id=\"staticBackdrop\" data-bs-keyboard=\"false\" tabindex=\"-1\"");
 		sBuilder.append("aria-labelledby=\"staticBackdropLabel\" aria-hidden=\"true\">");
